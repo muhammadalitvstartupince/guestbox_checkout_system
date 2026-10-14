@@ -1002,7 +1002,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
                       disabled={promoCheck.status === "checking"}
                       className="h-10 shrink-0 rounded border border-zinc-300 px-4 text-sm font-bold text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-60"
                     >
-                      {promoCheck.status === "checking" ? "Checking…" : "Validate"}
+                      {promoCheck.status === "checking" ? "Checking…" : "Apply"}
                     </button>
                   </div>
                   {promoCheck.status === "invalid" && <p className="mt-1.5 text-sm text-red-600">{promoCheck.message}</p>}
@@ -1238,10 +1238,10 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {[
-                { icon: Tv, title: "Monetize Vacant TVs", sub: "Increase your revenue" },
+                { icon: Tv, title: "Monetize TVs", sub: "Increase your revenue" },
                 { icon: ThumbsUp, title: "Delight Every Guest", sub: "Premium entertainment" },
                 { icon: Settings, title: "Fully Managed", sub: "We handle everything" },
-                { icon: Truck, title: "Ships In 2026", sub: "Pre-orders open now" },
+                { icon: Truck, title: "Ships Immediately", sub: "" },
                 { icon: Zap, title: "Setup In Minutes", sub: "Plug and play" },
                 { icon: Lock, title: "Secure Checkout", sub: "Your data is protected" },
               ].map((f) => (
