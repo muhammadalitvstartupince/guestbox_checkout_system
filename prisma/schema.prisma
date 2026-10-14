@@ -1,0 +1,420 @@
+// Prisma schema for the checkout system.
+// See docs/checkout-system-plan.md for the data model rationale.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum CheckoutPageType {
+  normal
+  sales
+
+  @@map("checkout_page_type")
+}
+
+enum BillingInterval {
+  monthly
+  annually
+  none
+
+  @@map("billing_interval")
+}
+
+enum CheckoutPageStatus {
+  draft
+  live
+  archived
+
+  @@map("checkout_page_status")
+}
+
+enum DiscountType {
+  percent
+  fixed
+
+  @@map("discount_type")
+}
+
+enum OrderStatus {
+  pending
+  paid
+  failed
+
+  @@map("order_status")
+}
+
+// admin: full access. editor: can only manage checkout pages and add-ons —
+// no orders (so no card data), no promo codes, no settings, no admin users.
+enum AdminRole {
+  admin
+  editor
+
+  @@map("admin_role")
+}
+
+// ---------------------------------------------------------------------------
+// Models
+// ---------------------------------------------------------------------------
+
+model AdminUser {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         AdminRole @default(admin)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  createdCheckoutPages CheckoutPage[]
+  cardAccessLogs       CardAccessAuditLog[]
+  checkoutPageLogs     CheckoutPageLog[]
+
+  @@map("admin_users")
+}
+
+model Skin {
+  id        String   @id @default(uuid()) @db.Uuid
+  slug      String   @unique
+  name      String
+  // color tokens, fonts, layout variant, etc.
+  config    Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  checkoutPages CheckoutPage[]
+
+  @@map("skins")
+}
+
+model CheckoutPage {
+  id   String           @id @default(uuid()) @db.Uuid
+  slug String           @unique
+  type CheckoutPageType @default(normal)
+
+  title       String
+  productName String? @map("product_name")
+  skinId      String  @map("skin_id") @db.Uuid
+  skin   Skin   @relation(fields: [skinId], references: [id])
+
+  // Zoho product mapping (requirement: admin adds Zoho ids per checkout)
+  zohoItemId           String? @map("zoho_item_id")
+  zohoRecurringItemId  String? @map("zoho_recurring_item_id")
+
+  basePriceCents      Int             @map("base_price_cents")
+  recurringPriceCents Int?            @map("recurring_price_cents")
+  billingInterval     BillingInterval @default(none) @map("billing_interval")
+
+  // Hero/marketing content for the checkout page itself — distinct from
+  // `title` (used internally: admin lists, Zoho, emails). Falls back to
+  // `title` when not set. "Waived setup fee" line only renders when
+  // originalPriceCents is set (the struck-through "was" price); "today"/
+  // "/month" lines are derived from basePriceCents/recurringPriceCents
+  // above, not duplicated here.
+  headline           String? @map("headline")
+  originalPriceCents Int?    @map("original_price_cents")
+  // Device/product mockup image shown in the page footer. Path under
+  // /public, e.g. "/pages_Images/3-Beginners-Device.png".
+  mockupImageUrl     String? @map("mockup_image_url")
+
+  // Rich-text (HTML, admin-designed via the editor toolbar) hero block —
+  // headline + waived-fee/price lines as ONE freeform editable block.
+  // Takes over the entire hero display when set; falls back to the
+  // headline/originalPriceCents-driven block above for pages that predate
+  // this field.
+  heroHtml String? @map("hero_html")
+  // Optional mobile-specific override of heroHtml — lets the admin arrange
+  // the same hero content differently (or more compactly) on small screens.
+  // Falls back to heroHtml on mobile too when not set.
+  heroHtmlMobile String? @map("hero_html_mobile")
+
+  // Optional upgrade offer — a higher-tier product presented at checkout
+  // that REPLACES the main product if the customer opts in (unlike add-ons,
+  // which stack on top). Presence is keyed off upgradeTitle +
+  // upgradePriceCents both being set; leave both null for no upgrade offer.
+  upgradeTitle                String? @map("upgrade_title")
+  upgradeDescription          String? @map("upgrade_description")
+  upgradePriceCents           Int?    @map("upgrade_price_cents")
+  upgradeRecurringPriceCents  Int?    @map("upgrade_recurring_price_cents")
+  upgradeZohoItemId           String? @map("upgrade_zoho_item_id")
+  upgradeZohoRecurringItemId  String? @map("upgrade_zoho_recurring_item_id")
+
+  showPromoCode Boolean @default(false) @map("show_promo_code")
+
+  successRedirectUrl String @map("success_redirect_url")
+  failRedirectUrl    String @map("fail_redirect_url")
+
+  // optional marketing webhook (legacy sendDataToWebhook), off by default
+  webhookUrl String? @map("webhook_url")
+
+  status CheckoutPageStatus @default(draft)
+
+  createdById String?    @map("created_by") @db.Uuid
+  createdBy   AdminUser? @relation(fields: [createdById], references: [id])
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  addonLinks   CheckoutPageAddon[]
+  promoCodes   PromoCode[]
+  orders       Order[]
+  priceTiers   PriceTier[]
+  billingPlans BillingPlan[]
+  logs         CheckoutPageLog[]
+
+  @@map("checkout_pages")
+}
+
+// Quantity-based pricing tiers per checkout page — e.g. 1-4 = $149,
+// 5-9 = $139, 10+ = $129. Each tier can have its own Zoho item ID.
+// The checkout form picks the tier matching the customer's quantity.
+model PriceTier {
+  id             String       @id @default(uuid()) @db.Uuid
+  checkoutPageId String       @map("checkout_page_id") @db.Uuid
+  checkoutPage   CheckoutPage @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+  minQty         Int          @map("min_qty")
+  maxQty         Int?         @map("max_qty")
+  priceCents     Int          @map("price_cents")
+  zohoItemId     String?      @map("zoho_item_id")
+  sortOrder      Int          @default(0) @map("sort_order")
+
+  @@map("price_tiers")
+}
+
+// Billing cycle options per checkout page — e.g. Monthly $24/mo,
+// Annual $249/yr. Admin-configurable per page.
+model BillingPlan {
+  id             String          @id @default(uuid()) @db.Uuid
+  checkoutPageId String          @map("checkout_page_id") @db.Uuid
+  checkoutPage   CheckoutPage    @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+  interval       BillingInterval
+  label          String
+  priceCents       Int             @map("price_cents")
+  zohoItemId       String?         @map("zoho_item_id")
+  chargeAtCheckout Boolean         @default(false) @map("charge_at_checkout")
+  isDefault        Boolean         @default(false) @map("is_default")
+  sortOrder        Int             @default(0) @map("sort_order")
+
+  @@map("billing_plans")
+}
+
+// Audit log for checkout page changes — who did what and when.
+model CheckoutPageLog {
+  id             String        @id @default(uuid()) @db.Uuid
+  checkoutPageId String        @map("checkout_page_id") @db.Uuid
+  checkoutPage   CheckoutPage  @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+  adminUserId    String?       @map("admin_user_id") @db.Uuid
+  adminUser      AdminUser?    @relation(fields: [adminUserId], references: [id])
+  action         String
+  message        String?
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  @@map("checkout_page_logs")
+}
+
+// Global, reusable add-on pool — managed in its own admin UI and attached to
+// any checkout page (normal or sales) via CheckoutPageAddon, not owned by a
+// single page.
+model Addon {
+  id                 String   @id @default(uuid()) @db.Uuid
+  name               String
+  description        String?
+  imageUrl           String?  @map("image_url")
+  priceCents         Int      @map("price_cents")
+  // Optional "was" price, shown struck through next to priceCents (e.g.
+  // "$199 Now Only $99"), same pattern as CheckoutPage.originalPriceCents.
+  originalPriceCents Int?     @map("original_price_cents")
+  zohoItemId         String?  @map("zoho_item_id")
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  checkoutPageLinks CheckoutPageAddon[]
+  orderAddons       OrderAddon[]
+
+  @@map("addons")
+}
+
+// Join table: which addons appear on a given checkout page, and in what
+// order (sortOrder controls display order on the checkout page and in the
+// admin arrangement UI).
+model CheckoutPageAddon {
+  id             String       @id @default(uuid()) @db.Uuid
+  checkoutPageId String       @map("checkout_page_id") @db.Uuid
+  checkoutPage   CheckoutPage @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+  addonId        String       @map("addon_id") @db.Uuid
+  addon          Addon        @relation(fields: [addonId], references: [id], onDelete: Cascade)
+  sortOrder      Int          @default(0) @map("sort_order")
+
+  @@unique([checkoutPageId, addonId])
+  @@map("checkout_page_addons")
+}
+
+model PromoCode {
+  id            String       @id @default(uuid()) @db.Uuid
+  code          String       @unique
+  discountType  DiscountType @map("discount_type")
+  // percent: 1-100. fixed: cents.
+  discountValue Int          @map("discount_value")
+
+  appliesToCheckoutPageId String?       @map("applies_to_checkout_page_id") @db.Uuid
+  appliesToCheckoutPage   CheckoutPage? @relation(fields: [appliesToCheckoutPageId], references: [id], onDelete: Cascade)
+
+  maxRedemptions Int?      @map("max_redemptions")
+  timesRedeemed  Int       @default(0) @map("times_redeemed")
+  startsAt       DateTime? @map("starts_at")
+  expiresAt      DateTime? @map("expires_at")
+  isActive       Boolean   @default(true) @map("is_active")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  orders Order[]
+
+  @@map("promo_codes")
+}
+
+model Order {
+  id             String       @id @default(uuid()) @db.Uuid
+  checkoutPageId String       @map("checkout_page_id") @db.Uuid
+  checkoutPage   CheckoutPage @relation(fields: [checkoutPageId], references: [id])
+
+  promoCodeId String?    @map("promo_code_id") @db.Uuid
+  promoCode   PromoCode? @relation(fields: [promoCodeId], references: [id])
+
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  email     String
+  phone     String
+
+  // Full checkout-page URL the customer actually landed on, query string
+  // included (e.g. "?utm_source=email&utm_campaign=..."), captured at order
+  // init (step 1). Lets support/marketing trace which channel — email link,
+  // ad, direct, etc. — an order came from.
+  landingUrl String? @map("landing_url")
+
+  // Request metadata captured at order init (step 1), same source as
+  // landingUrl — client-reported, not verified, for support/fraud triage.
+  userAgent String? @map("user_agent")
+  ipAddress String? @map("ip_address")
+
+  // Null until step 2 (address/payment) is submitted — the order already
+  // exists from step 1 (contact info only) by that point.
+  addressLine1 String? @map("address_line1")
+  city         String?
+  state        String?
+  zip          String?
+  country      String?
+
+  // Shipping address — same as billing when shippingSameAsBilling is true.
+  shippingSameAsBilling Boolean @default(true) @map("shipping_same_as_billing")
+  shippingAddressLine1  String? @map("shipping_address_line1")
+  shippingCity          String? @map("shipping_city")
+  shippingState         String? @map("shipping_state")
+  shippingZip           String? @map("shipping_zip")
+  shippingCountry       String? @map("shipping_country")
+
+  // Which billing plan the customer selected (monthly/annual).
+  selectedBillingPlanId String? @map("selected_billing_plan_id") @db.Uuid
+
+  cardLast4  String? @map("card_last4")
+  cardBrand  String? @map("card_brand")
+  // AES-256-CBC + HMAC blobs (hex), same scheme as legacy encrypt()/decrypt().
+  // See docs/checkout-system-plan.md §7 for the PCI risk callout on storing these.
+  // Null until step 2 for the same reason as the address fields above.
+  cardNumberEncrypted String? @map("card_number_encrypted")
+  cardCvvEncrypted    String? @map("card_cvv_encrypted")
+  // "MM/YYYY", encrypted like the PAN/CVV above.
+  cardExpiryEncrypted String? @map("card_expiry_encrypted")
+  // Generated at step 1 (order init), independent of card data — an admin
+  // must supply this (in addition to being authenticated) to decrypt the
+  // card on this order once one exists.
+  cardHashKey String @map("card_hash_key")
+
+  quantity              Int     @default(1)
+  // Null until step 2 computes a final price (quantity/add-ons/upgrade/promo
+  // aren't chosen yet at step 1).
+  amountCents           Int?    @map("amount_cents")
+  recurringAmountCents  Int?    @map("recurring_amount_cents")
+  // Whether the customer opted into the checkout page's upgrade offer —
+  // amountCents already reflects whichever price was actually charged;
+  // this just records which product line it corresponds to.
+  upgradeSelected       Boolean @default(false) @map("upgrade_selected")
+
+  authNetResponseCode  String? @map("auth_net_response_code")
+  authNetAuthCode      String? @map("auth_net_auth_code")
+  authNetTransactionId String? @map("auth_net_transaction_id")
+  authNetMessage       String? @map("auth_net_message")
+
+  status OrderStatus @default(pending)
+
+  zohoSynced   Boolean @default(false) @map("zoho_synced")
+  zohoPayload  Json?   @map("zoho_payload")
+  zohoResponse Json?   @map("zoho_response")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  orderAddons    OrderAddon[]
+  cardAccessLogs CardAccessAuditLog[]
+  events         OrderEvent[]
+
+  @@map("orders")
+}
+
+// Chronological activity log for an order — checkout started, payment
+// attempted/settled, and each post-payment side effect (Zoho, emails,
+// webhook) — so admins can see exactly what happened and when, especially
+// for orders that stalled partway through.
+model OrderEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String   @map("order_id") @db.Uuid
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type      String
+  message   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("order_events")
+}
+
+model OrderAddon {
+  id         String @id @default(uuid()) @db.Uuid
+  orderId    String @map("order_id") @db.Uuid
+  order      Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  addonId    String @map("addon_id") @db.Uuid
+  addon      Addon  @relation(fields: [addonId], references: [id])
+  priceCents Int    @map("price_cents")
+
+  @@map("order_addons")
+}
+
+model CardAccessAuditLog {
+  id          String    @id @default(uuid()) @db.Uuid
+  orderId     String    @map("order_id") @db.Uuid
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  adminUserId String    @map("admin_user_id") @db.Uuid
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+  viewedAt    DateTime  @default(now()) @map("viewed_at")
+  ipAddress   String?   @map("ip_address")
+
+  @@map("card_access_audit_log")
+}
+
+// Singleton settings row (admin-editable, replaces the old env-var-only
+// SendGrid config) — the app always operates on whichever row comes back
+// first; the admin settings page never creates a second one.
+model EmailSettings {
+  id                           String   @id @default(uuid()) @db.Uuid
+  sendgridApiKey               String?  @map("sendgrid_api_key")
+  emailFrom                    String   @map("email_from")
+  internalNotifyEmails         String[] @map("internal_notify_emails")
+  customerConfirmationEnabled  Boolean  @default(true) @map("customer_confirmation_enabled")
+  customerConfirmationSubject  String   @map("customer_confirmation_subject")
+  customerConfirmationHtml     String   @map("customer_confirmation_html")
+  internalNotifySubject        String   @map("internal_notify_subject")
+  internalNotifyHtml           String   @map("internal_notify_html")
+  updatedAt                    DateTime @updatedAt @map("updated_at")
+
+  @@map("email_settings")
+}
