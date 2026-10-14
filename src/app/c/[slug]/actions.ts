@@ -422,16 +422,22 @@ export async function completeCheckout(
     const lineItems = buildZohoLineItems(product, data.quantity, selectedAddons, billingPlanZohoId);
     const recurringInvoiceItems = buildZohoRecurringLineItems(product, price.recurringTotalCents, data.quantity);
 
-    // Build shipping address for Zoho (only if different from billing)
+    // Always send shipping address to Zoho — use separate shipping if provided, else billing
     const zohoShippingAddress = !order.shippingSameAsBilling && order.shippingAddressLine1
       ? {
-          address: order.shippingAddressLine1,
+          streetad: order.shippingAddressLine1,
           city: order.shippingCity || city,
           state: order.shippingState || state,
-          zip: order.shippingZip || zip,
+          zipcode: order.shippingZip || zip,
           country: order.shippingCountry || country,
         }
-      : undefined;
+      : {
+          streetad: addressLine1,
+          city,
+          state,
+          zipcode: zip,
+          country,
+        };
 
     // Compute discount in dollars for Zoho
     let zohoDiscountDollars = 0;
@@ -578,6 +584,9 @@ export async function completeCheckout(
     }
 
     if (checkoutPage.webhookUrl) {
+      const shippingWebhook = !order.shippingSameAsBilling && order.shippingAddressLine1
+        ? { address: order.shippingAddressLine1, city: order.shippingCity || city, state: order.shippingState || state, zip: order.shippingZip || zip, country: order.shippingCountry || country }
+        : { address: addressLine1, city, state, zip, country };
       const webhookResult = await sendOrderWebhook(checkoutPage.webhookUrl, {
         fname: order.firstName,
         lname: order.lastName,
@@ -588,6 +597,11 @@ export async function completeCheckout(
         state,
         zipcode: zip,
         country,
+        shipping_address: shippingWebhook.address,
+        shipping_city: shippingWebhook.city,
+        shipping_state: shippingWebhook.state,
+        shipping_zipcode: shippingWebhook.zip,
+        shipping_country: shippingWebhook.country,
         amount: String(chargeAmountCents / 100),
         start_date: nextMonthStr,
         pay_date: todayStr,
