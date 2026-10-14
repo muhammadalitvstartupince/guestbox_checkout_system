@@ -23,10 +23,10 @@ export interface ZohoRecurringLineItem extends ZohoLineItem {
 }
 
 export interface ZohoShippingAddress {
-  address: string;
+  streetad: string;
   city: string;
   state: string;
-  zip: string;
+  zipcode: string;
   country: string;
 }
 
