@@ -16,6 +16,7 @@ export type OrderEventType =
   | "zoho_failed"
   | "customer_email_sent"
   | "customer_email_failed"
+  | "customer_email_skipped"
   | "internal_email_sent"
   | "internal_email_failed"
   | "webhook_sent"
