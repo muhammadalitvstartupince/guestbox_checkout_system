@@ -131,10 +131,10 @@ export async function retryZohoSync(orderId: string): Promise<void> {
   // Build shipping address for Zoho (only if different from billing)
   const shippingAddress = !order.shippingSameAsBilling && order.shippingAddressLine1
     ? {
-        address: order.shippingAddressLine1,
+        streetad: order.shippingAddressLine1,
         city: order.shippingCity || city,
         state: order.shippingState || state,
-        zip: order.shippingZip || zip,
+        zipcode: order.shippingZip || zip,
         country: order.shippingCountry || country,
       }
     : undefined;
