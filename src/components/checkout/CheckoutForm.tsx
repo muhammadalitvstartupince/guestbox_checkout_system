@@ -1225,7 +1225,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
 
           {/* Text + feature grid */}
           <div className="flex-1">
-            <h2 className={`${montserrat.className} mb-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl`}>
+            <h2 className={`${montserrat.className} mb-4 text-xl font-extrabold tracking-tight text-white sm:text-4xl`}>
               EVERYTHING YOU NEED TO{" "}
               <span style={{ color: accentColor }}>ELEVATE</span> EVERY STAY
             </h2>
@@ -1241,7 +1241,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
                 { icon: Tv, title: "Monetize TVs", sub: "Increase your revenue" },
                 { icon: ThumbsUp, title: "Delight Every Guest", sub: "Premium entertainment" },
                 { icon: Settings, title: "Fully Managed", sub: "We handle everything" },
-                { icon: Truck, title: "Ships Immediately", sub: "" },
+                { icon: Truck, title: "In-Stock", sub: "Ships Immediately" },
                 { icon: Zap, title: "Setup In Minutes", sub: "Plug and play" },
                 { icon: Lock, title: "Secure Checkout", sub: "Your data is protected" },
               ].map((f) => (
