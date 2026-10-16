@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/db/client";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { hasUpgradeOffer } from "@/lib/checkout/select-product";
+import { calculateOrderPrice } from "@/lib/pricing/calculate";
 
 type CheckoutRouteParams = {
   params: Promise<{ slug: string }>;
@@ -76,9 +77,54 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
 
   const landingUrl = await buildLandingUrl(slug, resolvedSearchParams);
 
+  // Check for an active limited-time promotion on this checkout page
+  const now = new Date();
+  const activePromoRow = await prisma.promotion.findFirst({
+    where: {
+      isActive: true,
+      checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
+      AND: [
+        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+      ],
+    },
+    include: {
+      promoCode: { select: { code: true, discountType: true, discountValue: true } },
+      priceTier: { select: { priceCents: true, zohoItemId: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  let activePromotion: {
+    name: string;
+    originalPriceCents: number;
+    promoPriceCents: number;
+    promoCode: string;
+    endsAt: string | null;
+  } | null = null;
+
+  if (activePromoRow) {
+    const result = calculateOrderPrice({
+      basePriceCents: activePromoRow.priceTier.priceCents,
+      quantity: 1,
+      promo: {
+        type: activePromoRow.promoCode.discountType,
+        value: activePromoRow.promoCode.discountValue,
+      },
+    });
+    activePromotion = {
+      name: activePromoRow.name,
+      originalPriceCents: activePromoRow.priceTier.priceCents,
+      promoPriceCents: result.totalCents,
+      promoCode: activePromoRow.promoCode.code,
+      endsAt: activePromoRow.endsAt ? activePromoRow.endsAt.toISOString() : null,
+    };
+  }
+
   return (
     <CheckoutForm
       landingUrl={landingUrl}
+      activePromotion={activePromotion}
       checkoutPage={{
         slug: checkoutPage.slug,
         type: checkoutPage.type,

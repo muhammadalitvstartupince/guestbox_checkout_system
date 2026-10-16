@@ -83,6 +83,16 @@ export type OrderAddon = Prisma.OrderAddonModel
  */
 export type CardAccessAuditLog = Prisma.CardAccessAuditLogModel
 /**
+ * Model Promotion
+ * 
+ */
+export type Promotion = Prisma.PromotionModel
+/**
+ * Model PromotionCheckoutPage
+ * 
+ */
+export type PromotionCheckoutPage = Prisma.PromotionCheckoutPageModel
+/**
  * Model EmailSettings
  * 
  */

@@ -105,8 +105,12 @@ export async function checkPromoCode(
   checkoutPageSlug: string,
   code: string,
 ): Promise<{ valid: boolean; message: string; discount?: { type: "percent" | "fixed"; value: number } }> {
-  const checkoutPage = await prisma.checkoutPage.findUnique({ where: { slug: checkoutPageSlug } });
-  if (!checkoutPage || !checkoutPage.showPromoCode) {
+  const checkoutPage = await prisma.checkoutPage.findUnique({
+    where: { slug: checkoutPageSlug },
+    include: { promotionLinks: { include: { promotion: { select: { isActive: true } } } } },
+  });
+  const hasActivePromotion = checkoutPage?.promotionLinks.some((l) => l.promotion.isActive) ?? false;
+  if (!checkoutPage || (!checkoutPage.showPromoCode && !hasActivePromotion)) {
     return { valid: false, message: "Promo codes aren't available on this checkout." };
   }
 
@@ -266,10 +270,32 @@ export async function completeCheckout(
   }
   const data = parsed.data;
 
-  // Resolve tier-based pricing: if tiers exist, find the matching tier for the quantity
+  // Check for an active promotion on this checkout page
+  const now = new Date();
+  const activePromo = await prisma.promotion.findFirst({
+    where: {
+      isActive: true,
+      checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
+      AND: [
+        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+      ],
+    },
+    include: { priceTier: true, promoCode: { select: { id: true, discountType: true, discountValue: true } } },
+  });
+
+  // Resolve tier-based pricing: promotion uses promo price as base (discount baked in)
   let resolvedBasePriceCents = checkoutPage.basePriceCents;
   let resolvedZohoItemId = checkoutPage.zohoItemId;
-  if (checkoutPage.priceTiers.length > 0) {
+  if (activePromo) {
+    // Calculate the promo price (original tier price minus promo code discount)
+    const origPrice = activePromo.priceTier.priceCents;
+    const promoDiscount = activePromo.promoCode.discountType === "percent"
+      ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
+      : activePromo.promoCode.discountValue;
+    resolvedBasePriceCents = Math.max(0, origPrice - promoDiscount);
+    if (activePromo.priceTier.zohoItemId) resolvedZohoItemId = activePromo.priceTier.zohoItemId;
+  } else if (checkoutPage.priceTiers.length > 0) {
     const matchedTier = checkoutPage.priceTiers.find(
       (t) => data.quantity >= t.minQty && (t.maxQty == null || data.quantity <= t.maxQty),
     );
@@ -312,7 +338,8 @@ export async function completeCheckout(
   const selectedAddons = pageAddons.filter((a) => data.addonIds.includes(a.id) && validAddonIds.has(a.id));
 
   let promo: { id: string; type: "percent" | "fixed"; value: number } | null = null;
-  if (checkoutPage.showPromoCode && data.promoCode) {
+  // Validate promo code — but during a promotion the discount is baked into the base price
+  if (data.promoCode) {
     const promoResult = await validatePromoCode(checkoutPage.id, data.promoCode);
     if (!promoResult.valid) {
       return {
@@ -328,7 +355,8 @@ export async function completeCheckout(
     basePriceCents: product.priceCents,
     quantity: data.quantity,
     addons: selectedAddons.map((a) => ({ priceCents: a.priceCents })),
-    promo: promo ? { type: promo.type, value: promo.value } : null,
+    // During promotion the discount is already in the base price — don't double-apply
+    promo: (promo && !activePromo) ? { type: promo.type, value: promo.value } : null,
     recurringPriceCents: product.recurringPriceCents,
   });
 
@@ -439,9 +467,13 @@ export async function completeCheckout(
           country,
         };
 
-    // Compute discount in dollars for Zoho
+    // Compute discount in dollars for Zoho (final total, not per-unit)
     let zohoDiscountDollars = 0;
-    if (promo) {
+    if (activePromo) {
+      // Promotion: per-unit savings × quantity
+      const perUnitSavingsCents = activePromo.priceTier.priceCents - resolvedBasePriceCents;
+      zohoDiscountDollars = (perUnitSavingsCents * data.quantity) / 100;
+    } else if (promo) {
       if (promo.type === "percent") {
         zohoDiscountDollars = Math.round((price.subtotalCents * promo.value) / 100) / 100;
       } else {
@@ -506,7 +538,11 @@ export async function completeCheckout(
       : "—";
     const promoText = promo && data.promoCode ? data.promoCode.toUpperCase() : "—";
     let discountText = "—";
-    if (promo) {
+    if (activePromo) {
+      // Promotion: discount is baked into resolvedBasePriceCents — show per-unit savings
+      const perUnitSavings = activePromo.priceTier.priceCents - resolvedBasePriceCents;
+      discountText = `Promotion: −${fmtDollars(perUnitSavings * data.quantity)} (${fmtDollars(perUnitSavings)}/ea × ${data.quantity})`;
+    } else if (promo) {
       if (promo.type === "percent") {
         const discountCents = Math.round((price.subtotalCents * promo.value) / 100);
         discountText = `${promo.value}% off (−${fmtDollars(discountCents)})`;
@@ -521,13 +557,13 @@ export async function completeCheckout(
   <tr><td colspan="2" style="padding:8px 0;font-weight:bold;font-size:16px;border-bottom:2px solid #e5e7eb">Order Summary</td></tr>
   <tr><td style="padding:6px 0;color:#666">Product</td><td style="padding:6px 0;text-align:right">${product.title}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Quantity</td><td style="padding:6px 0;text-align:right">${data.quantity}</td></tr>
-  <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}</td></tr>
+  <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}${activePromo ? ` (was ${fmtDollars(activePromo.priceTier.priceCents)}/ea — promo)` : ""}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Billing type</td><td style="padding:6px 0;text-align:right">${planLabel}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Plan price</td><td style="padding:6px 0;text-align:right">${planPrice}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Recurring total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? fmtDollars(price.recurringTotalCents) : "—"}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Add-ons</td><td style="padding:6px 0;text-align:right">${addonsText}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Promo code</td><td style="padding:6px 0;text-align:right">${promoText}</td></tr>
-  ${promo ? `<tr><td style="padding:6px 0;color:#666">Discount</td><td style="padding:6px 0;text-align:right;color:#dc2626">${discountText}</td></tr>` : ""}
+  ${(promo || activePromo) ? `<tr><td style="padding:6px 0;color:#666">Discount</td><td style="padding:6px 0;text-align:right;color:#dc2626">${discountText}</td></tr>` : ""}
   <tr><td style="padding:8px 0;font-weight:bold;border-top:2px solid #e5e7eb">Total charged</td><td style="padding:8px 0;text-align:right;font-weight:bold;border-top:2px solid #e5e7eb">${fmtDollars(chargeAmountCents)}</td></tr>
   <tr><td colspan="2" style="padding:12px 0 4px;font-weight:bold;font-size:16px;border-bottom:2px solid #e5e7eb">Customer</td></tr>
   <tr><td style="padding:6px 0;color:#666">Email</td><td style="padding:6px 0;text-align:right">${order.email}</td></tr>

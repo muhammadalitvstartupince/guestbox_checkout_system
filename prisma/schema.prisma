@@ -160,12 +160,13 @@ model CheckoutPage {
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
 
-  addonLinks   CheckoutPageAddon[]
-  promoCodes   PromoCode[]
-  orders       Order[]
-  priceTiers   PriceTier[]
-  billingPlans BillingPlan[]
-  logs         CheckoutPageLog[]
+  addonLinks      CheckoutPageAddon[]
+  promoCodes      PromoCode[]
+  orders          Order[]
+  priceTiers      PriceTier[]
+  billingPlans    BillingPlan[]
+  logs            CheckoutPageLog[]
+  promotionLinks  PromotionCheckoutPage[]
 
   @@map("checkout_pages")
 }
@@ -182,6 +183,8 @@ model PriceTier {
   priceCents     Int          @map("price_cents")
   zohoItemId     String?      @map("zoho_item_id")
   sortOrder      Int          @default(0) @map("sort_order")
+
+  promotions Promotion[]
 
   @@map("price_tiers")
 }
@@ -271,7 +274,8 @@ model PromoCode {
   isActive       Boolean   @default(true) @map("is_active")
   createdAt      DateTime  @default(now()) @map("created_at")
 
-  orders Order[]
+  orders     Order[]
+  promotions Promotion[]
 
   @@map("promo_codes")
 }
@@ -399,6 +403,44 @@ model CardAccessAuditLog {
   ipAddress   String?   @map("ip_address")
 
   @@map("card_access_audit_log")
+}
+
+// Limited-time promotion — locks a checkout page to a single price tier
+// with an auto-applied promo code, hiding the normal qty/tier selector.
+model Promotion {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  isActive    Boolean   @default(false) @map("is_active")
+  startsAt    DateTime? @map("starts_at")
+  endsAt      DateTime? @map("ends_at")
+  // IANA timezone the admin used when setting startsAt/endsAt.
+  // Dates are stored as UTC; this is kept for display back in admin.
+  timezone    String    @default("America/New_York")
+
+  promoCodeId String    @map("promo_code_id") @db.Uuid
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id])
+
+  priceTierId String    @map("price_tier_id") @db.Uuid
+  priceTier   PriceTier @relation(fields: [priceTierId], references: [id])
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  checkoutPages PromotionCheckoutPage[]
+
+  @@map("promotions")
+}
+
+// Join table: which checkout pages a promotion applies to.
+model PromotionCheckoutPage {
+  id             String       @id @default(uuid()) @db.Uuid
+  promotionId    String       @map("promotion_id") @db.Uuid
+  promotion      Promotion    @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  checkoutPageId String       @map("checkout_page_id") @db.Uuid
+  checkoutPage   CheckoutPage @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+
+  @@unique([promotionId, checkoutPageId])
+  @@map("promotion_checkout_pages")
 }
 
 // Singleton settings row (admin-editable, replaces the old env-var-only

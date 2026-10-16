@@ -58,7 +58,7 @@ export const paymentSchema = z.object({
   expYear: z.string().regex(/^\d{4}$/, "Invalid expiration year"),
   cvv: z.string().regex(/^\d{3,4}$/, "Invalid CVV"),
 
-  quantity: z.coerce.number().int().min(1).max(10),
+  quantity: z.coerce.number().int().min(1),
   promoCode: z.string().trim().optional().or(z.literal("")),
   addonIds: z.array(z.string().uuid()).default([]),
   upgradeSelected: z.boolean().default(false),

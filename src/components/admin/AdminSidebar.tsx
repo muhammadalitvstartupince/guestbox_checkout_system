@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Mail, Users } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, Mail, Users } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -61,6 +61,14 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
         icon: Tag,
         iconBg: "bg-amber-50 dark:bg-amber-500/10",
         iconColor: "text-amber-600 dark:text-amber-400",
+        adminOnly: true,
+      },
+      {
+        href: "/admin/promotions",
+        label: "Promotions",
+        icon: Zap,
+        iconBg: "bg-orange-50 dark:bg-orange-500/10",
+        iconColor: "text-orange-600 dark:text-orange-400",
         adminOnly: true,
       },
     ],
