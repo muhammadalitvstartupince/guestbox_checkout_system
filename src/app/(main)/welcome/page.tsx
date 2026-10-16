@@ -160,10 +160,7 @@ export default function WelcomePage() {
 
         {/* Footer */}
         <div className="py-4 text-center text-xs text-white/60">
-          Copyright &copy; {new Date().getFullYear()} GuestBox&reg; by TvStartup Inc. |{" "}
-          <a href="https://guestbox.tv" className="underline transition-colors hover:text-white">
-            GuestBox.tv
-          </a>
+&copy; {new Date().getFullYear()} GuestBox Inc. All rights reserved.
         </div>
       </div>
     </div>

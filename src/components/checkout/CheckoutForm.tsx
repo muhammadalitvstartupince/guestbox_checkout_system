@@ -1359,9 +1359,9 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
       </div>
 
       <div className="py-4 text-center text-xs text-white/60">
-        Copyright © {new Date().getFullYear()} GuestBox® by TvStartup Inc. |{" "}
-        <a href="https://guestbox.tv" className="underline transition-colors hover:text-white">
-          GuestBox.tv
+© {new Date().getFullYear()} GuestBox Inc. All rights reserved. |{" "}
+        <a href="https://guestbox.tv/contact" className="underline transition-colors hover:text-white">
+          Contact Us
         </a>
       </div>
       </div>{/* end Zone 2 */}
