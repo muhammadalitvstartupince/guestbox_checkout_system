@@ -77,9 +77,7 @@ export default function WelcomePage() {
 
         {/* Centered card */}
         <div className="flex flex-1 items-center justify-center px-4">
-          <div className="animate-card-in relative max-w-md w-full rounded-2xl border border-white/10 bg-gradient-to-b from-gray-900/90 to-gray-950/90 backdrop-blur-sm px-8 py-12 sm:px-12 text-center overflow-hidden">
-            {/* Shimmer overlay */}
-            <div className="animate-shimmer absolute inset-0 rounded-2xl pointer-events-none" />
+          <div className="animate-card-in relative max-w-md w-full px-8 py-12 sm:px-12 text-center overflow-hidden">
 
             {/* Sparkles */}
             {[
@@ -144,7 +142,7 @@ export default function WelcomePage() {
               </span>
             </h1>
 
-            <p className="animate-fade-up-2 text-white/50 text-sm leading-relaxed mb-10 max-w-xs mx-auto">
+            <p className="animate-fade-up-2 text-white/80 text-sm leading-relaxed mb-10 max-w-xs mx-auto">
               Your GuestBox is officially on its way to transforming your guest
               experience. We&apos;re getting everything ready for you right now, and
               you&apos;ll receive an email shortly with your order details and next
