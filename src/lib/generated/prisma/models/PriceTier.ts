@@ -245,6 +245,7 @@ export type PriceTierWhereInput = {
   zohoItemId?: Prisma.StringNullableFilter<"PriceTier"> | string | null
   sortOrder?: Prisma.IntFilter<"PriceTier"> | number
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
+  promotions?: Prisma.PromotionListRelationFilter
 }
 
 export type PriceTierOrderByWithRelationInput = {
@@ -256,6 +257,7 @@ export type PriceTierOrderByWithRelationInput = {
   zohoItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   checkoutPage?: Prisma.CheckoutPageOrderByWithRelationInput
+  promotions?: Prisma.PromotionOrderByRelationAggregateInput
 }
 
 export type PriceTierWhereUniqueInput = Prisma.AtLeast<{
@@ -270,6 +272,7 @@ export type PriceTierWhereUniqueInput = Prisma.AtLeast<{
   zohoItemId?: Prisma.StringNullableFilter<"PriceTier"> | string | null
   sortOrder?: Prisma.IntFilter<"PriceTier"> | number
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
+  promotions?: Prisma.PromotionListRelationFilter
 }, "id">
 
 export type PriceTierOrderByWithAggregationInput = {
@@ -308,6 +311,7 @@ export type PriceTierCreateInput = {
   zohoItemId?: string | null
   sortOrder?: number
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutPriceTiersInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutPriceTierInput
 }
 
 export type PriceTierUncheckedCreateInput = {
@@ -318,6 +322,7 @@ export type PriceTierUncheckedCreateInput = {
   priceCents: number
   zohoItemId?: string | null
   sortOrder?: number
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutPriceTierInput
 }
 
 export type PriceTierUpdateInput = {
@@ -328,6 +333,7 @@ export type PriceTierUpdateInput = {
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutPriceTiersNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutPriceTierNestedInput
 }
 
 export type PriceTierUncheckedUpdateInput = {
@@ -338,6 +344,7 @@ export type PriceTierUncheckedUpdateInput = {
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutPriceTierNestedInput
 }
 
 export type PriceTierCreateManyInput = {
@@ -423,6 +430,11 @@ export type PriceTierSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
 }
 
+export type PriceTierScalarRelationFilter = {
+  is?: Prisma.PriceTierWhereInput
+  isNot?: Prisma.PriceTierWhereInput
+}
+
 export type PriceTierCreateNestedManyWithoutCheckoutPageInput = {
   create?: Prisma.XOR<Prisma.PriceTierCreateWithoutCheckoutPageInput, Prisma.PriceTierUncheckedCreateWithoutCheckoutPageInput> | Prisma.PriceTierCreateWithoutCheckoutPageInput[] | Prisma.PriceTierUncheckedCreateWithoutCheckoutPageInput[]
   connectOrCreate?: Prisma.PriceTierCreateOrConnectWithoutCheckoutPageInput | Prisma.PriceTierCreateOrConnectWithoutCheckoutPageInput[]
@@ -465,6 +477,20 @@ export type PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput = {
   deleteMany?: Prisma.PriceTierScalarWhereInput | Prisma.PriceTierScalarWhereInput[]
 }
 
+export type PriceTierCreateNestedOneWithoutPromotionsInput = {
+  create?: Prisma.XOR<Prisma.PriceTierCreateWithoutPromotionsInput, Prisma.PriceTierUncheckedCreateWithoutPromotionsInput>
+  connectOrCreate?: Prisma.PriceTierCreateOrConnectWithoutPromotionsInput
+  connect?: Prisma.PriceTierWhereUniqueInput
+}
+
+export type PriceTierUpdateOneRequiredWithoutPromotionsNestedInput = {
+  create?: Prisma.XOR<Prisma.PriceTierCreateWithoutPromotionsInput, Prisma.PriceTierUncheckedCreateWithoutPromotionsInput>
+  connectOrCreate?: Prisma.PriceTierCreateOrConnectWithoutPromotionsInput
+  upsert?: Prisma.PriceTierUpsertWithoutPromotionsInput
+  connect?: Prisma.PriceTierWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PriceTierUpdateToOneWithWhereWithoutPromotionsInput, Prisma.PriceTierUpdateWithoutPromotionsInput>, Prisma.PriceTierUncheckedUpdateWithoutPromotionsInput>
+}
+
 export type PriceTierCreateWithoutCheckoutPageInput = {
   id?: string
   minQty: number
@@ -472,6 +498,7 @@ export type PriceTierCreateWithoutCheckoutPageInput = {
   priceCents: number
   zohoItemId?: string | null
   sortOrder?: number
+  promotions?: Prisma.PromotionCreateNestedManyWithoutPriceTierInput
 }
 
 export type PriceTierUncheckedCreateWithoutCheckoutPageInput = {
@@ -481,6 +508,7 @@ export type PriceTierUncheckedCreateWithoutCheckoutPageInput = {
   priceCents: number
   zohoItemId?: string | null
   sortOrder?: number
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutPriceTierInput
 }
 
 export type PriceTierCreateOrConnectWithoutCheckoutPageInput = {
@@ -522,6 +550,62 @@ export type PriceTierScalarWhereInput = {
   sortOrder?: Prisma.IntFilter<"PriceTier"> | number
 }
 
+export type PriceTierCreateWithoutPromotionsInput = {
+  id?: string
+  minQty: number
+  maxQty?: number | null
+  priceCents: number
+  zohoItemId?: string | null
+  sortOrder?: number
+  checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutPriceTiersInput
+}
+
+export type PriceTierUncheckedCreateWithoutPromotionsInput = {
+  id?: string
+  checkoutPageId: string
+  minQty: number
+  maxQty?: number | null
+  priceCents: number
+  zohoItemId?: string | null
+  sortOrder?: number
+}
+
+export type PriceTierCreateOrConnectWithoutPromotionsInput = {
+  where: Prisma.PriceTierWhereUniqueInput
+  create: Prisma.XOR<Prisma.PriceTierCreateWithoutPromotionsInput, Prisma.PriceTierUncheckedCreateWithoutPromotionsInput>
+}
+
+export type PriceTierUpsertWithoutPromotionsInput = {
+  update: Prisma.XOR<Prisma.PriceTierUpdateWithoutPromotionsInput, Prisma.PriceTierUncheckedUpdateWithoutPromotionsInput>
+  create: Prisma.XOR<Prisma.PriceTierCreateWithoutPromotionsInput, Prisma.PriceTierUncheckedCreateWithoutPromotionsInput>
+  where?: Prisma.PriceTierWhereInput
+}
+
+export type PriceTierUpdateToOneWithWhereWithoutPromotionsInput = {
+  where?: Prisma.PriceTierWhereInput
+  data: Prisma.XOR<Prisma.PriceTierUpdateWithoutPromotionsInput, Prisma.PriceTierUncheckedUpdateWithoutPromotionsInput>
+}
+
+export type PriceTierUpdateWithoutPromotionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  minQty?: Prisma.IntFieldUpdateOperationsInput | number
+  maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutPriceTiersNestedInput
+}
+
+export type PriceTierUncheckedUpdateWithoutPromotionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
+  minQty?: Prisma.IntFieldUpdateOperationsInput | number
+  maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
 export type PriceTierCreateManyCheckoutPageInput = {
   id?: string
   minQty: number
@@ -538,6 +622,7 @@ export type PriceTierUpdateWithoutCheckoutPageInput = {
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  promotions?: Prisma.PromotionUpdateManyWithoutPriceTierNestedInput
 }
 
 export type PriceTierUncheckedUpdateWithoutCheckoutPageInput = {
@@ -547,6 +632,7 @@ export type PriceTierUncheckedUpdateWithoutCheckoutPageInput = {
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutPriceTierNestedInput
 }
 
 export type PriceTierUncheckedUpdateManyWithoutCheckoutPageInput = {
@@ -559,6 +645,35 @@ export type PriceTierUncheckedUpdateManyWithoutCheckoutPageInput = {
 }
 
 
+/**
+ * Count Type PriceTierCountOutputType
+ */
+
+export type PriceTierCountOutputType = {
+  promotions: number
+}
+
+export type PriceTierCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  promotions?: boolean | PriceTierCountOutputTypeCountPromotionsArgs
+}
+
+/**
+ * PriceTierCountOutputType without action
+ */
+export type PriceTierCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PriceTierCountOutputType
+   */
+  select?: Prisma.PriceTierCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PriceTierCountOutputType without action
+ */
+export type PriceTierCountOutputTypeCountPromotionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PromotionWhereInput
+}
+
 
 export type PriceTierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -569,6 +684,8 @@ export type PriceTierSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   zohoItemId?: boolean
   sortOrder?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
+  promotions?: boolean | Prisma.PriceTier$promotionsArgs<ExtArgs>
+  _count?: boolean | Prisma.PriceTierCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["priceTier"]>
 
 export type PriceTierSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -606,6 +723,8 @@ export type PriceTierSelectScalar = {
 export type PriceTierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "minQty" | "maxQty" | "priceCents" | "zohoItemId" | "sortOrder", ExtArgs["result"]["priceTier"]>
 export type PriceTierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
+  promotions?: boolean | Prisma.PriceTier$promotionsArgs<ExtArgs>
+  _count?: boolean | Prisma.PriceTierCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PriceTierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
@@ -618,6 +737,7 @@ export type $PriceTierPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "PriceTier"
   objects: {
     checkoutPage: Prisma.$CheckoutPagePayload<ExtArgs>
+    promotions: Prisma.$PromotionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1022,6 +1142,7 @@ readonly fields: PriceTierFieldRefs;
 export interface Prisma__PriceTierClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   checkoutPage<T extends Prisma.CheckoutPageDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPageDefaultArgs<ExtArgs>>): Prisma.Prisma__CheckoutPageClient<runtime.Types.Result.GetResult<Prisma.$CheckoutPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  promotions<T extends Prisma.PriceTier$promotionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PriceTier$promotionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1456,6 +1577,30 @@ export type PriceTierDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many PriceTiers to delete.
    */
   limit?: number
+}
+
+/**
+ * PriceTier.promotions
+ */
+export type PriceTier$promotionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Promotion
+   */
+  select?: Prisma.PromotionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Promotion
+   */
+  omit?: Prisma.PromotionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PromotionInclude<ExtArgs> | null
+  where?: Prisma.PromotionWhereInput
+  orderBy?: Prisma.PromotionOrderByWithRelationInput | Prisma.PromotionOrderByWithRelationInput[]
+  cursor?: Prisma.PromotionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PromotionScalarFieldEnum | Prisma.PromotionScalarFieldEnum[]
 }
 
 /**

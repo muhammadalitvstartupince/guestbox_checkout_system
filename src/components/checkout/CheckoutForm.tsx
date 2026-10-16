@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { initiateOrder, saveBillingInfo, saveBillingPlan, completeCheckout, checkPromoCode } from "@/app/c/[slug]/actions";
 import { OrderSuccessModal } from "@/components/checkout/OrderSuccessModal";
 import { PhoneNumberField } from "@/components/checkout/PhoneNumberField";
@@ -77,6 +77,14 @@ interface SkinConfig {
   logoUrl?: string;
 }
 
+export interface ActivePromotionView {
+  name: string;
+  originalPriceCents: number;
+  promoPriceCents: number;
+  promoCode: string;
+  endsAt: string | null;
+}
+
 export interface CheckoutPageView {
   slug: string;
   type: "normal" | "sales";
@@ -142,7 +150,7 @@ function savingsPercent(tierPrice: number, basePrice: number): number {
   return Math.round(((basePrice - tierPrice) / basePrice) * 100);
 }
 
-export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: CheckoutPageView; landingUrl: string }) {
+export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null }) {
   const boundInitiate = initiateOrder.bind(null, checkoutPage.slug);
   const [initState, initFormAction, initPending] = useActionState(boundInitiate, initialInitiateOrderState);
 
@@ -205,13 +213,17 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
   }
 
   // --- Form state ---
+  const isPromoActive = activePromotion != null;
   const [quantity, setQuantity] = useState(1);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [upgradeSelected, setUpgradeSelected] = useState(false);
 
   const hasTiers = checkoutPage.priceTiers.length > 0;
   const baseTierPrice = hasTiers ? checkoutPage.priceTiers[0].priceCents : checkoutPage.basePriceCents;
-  const unitPrice = hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
+  // When a promotion is active, lock to the promotion tier's price
+  const unitPrice = isPromoActive
+    ? activePromotion.originalPriceCents
+    : hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
 
   const defaultPlan = checkoutPage.billingPlans.find((p) => p.isDefault) ?? checkoutPage.billingPlans[0];
   const [selectedPlanId, setSelectedPlanId] = useState(defaultPlan?.id ?? "");
@@ -244,7 +256,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
     expMonth: "",
     expYear: "",
     cvv: "",
-    promoCode: "",
+    promoCode: isPromoActive ? activePromotion.promoCode : "",
     agree: false,
   });
 
@@ -276,12 +288,22 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
   }
 
   function handleEditPromo() {
-    setPromoCheck({ status: "idle" });
+    if (!isPromoActive) setPromoCheck({ status: "idle" });
   }
 
+  // Auto-validate the promo code when a promotion is active
+  useEffect(() => {
+    if (isPromoActive && promoCheck.status === "idle") {
+      handleValidatePromo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPromoActive]);
+
   const effectiveTitle = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.title : checkoutPage.productName;
-  const effectiveBasePriceCents =
-    upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
+  // During promotion: use promo price directly as base (discount is baked in)
+  const effectiveBasePriceCents = isPromoActive
+    ? activePromotion.promoPriceCents
+    : upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
   // Only charge the plan price at checkout if chargeAtCheckout is true.
   // Otherwise it's recurring-only (starts at device activation).
   const effectiveRecurringPriceCents = hasPlans && selectedPlan
@@ -299,7 +321,8 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
     [checkoutPage.addons, selectedAddonIds],
   );
 
-  const appliedPromo = promoCheck.status === "valid" ? (promoCheck.discount ?? null) : null;
+  // During promotion the discount is baked into effectiveBasePriceCents — don't double-apply
+  const appliedPromo = (!isPromoActive && promoCheck.status === "valid") ? (promoCheck.discount ?? null) : null;
   const estimate = useMemo(
     () =>
       calculateOrderPrice({
@@ -328,43 +351,94 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
   // STEP 1: QTY
   // =====================================================================
   function renderQtyStep() {
-    const orderTotal = unitPrice * quantity;
+    const promoUnitPrice = isPromoActive ? activePromotion.promoPriceCents : unitPrice;
+    const orderTotal = promoUnitPrice * quantity;
     return (
       <div className="space-y-6">
         <h2 className={`${montserrat.className} text-xl font-bold text-zinc-900 sm:text-2xl`}>SUBMIT YOUR ORDER</h2>
 
-        {/* Tier badges — only show tiers above qty 1 */}
-        {hasTiers && checkoutPage.priceTiers.filter((t) => t.minQty > 1).length > 0 && (
+        {/* Limited Time Promotion banner — replaces tier badges */}
+        {isPromoActive && (() => {
+          const savePercent = Math.round(((activePromotion.originalPriceCents - activePromotion.promoPriceCents) / activePromotion.originalPriceCents) * 100);
+          return (
+            <div className="relative overflow-hidden rounded-2xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-5 pb-5 pt-8 text-center shadow-lg">
+              {/* Animated shimmer overlay */}
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.6)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+
+              {/* Top ribbon */}
+              <div className="absolute -left-1 -top-1 z-10">
+                <div className="flex items-center gap-1 rounded-br-xl rounded-tl-xl bg-gradient-to-r from-red-600 to-orange-500 px-4 py-1.5 text-xs font-extrabold tracking-widest text-white uppercase shadow-md">
+                  <Zap className="h-3.5 w-3.5 fill-yellow-300 text-yellow-300" />
+                  Limited Time
+                </div>
+              </div>
+
+              {/* Save badge */}
+              {savePercent > 0 && (
+                <div className="absolute -right-1 -top-1 z-10">
+                  <div className="rounded-bl-xl rounded-tr-xl bg-emerald-500 px-3 py-1.5 text-xs font-extrabold text-white shadow-md">
+                    SAVE {savePercent}%
+                  </div>
+                </div>
+              )}
+
+              {/* Price display */}
+              <div className="mt-2 flex items-baseline justify-center gap-2">
+                <span className="text-xl font-semibold text-zinc-400 line-through decoration-red-400 decoration-2">
+                  {formatWholeDollars(activePromotion.originalPriceCents)}
+                </span>
+                <span className="text-5xl font-black text-zinc-900">
+                  {formatWholeDollars(activePromotion.promoPriceCents)}
+                </span>
+                <span className="text-sm font-medium text-zinc-500">/each</span>
+              </div>
+
+              <p className="mt-1.5 text-sm font-medium text-zinc-600">{checkoutPage.productName}</p>
+
+              {/* Urgency nudge */}
+              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-600" />
+                </span>
+                Offer ends soon — don&apos;t miss out!
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Tier badges — hidden during promotion */}
+        {!isPromoActive && hasTiers && checkoutPage.priceTiers.filter((t) => t.minQty > 1).length > 0 && (
           <div className="flex flex-wrap gap-3">
             {checkoutPage.priceTiers
               .filter((t) => t.minQty > 1)
               .map((tier) => {
                 const savings = savingsPercent(tier.priceCents, baseTierPrice);
                 const label = `${tier.minQty}+`;
-                const isActive = quantity >= tier.minQty && (tier.maxQty == null || quantity <= tier.maxQty);
+                const isTierActive = quantity >= tier.minQty && (tier.maxQty == null || quantity <= tier.maxQty);
                 return (
                   <button
                     key={tier.minQty}
                     type="button"
                     onClick={() => setQuantity(tier.minQty)}
                     className={`group relative flex-1 overflow-hidden rounded-xl border-2 px-3 py-2.5 text-center transition-all ${
-                      isActive
+                      isTierActive
                         ? "border-cyan-500 bg-gradient-to-b from-cyan-50 to-white shadow-lg shadow-cyan-500/10"
                         : "border-zinc-200 bg-white hover:border-cyan-400 hover:shadow-md"
                     }`}
                   >
-                    {isActive && (
+                    {isTierActive && (
                       <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500" />
                     )}
-                    <div className={`text-sm font-semibold ${isActive ? "text-cyan-600" : "text-zinc-500"}`}>
+                    <div className={`text-sm font-semibold ${isTierActive ? "text-cyan-600" : "text-zinc-500"}`}>
                       {label} GuestBoxes
                     </div>
-                    <div className={`text-2xl font-extrabold ${isActive ? "text-zinc-900" : "text-zinc-700"}`}>
+                    <div className={`text-2xl font-extrabold ${isTierActive ? "text-zinc-900" : "text-zinc-700"}`}>
                       {formatWholeDollars(tier.priceCents)}
                     </div>
                     {savings > 0 && (
                       <div className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                        isActive
+                        isTierActive
                           ? "bg-cyan-100 text-cyan-700"
                           : "bg-zinc-100 text-zinc-500 group-hover:bg-cyan-50 group-hover:text-cyan-600"
                       }`}>
@@ -377,7 +451,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
           </div>
         )}
 
-        {/* Quantity control */}
+        {/* Quantity control — always shown */}
         <div className="text-center">
           <p className="mb-2 text-sm font-semibold text-zinc-700">Quantity</p>
           <div className="inline-flex items-center gap-0">
@@ -415,7 +489,8 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
           <span className="text-2xl font-bold text-white">{formatWholeDollars(orderTotal)}</span>
         </div>
         <p className="-mt-4 text-center text-sm text-zinc-500">
-          {formatWholeDollars(unitPrice)} per listing
+          {formatWholeDollars(promoUnitPrice)} per listing
+          {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
           {selectedPlan ? ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing` : ""}
         </p>
         <div className="-mt-1 flex items-center justify-evenly rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 px-2 py-2 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
@@ -952,7 +1027,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
             </section>
           )}
 
-          {checkoutPage.showPromoCode && (
+          {(checkoutPage.showPromoCode || isPromoActive) && (
             <section>
               {promoCheck.status === "valid" ? (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-300 bg-gradient-to-r from-emerald-50 to-white px-4 py-3">
@@ -971,6 +1046,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
                       <div className="text-xs font-medium text-emerald-700">{promoCheck.message} applied</div>
                     </div>
                   </div>
+                  {!isPromoActive && (
                   <button
                     type="button"
                     onClick={handleEditPromo}
@@ -978,6 +1054,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
                   >
                     <PencilLine className="h-3.5 w-3.5" /> Change
                   </button>
+                  )}
                 </div>
               ) : (
                 <>
@@ -1014,9 +1091,20 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
           <div className="rounded-lg p-4 text-white" style={{ backgroundColor: primaryColor }}>
             <div className="mb-2 text-sm font-semibold tracking-wide uppercase opacity-90">Order Summary</div>
             <div className="space-y-0.5 text-sm opacity-90">
-              <div>
-                {quantity}× {effectiveTitle} @ {formatWholeDollars(unitPrice)}/ea
-              </div>
+              {isPromoActive ? (
+                <div className="flex items-baseline justify-between">
+                  <span>
+                    {quantity}× {effectiveTitle} @ {formatWholeDollars(activePromotion.promoPriceCents)}/ea
+                  </span>
+                  <span className="ml-2 text-xs text-white/50 line-through">
+                    {formatWholeDollars(activePromotion.originalPriceCents)}/ea
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  {quantity}× {effectiveTitle} @ {formatWholeDollars(unitPrice)}/ea
+                </div>
+              )}
               {selectedAddons.map((a) => (
                 <div key={a.id}>+ {a.name}</div>
               ))}
@@ -1024,7 +1112,19 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
                 <div>+ {selectedPlan.label} ({formatWholeDollars(selectedPlan.priceCents)}/{recurringLabel} per listing)</div>
               )}
             </div>
-            {estimate.discountCents > 0 && (
+            {/* During promo: show savings instead of subtotal/discount breakdown */}
+            {isPromoActive ? (
+              <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
+                <div className="flex justify-between text-emerald-400">
+                  <span className="flex items-center gap-1">
+                    <Ticket className="h-3.5 w-3.5" /> You save
+                  </span>
+                  <span className="font-semibold">
+                    {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}
+                  </span>
+                </div>
+              </div>
+            ) : estimate.discountCents > 0 ? (
               <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
                 <div className="flex justify-between opacity-80">
                   <span>Subtotal</span>
@@ -1037,7 +1137,7 @@ export function CheckoutForm({ checkoutPage, landingUrl }: { checkoutPage: Check
                   <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
                 </div>
               </div>
-            )}
+            ) : null}
             <div className="mt-2 flex justify-between text-lg font-semibold">
               <span>Total</span>
               <span>{formatCents(

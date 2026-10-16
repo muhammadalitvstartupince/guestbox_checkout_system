@@ -64,6 +64,8 @@ export const ModelName = {
   OrderEvent: 'OrderEvent',
   OrderAddon: 'OrderAddon',
   CardAccessAuditLog: 'CardAccessAuditLog',
+  Promotion: 'Promotion',
+  PromotionCheckoutPage: 'PromotionCheckoutPage',
   EmailSettings: 'EmailSettings'
 } as const
 
@@ -301,6 +303,31 @@ export const CardAccessAuditLogScalarFieldEnum = {
 } as const
 
 export type CardAccessAuditLogScalarFieldEnum = (typeof CardAccessAuditLogScalarFieldEnum)[keyof typeof CardAccessAuditLogScalarFieldEnum]
+
+
+export const PromotionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isActive: 'isActive',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  timezone: 'timezone',
+  promoCodeId: 'promoCodeId',
+  priceTierId: 'priceTierId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PromotionScalarFieldEnum = (typeof PromotionScalarFieldEnum)[keyof typeof PromotionScalarFieldEnum]
+
+
+export const PromotionCheckoutPageScalarFieldEnum = {
+  id: 'id',
+  promotionId: 'promotionId',
+  checkoutPageId: 'checkoutPageId'
+} as const
+
+export type PromotionCheckoutPageScalarFieldEnum = (typeof PromotionCheckoutPageScalarFieldEnum)[keyof typeof PromotionCheckoutPageScalarFieldEnum]
 
 
 export const EmailSettingsScalarFieldEnum = {

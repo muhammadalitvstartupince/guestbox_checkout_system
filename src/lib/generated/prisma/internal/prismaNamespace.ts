@@ -410,6 +410,8 @@ export const ModelName = {
   OrderEvent: 'OrderEvent',
   OrderAddon: 'OrderAddon',
   CardAccessAuditLog: 'CardAccessAuditLog',
+  Promotion: 'Promotion',
+  PromotionCheckoutPage: 'PromotionCheckoutPage',
   EmailSettings: 'EmailSettings'
 } as const
 
@@ -426,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "emailSettings"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1392,6 +1394,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Promotion: {
+      payload: Prisma.$PromotionPayload<ExtArgs>
+      fields: Prisma.PromotionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PromotionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PromotionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>
+        }
+        findFirst: {
+          args: Prisma.PromotionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PromotionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>
+        }
+        findMany: {
+          args: Prisma.PromotionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>[]
+        }
+        create: {
+          args: Prisma.PromotionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>
+        }
+        createMany: {
+          args: Prisma.PromotionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PromotionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>[]
+        }
+        delete: {
+          args: Prisma.PromotionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>
+        }
+        update: {
+          args: Prisma.PromotionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>
+        }
+        deleteMany: {
+          args: Prisma.PromotionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PromotionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PromotionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>[]
+        }
+        upsert: {
+          args: Prisma.PromotionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionPayload>
+        }
+        aggregate: {
+          args: Prisma.PromotionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePromotion>
+        }
+        groupBy: {
+          args: Prisma.PromotionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromotionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PromotionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromotionCountAggregateOutputType> | number
+        }
+      }
+    }
+    PromotionCheckoutPage: {
+      payload: Prisma.$PromotionCheckoutPagePayload<ExtArgs>
+      fields: Prisma.PromotionCheckoutPageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PromotionCheckoutPageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PromotionCheckoutPageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>
+        }
+        findFirst: {
+          args: Prisma.PromotionCheckoutPageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PromotionCheckoutPageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>
+        }
+        findMany: {
+          args: Prisma.PromotionCheckoutPageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>[]
+        }
+        create: {
+          args: Prisma.PromotionCheckoutPageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>
+        }
+        createMany: {
+          args: Prisma.PromotionCheckoutPageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PromotionCheckoutPageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>[]
+        }
+        delete: {
+          args: Prisma.PromotionCheckoutPageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>
+        }
+        update: {
+          args: Prisma.PromotionCheckoutPageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>
+        }
+        deleteMany: {
+          args: Prisma.PromotionCheckoutPageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PromotionCheckoutPageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PromotionCheckoutPageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>[]
+        }
+        upsert: {
+          args: Prisma.PromotionCheckoutPageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromotionCheckoutPagePayload>
+        }
+        aggregate: {
+          args: Prisma.PromotionCheckoutPageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePromotionCheckoutPage>
+        }
+        groupBy: {
+          args: Prisma.PromotionCheckoutPageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromotionCheckoutPageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PromotionCheckoutPageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromotionCheckoutPageCountAggregateOutputType> | number
+        }
+      }
+    }
     EmailSettings: {
       payload: Prisma.$EmailSettingsPayload<ExtArgs>
       fields: Prisma.EmailSettingsFieldRefs
@@ -1723,6 +1873,31 @@ export const CardAccessAuditLogScalarFieldEnum = {
 } as const
 
 export type CardAccessAuditLogScalarFieldEnum = (typeof CardAccessAuditLogScalarFieldEnum)[keyof typeof CardAccessAuditLogScalarFieldEnum]
+
+
+export const PromotionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isActive: 'isActive',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  timezone: 'timezone',
+  promoCodeId: 'promoCodeId',
+  priceTierId: 'priceTierId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PromotionScalarFieldEnum = (typeof PromotionScalarFieldEnum)[keyof typeof PromotionScalarFieldEnum]
+
+
+export const PromotionCheckoutPageScalarFieldEnum = {
+  id: 'id',
+  promotionId: 'promotionId',
+  checkoutPageId: 'checkoutPageId'
+} as const
+
+export type PromotionCheckoutPageScalarFieldEnum = (typeof PromotionCheckoutPageScalarFieldEnum)[keyof typeof PromotionCheckoutPageScalarFieldEnum]
 
 
 export const EmailSettingsScalarFieldEnum = {
@@ -2119,6 +2294,8 @@ export type GlobalOmitConfig = {
   orderEvent?: Prisma.OrderEventOmit
   orderAddon?: Prisma.OrderAddonOmit
   cardAccessAuditLog?: Prisma.CardAccessAuditLogOmit
+  promotion?: Prisma.PromotionOmit
+  promotionCheckoutPage?: Prisma.PromotionCheckoutPageOmit
   emailSettings?: Prisma.EmailSettingsOmit
 }
 

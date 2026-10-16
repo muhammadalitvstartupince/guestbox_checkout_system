@@ -440,6 +440,7 @@ export type CheckoutPageWhereInput = {
   priceTiers?: Prisma.PriceTierListRelationFilter
   billingPlans?: Prisma.BillingPlanListRelationFilter
   logs?: Prisma.CheckoutPageLogListRelationFilter
+  promotionLinks?: Prisma.PromotionCheckoutPageListRelationFilter
 }
 
 export type CheckoutPageOrderByWithRelationInput = {
@@ -481,6 +482,7 @@ export type CheckoutPageOrderByWithRelationInput = {
   priceTiers?: Prisma.PriceTierOrderByRelationAggregateInput
   billingPlans?: Prisma.BillingPlanOrderByRelationAggregateInput
   logs?: Prisma.CheckoutPageLogOrderByRelationAggregateInput
+  promotionLinks?: Prisma.PromotionCheckoutPageOrderByRelationAggregateInput
 }
 
 export type CheckoutPageWhereUniqueInput = Prisma.AtLeast<{
@@ -525,6 +527,7 @@ export type CheckoutPageWhereUniqueInput = Prisma.AtLeast<{
   priceTiers?: Prisma.PriceTierListRelationFilter
   billingPlans?: Prisma.BillingPlanListRelationFilter
   logs?: Prisma.CheckoutPageLogListRelationFilter
+  promotionLinks?: Prisma.PromotionCheckoutPageListRelationFilter
 }, "id" | "slug">
 
 export type CheckoutPageOrderByWithAggregationInput = {
@@ -638,6 +641,7 @@ export type CheckoutPageCreateInput = {
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateInput = {
@@ -677,6 +681,7 @@ export type CheckoutPageUncheckedCreateInput = {
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUpdateInput = {
@@ -716,6 +721,7 @@ export type CheckoutPageUpdateInput = {
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateInput = {
@@ -755,6 +761,7 @@ export type CheckoutPageUncheckedUpdateInput = {
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageCreateManyInput = {
@@ -1195,6 +1202,20 @@ export type CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CheckoutPageUpdateToOneWithWhereWithoutOrdersInput, Prisma.CheckoutPageUpdateWithoutOrdersInput>, Prisma.CheckoutPageUncheckedUpdateWithoutOrdersInput>
 }
 
+export type CheckoutPageCreateNestedOneWithoutPromotionLinksInput = {
+  create?: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPromotionLinksInput, Prisma.CheckoutPageUncheckedCreateWithoutPromotionLinksInput>
+  connectOrCreate?: Prisma.CheckoutPageCreateOrConnectWithoutPromotionLinksInput
+  connect?: Prisma.CheckoutPageWhereUniqueInput
+}
+
+export type CheckoutPageUpdateOneRequiredWithoutPromotionLinksNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPromotionLinksInput, Prisma.CheckoutPageUncheckedCreateWithoutPromotionLinksInput>
+  connectOrCreate?: Prisma.CheckoutPageCreateOrConnectWithoutPromotionLinksInput
+  upsert?: Prisma.CheckoutPageUpsertWithoutPromotionLinksInput
+  connect?: Prisma.CheckoutPageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CheckoutPageUpdateToOneWithWhereWithoutPromotionLinksInput, Prisma.CheckoutPageUpdateWithoutPromotionLinksInput>, Prisma.CheckoutPageUncheckedUpdateWithoutPromotionLinksInput>
+}
+
 export type CheckoutPageCreateWithoutCreatedByInput = {
   id?: string
   slug: string
@@ -1231,6 +1252,7 @@ export type CheckoutPageCreateWithoutCreatedByInput = {
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutCreatedByInput = {
@@ -1269,6 +1291,7 @@ export type CheckoutPageUncheckedCreateWithoutCreatedByInput = {
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutCreatedByInput = {
@@ -1369,6 +1392,7 @@ export type CheckoutPageCreateWithoutSkinInput = {
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutSkinInput = {
@@ -1407,6 +1431,7 @@ export type CheckoutPageUncheckedCreateWithoutSkinInput = {
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutSkinInput = {
@@ -1471,6 +1496,7 @@ export type CheckoutPageCreateWithoutPriceTiersInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutPriceTiersInput = {
@@ -1509,6 +1535,7 @@ export type CheckoutPageUncheckedCreateWithoutPriceTiersInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutPriceTiersInput = {
@@ -1563,6 +1590,7 @@ export type CheckoutPageUpdateWithoutPriceTiersInput = {
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutPriceTiersInput = {
@@ -1601,6 +1629,7 @@ export type CheckoutPageUncheckedUpdateWithoutPriceTiersInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageCreateWithoutBillingPlansInput = {
@@ -1639,6 +1668,7 @@ export type CheckoutPageCreateWithoutBillingPlansInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutBillingPlansInput = {
@@ -1677,6 +1707,7 @@ export type CheckoutPageUncheckedCreateWithoutBillingPlansInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutBillingPlansInput = {
@@ -1731,6 +1762,7 @@ export type CheckoutPageUpdateWithoutBillingPlansInput = {
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutBillingPlansInput = {
@@ -1769,6 +1801,7 @@ export type CheckoutPageUncheckedUpdateWithoutBillingPlansInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageCreateWithoutLogsInput = {
@@ -1807,6 +1840,7 @@ export type CheckoutPageCreateWithoutLogsInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutLogsInput = {
@@ -1845,6 +1879,7 @@ export type CheckoutPageUncheckedCreateWithoutLogsInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutLogsInput = {
@@ -1899,6 +1934,7 @@ export type CheckoutPageUpdateWithoutLogsInput = {
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutLogsInput = {
@@ -1937,6 +1973,7 @@ export type CheckoutPageUncheckedUpdateWithoutLogsInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageCreateWithoutAddonLinksInput = {
@@ -1975,6 +2012,7 @@ export type CheckoutPageCreateWithoutAddonLinksInput = {
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutAddonLinksInput = {
@@ -2013,6 +2051,7 @@ export type CheckoutPageUncheckedCreateWithoutAddonLinksInput = {
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutAddonLinksInput = {
@@ -2067,6 +2106,7 @@ export type CheckoutPageUpdateWithoutAddonLinksInput = {
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutAddonLinksInput = {
@@ -2105,6 +2145,7 @@ export type CheckoutPageUncheckedUpdateWithoutAddonLinksInput = {
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageCreateWithoutPromoCodesInput = {
@@ -2143,6 +2184,7 @@ export type CheckoutPageCreateWithoutPromoCodesInput = {
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutPromoCodesInput = {
@@ -2181,6 +2223,7 @@ export type CheckoutPageUncheckedCreateWithoutPromoCodesInput = {
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutPromoCodesInput = {
@@ -2235,6 +2278,7 @@ export type CheckoutPageUpdateWithoutPromoCodesInput = {
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutPromoCodesInput = {
@@ -2273,6 +2317,7 @@ export type CheckoutPageUncheckedUpdateWithoutPromoCodesInput = {
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageCreateWithoutOrdersInput = {
@@ -2311,6 +2356,7 @@ export type CheckoutPageCreateWithoutOrdersInput = {
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageUncheckedCreateWithoutOrdersInput = {
@@ -2349,6 +2395,7 @@ export type CheckoutPageUncheckedCreateWithoutOrdersInput = {
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
 export type CheckoutPageCreateOrConnectWithoutOrdersInput = {
@@ -2403,6 +2450,7 @@ export type CheckoutPageUpdateWithoutOrdersInput = {
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutOrdersInput = {
@@ -2438,6 +2486,179 @@ export type CheckoutPageUncheckedUpdateWithoutOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
+  priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
+}
+
+export type CheckoutPageCreateWithoutPromotionLinksInput = {
+  id?: string
+  slug: string
+  type?: $Enums.CheckoutPageType
+  title: string
+  productName?: string | null
+  zohoItemId?: string | null
+  zohoRecurringItemId?: string | null
+  basePriceCents: number
+  recurringPriceCents?: number | null
+  billingInterval?: $Enums.BillingInterval
+  headline?: string | null
+  originalPriceCents?: number | null
+  mockupImageUrl?: string | null
+  heroHtml?: string | null
+  heroHtmlMobile?: string | null
+  upgradeTitle?: string | null
+  upgradeDescription?: string | null
+  upgradePriceCents?: number | null
+  upgradeRecurringPriceCents?: number | null
+  upgradeZohoItemId?: string | null
+  upgradeZohoRecurringItemId?: string | null
+  showPromoCode?: boolean
+  successRedirectUrl: string
+  failRedirectUrl: string
+  webhookUrl?: string | null
+  status?: $Enums.CheckoutPageStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
+  createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
+  addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
+  promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
+  priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
+  billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+}
+
+export type CheckoutPageUncheckedCreateWithoutPromotionLinksInput = {
+  id?: string
+  slug: string
+  type?: $Enums.CheckoutPageType
+  title: string
+  productName?: string | null
+  skinId: string
+  zohoItemId?: string | null
+  zohoRecurringItemId?: string | null
+  basePriceCents: number
+  recurringPriceCents?: number | null
+  billingInterval?: $Enums.BillingInterval
+  headline?: string | null
+  originalPriceCents?: number | null
+  mockupImageUrl?: string | null
+  heroHtml?: string | null
+  heroHtmlMobile?: string | null
+  upgradeTitle?: string | null
+  upgradeDescription?: string | null
+  upgradePriceCents?: number | null
+  upgradeRecurringPriceCents?: number | null
+  upgradeZohoItemId?: string | null
+  upgradeZohoRecurringItemId?: string | null
+  showPromoCode?: boolean
+  successRedirectUrl: string
+  failRedirectUrl: string
+  webhookUrl?: string | null
+  status?: $Enums.CheckoutPageStatus
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
+  priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
+  billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+}
+
+export type CheckoutPageCreateOrConnectWithoutPromotionLinksInput = {
+  where: Prisma.CheckoutPageWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPromotionLinksInput, Prisma.CheckoutPageUncheckedCreateWithoutPromotionLinksInput>
+}
+
+export type CheckoutPageUpsertWithoutPromotionLinksInput = {
+  update: Prisma.XOR<Prisma.CheckoutPageUpdateWithoutPromotionLinksInput, Prisma.CheckoutPageUncheckedUpdateWithoutPromotionLinksInput>
+  create: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPromotionLinksInput, Prisma.CheckoutPageUncheckedCreateWithoutPromotionLinksInput>
+  where?: Prisma.CheckoutPageWhereInput
+}
+
+export type CheckoutPageUpdateToOneWithWhereWithoutPromotionLinksInput = {
+  where?: Prisma.CheckoutPageWhereInput
+  data: Prisma.XOR<Prisma.CheckoutPageUpdateWithoutPromotionLinksInput, Prisma.CheckoutPageUncheckedUpdateWithoutPromotionLinksInput>
+}
+
+export type CheckoutPageUpdateWithoutPromotionLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumCheckoutPageTypeFieldUpdateOperationsInput | $Enums.CheckoutPageType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  recurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  billingInterval?: Prisma.EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mockupImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtmlMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradePriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeRecurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeZohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeZohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showPromoCode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  successRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  failRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
+  createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
+  addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
+  promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
+  priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
+  billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+}
+
+export type CheckoutPageUncheckedUpdateWithoutPromotionLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumCheckoutPageTypeFieldUpdateOperationsInput | $Enums.CheckoutPageType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skinId?: Prisma.StringFieldUpdateOperationsInput | string
+  zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  recurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  billingInterval?: Prisma.EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mockupImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtmlMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradePriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeRecurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeZohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeZohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showPromoCode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  successRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  failRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -2511,6 +2732,7 @@ export type CheckoutPageUpdateWithoutCreatedByInput = {
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutCreatedByInput = {
@@ -2549,6 +2771,7 @@ export type CheckoutPageUncheckedUpdateWithoutCreatedByInput = {
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateManyWithoutCreatedByInput = {
@@ -2651,6 +2874,7 @@ export type CheckoutPageUpdateWithoutSkinInput = {
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateWithoutSkinInput = {
@@ -2689,6 +2913,7 @@ export type CheckoutPageUncheckedUpdateWithoutSkinInput = {
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
 export type CheckoutPageUncheckedUpdateManyWithoutSkinInput = {
@@ -2735,6 +2960,7 @@ export type CheckoutPageCountOutputType = {
   priceTiers: number
   billingPlans: number
   logs: number
+  promotionLinks: number
 }
 
 export type CheckoutPageCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2744,6 +2970,7 @@ export type CheckoutPageCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   priceTiers?: boolean | CheckoutPageCountOutputTypeCountPriceTiersArgs
   billingPlans?: boolean | CheckoutPageCountOutputTypeCountBillingPlansArgs
   logs?: boolean | CheckoutPageCountOutputTypeCountLogsArgs
+  promotionLinks?: boolean | CheckoutPageCountOutputTypeCountPromotionLinksArgs
 }
 
 /**
@@ -2798,6 +3025,13 @@ export type CheckoutPageCountOutputTypeCountLogsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.CheckoutPageLogWhereInput
 }
 
+/**
+ * CheckoutPageCountOutputType without action
+ */
+export type CheckoutPageCountOutputTypeCountPromotionLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PromotionCheckoutPageWhereInput
+}
+
 
 export type CheckoutPageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2838,6 +3072,7 @@ export type CheckoutPageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   priceTiers?: boolean | Prisma.CheckoutPage$priceTiersArgs<ExtArgs>
   billingPlans?: boolean | Prisma.CheckoutPage$billingPlansArgs<ExtArgs>
   logs?: boolean | Prisma.CheckoutPage$logsArgs<ExtArgs>
+  promotionLinks?: boolean | Prisma.CheckoutPage$promotionLinksArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutPageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutPage"]>
 
@@ -2954,6 +3189,7 @@ export type CheckoutPageInclude<ExtArgs extends runtime.Types.Extensions.Interna
   priceTiers?: boolean | Prisma.CheckoutPage$priceTiersArgs<ExtArgs>
   billingPlans?: boolean | Prisma.CheckoutPage$billingPlansArgs<ExtArgs>
   logs?: boolean | Prisma.CheckoutPage$logsArgs<ExtArgs>
+  promotionLinks?: boolean | Prisma.CheckoutPage$promotionLinksArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutPageCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CheckoutPageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2976,6 +3212,7 @@ export type $CheckoutPagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     priceTiers: Prisma.$PriceTierPayload<ExtArgs>[]
     billingPlans: Prisma.$BillingPlanPayload<ExtArgs>[]
     logs: Prisma.$CheckoutPageLogPayload<ExtArgs>[]
+    promotionLinks: Prisma.$PromotionCheckoutPagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3410,6 +3647,7 @@ export interface Prisma__CheckoutPageClient<T, Null = never, ExtArgs extends run
   priceTiers<T extends Prisma.CheckoutPage$priceTiersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$priceTiersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PriceTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   billingPlans<T extends Prisma.CheckoutPage$billingPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$billingPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logs<T extends Prisma.CheckoutPage$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutPageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  promotionLinks<T extends Prisma.CheckoutPage$promotionLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$promotionLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PromotionCheckoutPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4030,6 +4268,30 @@ export type CheckoutPage$logsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.CheckoutPageLogScalarFieldEnum | Prisma.CheckoutPageLogScalarFieldEnum[]
+}
+
+/**
+ * CheckoutPage.promotionLinks
+ */
+export type CheckoutPage$promotionLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PromotionCheckoutPage
+   */
+  select?: Prisma.PromotionCheckoutPageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PromotionCheckoutPage
+   */
+  omit?: Prisma.PromotionCheckoutPageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PromotionCheckoutPageInclude<ExtArgs> | null
+  where?: Prisma.PromotionCheckoutPageWhereInput
+  orderBy?: Prisma.PromotionCheckoutPageOrderByWithRelationInput | Prisma.PromotionCheckoutPageOrderByWithRelationInput[]
+  cursor?: Prisma.PromotionCheckoutPageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PromotionCheckoutPageScalarFieldEnum | Prisma.PromotionCheckoutPageScalarFieldEnum[]
 }
 
 /**

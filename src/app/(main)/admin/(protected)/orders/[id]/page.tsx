@@ -35,9 +35,30 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     ? await prisma.billingPlan.findUnique({ where: { id: order.selectedBillingPlanId }, select: { label: true, interval: true, priceCents: true } })
     : null;
 
-  // Resolve per-unit device price from tiers
+  // Check if this order was placed during an active promotion
+  const activePromo = await prisma.promotion.findFirst({
+    where: {
+      checkoutPages: { some: { checkoutPageId: order.checkoutPageId } },
+      promoCodeId: order.promoCodeId ?? undefined,
+    },
+    include: {
+      priceTier: { select: { priceCents: true } },
+      promoCode: { select: { discountType: true, discountValue: true } },
+    },
+  });
+
+  // Resolve per-unit device price — use promo price when a promotion was applied
   let unitPriceCents = order.checkoutPage.basePriceCents;
-  if (order.checkoutPage.priceTiers.length > 0) {
+  let promoOriginalPriceCents: number | null = null;
+  if (activePromo && order.promoCodeId === activePromo.promoCodeId) {
+    // This order used the promotion — show promo price as the unit price
+    const origPrice = activePromo.priceTier.priceCents;
+    const disc = activePromo.promoCode.discountType === "percent"
+      ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
+      : activePromo.promoCode.discountValue;
+    unitPriceCents = Math.max(0, origPrice - disc);
+    promoOriginalPriceCents = origPrice;
+  } else if (order.checkoutPage.priceTiers.length > 0) {
     const matchedTier = order.checkoutPage.priceTiers.find(
       (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
     );
@@ -48,9 +69,9 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     ? order.checkoutPage.upgradeTitle
     : order.checkoutPage.title;
 
-  // Compute promo discount for display
+  // Compute promo discount for display — skip when promotion handled it
   let promoDiscountLabel: string | null = null;
-  if (order.promoCode) {
+  if (order.promoCode && !promoOriginalPriceCents) {
     const p = order.promoCode;
     const addonsCents = order.orderAddons.reduce((sum, a) => sum + a.priceCents, 0);
     const subtotal = unitPriceCents * order.quantity + addonsCents;
@@ -141,7 +162,14 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <Row label="Product" value={productName} />
             <Row label="Status" value={order.status} />
             <Row label="Quantity" value={String(order.quantity)} />
-            <Row label="Unit price" value={`${formatCents(unitPriceCents)} × ${order.quantity} = ${formatCents(unitPriceCents * order.quantity)}`} />
+            <Row
+              label="Unit price"
+              value={
+                promoOriginalPriceCents
+                  ? `${formatCents(unitPriceCents)} × ${order.quantity} = ${formatCents(unitPriceCents * order.quantity)} (was ${formatCents(promoOriginalPriceCents)}/ea — promo)`
+                  : `${formatCents(unitPriceCents)} × ${order.quantity} = ${formatCents(unitPriceCents * order.quantity)}`
+              }
+            />
             <Row label="Billing type" value={billingPlan ? `${billingPlan.label} (${billingPlan.interval})` : "—"} />
             {billingPlan && (
               <Row label="Plan price" value={`${formatCents(billingPlan.priceCents)}/${billingPlan.interval === "annually" ? "year" : "month"} × ${order.quantity}`} />
@@ -154,9 +182,11 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               />
             )}
             <Row label="Promo code" value={order.promoCode?.code ?? "—"} />
-            {promoDiscountLabel && (
+            {promoOriginalPriceCents ? (
+              <Row label="Discount" value={`Promotion: −${formatCents((promoOriginalPriceCents - unitPriceCents) * order.quantity)} (${formatCents(promoOriginalPriceCents - unitPriceCents)}/ea × ${order.quantity})`} />
+            ) : promoDiscountLabel ? (
               <Row label="Discount" value={promoDiscountLabel} />
-            )}
+            ) : null}
           </dl>
           <div className="mt-3 border-t border-zinc-200 pt-3 dark:border-zinc-700">
             <div className="flex justify-between text-sm font-semibold text-zinc-900 dark:text-zinc-100">
