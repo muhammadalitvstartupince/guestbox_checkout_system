@@ -491,7 +491,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         <p className="-mt-4 text-center text-sm text-zinc-500">
           {formatWholeDollars(promoUnitPrice)} per device
           {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
-          {selectedPlan ? ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per device` : ""}
+          {selectedPlan ? ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing` : ""}
         </p>
         <div className="-mt-1 flex items-center justify-evenly rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 px-2 py-2 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
           <span className="flex flex-col items-center gap-0.5">
@@ -1109,7 +1109,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 <div key={a.id}>+ {a.name}</div>
               ))}
               {selectedPlan?.chargeAtCheckout && (
-                <div>+ {selectedPlan.label} ({formatWholeDollars(selectedPlan.priceCents)}/{recurringLabel} per device)</div>
+                <div>+ {selectedPlan.label} ({formatWholeDollars(selectedPlan.priceCents)}/{recurringLabel} per listing)</div>
               )}
             </div>
             {/* During promo: show savings instead of subtotal/discount breakdown */}

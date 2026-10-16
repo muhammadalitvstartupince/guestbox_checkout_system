@@ -210,7 +210,7 @@ export async function saveBillingPlan(
   let recurringCents: number | null = null;
   if (billingPlanId && checkoutPage.billingPlans.length > 0) {
     const plan = checkoutPage.billingPlans.find((p) => p.id === billingPlanId);
-    if (plan) recurringCents = plan.priceCents * order.quantity;
+    if (plan) recurringCents = plan.priceCents;
   }
 
   await prisma.order.update({
@@ -531,7 +531,7 @@ export async function completeCheckout(
       ? `${selectedBillingPlan.label} (${selectedBillingPlan.interval})`
       : "—";
     const planPrice = selectedBillingPlan
-      ? `${fmtDollars(selectedBillingPlan.priceCents)}/${selectedBillingPlan.interval === "annually" ? "year" : "month"} × ${data.quantity}`
+      ? `${fmtDollars(selectedBillingPlan.priceCents)}/${selectedBillingPlan.interval === "annually" ? "year" : "month"}`
       : "—";
     const addonsText = selectedAddons.length
       ? selectedAddons.map((a) => `${a.name} (${fmtDollars(a.priceCents)})`).join(", ")

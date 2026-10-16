@@ -26,7 +26,7 @@ export function buildZohoLineItems(
   }
 
   if (billingPlanZohoItemId) {
-    lineItems.push({ item_id: billingPlanZohoItemId, quantity: String(quantity), discount: "0.00", tax_id: "" });
+    lineItems.push({ item_id: billingPlanZohoItemId, quantity: "1", discount: "0.00", tax_id: "" });
   }
 
   for (const addon of addons) {
@@ -49,7 +49,7 @@ export function buildZohoRecurringLineItems(
     {
       item_id: checkoutPage.zohoRecurringItemId,
       rate: (recurringTotalCents / 100).toFixed(2),
-      quantity: String(quantity),
+      quantity: "1",
       discount: "0.00",
       tax_id: "",
     },

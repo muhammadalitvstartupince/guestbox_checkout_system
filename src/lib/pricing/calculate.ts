@@ -37,9 +37,8 @@ export interface PriceCalculationResult {
   discountCents: number;
   /** subtotal - discount, floored at 0 */
   totalCents: number;
-  /** recurringPriceCents * quantity. Promo discounts are never applied to
-   *  the recurring amount, matching legacy behavior. 0 when there is no
-   *  recurring component. */
+  /** Recurring amount (not multiplied by quantity — annual/monthly plans are
+   *  per-account, not per-device). 0 when there is no recurring component. */
   recurringTotalCents: number;
 }
 
@@ -72,7 +71,7 @@ export function calculateOrderPrice(
   const discountCents = clampDiscount(subtotalCents, computeDiscount(subtotalCents, promo));
   const totalCents = subtotalCents - discountCents;
 
-  const recurringTotalCents = recurringPriceCents != null ? recurringPriceCents * quantity : 0;
+  const recurringTotalCents = recurringPriceCents != null ? recurringPriceCents : 0;
 
   return { subtotalCents, discountCents, totalCents, recurringTotalCents };
 }
