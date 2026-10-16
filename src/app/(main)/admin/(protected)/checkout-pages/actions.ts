@@ -252,6 +252,29 @@ export async function updateCheckoutPage(
 
   const { priceTiers, billingPlans } = parseTiersAndPlans(formData);
 
+  // Find tiers that have promotions linked — these can't be deleted (FK constraint).
+  // Match them to incoming tiers by sortOrder position and update in place.
+  const tiersWithPromotions = await prisma.priceTier.findMany({
+    where: { checkoutPageId, promotions: { some: {} } },
+    select: { id: true, sortOrder: true },
+  });
+  const protectedTierIds = new Set(tiersWithPromotions.map((t) => t.id));
+
+  // Build tier operations: update protected tiers in place, delete the rest, create new ones
+  const tierUpdateOps = tiersWithPromotions
+    .filter((existing) => existing.sortOrder < priceTiers.length)
+    .map((existing) => {
+      const incoming = priceTiers[existing.sortOrder]!;
+      return prisma.priceTier.update({
+        where: { id: existing.id },
+        data: { ...incoming, sortOrder: existing.sortOrder },
+      });
+    });
+  const tierCreateStartIndex = tiersWithPromotions.length;
+  const tierCreateOps = priceTiers.slice(tierCreateStartIndex).map((t, i) =>
+    prisma.priceTier.create({ data: { checkoutPageId, ...t, sortOrder: tierCreateStartIndex + i } }),
+  );
+
   await prisma.$transaction([
     prisma.checkoutPage.update({
       where: { id: checkoutPageId },
@@ -282,12 +305,11 @@ export async function updateCheckoutPage(
         upgradeZohoRecurringItemId: data.upgradeZohoRecurringItemId || null,
       },
     }),
-    // Replace all tiers and plans with the new set
-    prisma.priceTier.deleteMany({ where: { checkoutPageId } }),
+    // Delete only tiers that have no promotions; update protected ones in place
+    prisma.priceTier.deleteMany({ where: { checkoutPageId, id: { notIn: [...protectedTierIds] } } }),
+    ...tierUpdateOps,
+    ...tierCreateOps,
     prisma.billingPlan.deleteMany({ where: { checkoutPageId } }),
-    ...priceTiers.map((t, i) =>
-      prisma.priceTier.create({ data: { checkoutPageId, ...t, sortOrder: i } }),
-    ),
     ...billingPlans.map((p, i) =>
       prisma.billingPlan.create({ data: { checkoutPageId, ...p, sortOrder: i } }),
     ),
