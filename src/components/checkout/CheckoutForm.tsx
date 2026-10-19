@@ -875,7 +875,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           const listingTotal = selectedPlan.priceCents * listingQty;
           return (
             <div className="rounded-2xl border-2 border-zinc-200 bg-gradient-to-b from-white to-zinc-50/80 p-5">
-              <p className="text-center text-base font-bold text-zinc-900">How many listings do you want to manage?</p>
+              <p className="text-center text-base font-bold text-zinc-900">How many listings do you to manage?</p>
               <p className="mt-1 text-center text-xs text-zinc-500">Each listing is billed at {formatWholeDollars(selectedPlan.priceCents)}/year</p>
 
               <div className="mt-4 flex items-center justify-center gap-0">
