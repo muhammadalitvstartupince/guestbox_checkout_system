@@ -47,6 +47,7 @@ export type PriceTierMinAggregateOutputType = {
   maxQty: number | null
   priceCents: number | null
   zohoItemId: string | null
+  isBase: boolean | null
   sortOrder: number | null
 }
 
@@ -57,6 +58,7 @@ export type PriceTierMaxAggregateOutputType = {
   maxQty: number | null
   priceCents: number | null
   zohoItemId: string | null
+  isBase: boolean | null
   sortOrder: number | null
 }
 
@@ -67,6 +69,7 @@ export type PriceTierCountAggregateOutputType = {
   maxQty: number
   priceCents: number
   zohoItemId: number
+  isBase: number
   sortOrder: number
   _all: number
 }
@@ -93,6 +96,7 @@ export type PriceTierMinAggregateInputType = {
   maxQty?: true
   priceCents?: true
   zohoItemId?: true
+  isBase?: true
   sortOrder?: true
 }
 
@@ -103,6 +107,7 @@ export type PriceTierMaxAggregateInputType = {
   maxQty?: true
   priceCents?: true
   zohoItemId?: true
+  isBase?: true
   sortOrder?: true
 }
 
@@ -113,6 +118,7 @@ export type PriceTierCountAggregateInputType = {
   maxQty?: true
   priceCents?: true
   zohoItemId?: true
+  isBase?: true
   sortOrder?: true
   _all?: true
 }
@@ -210,6 +216,7 @@ export type PriceTierGroupByOutputType = {
   maxQty: number | null
   priceCents: number
   zohoItemId: string | null
+  isBase: boolean
   sortOrder: number
   _count: PriceTierCountAggregateOutputType | null
   _avg: PriceTierAvgAggregateOutputType | null
@@ -243,6 +250,7 @@ export type PriceTierWhereInput = {
   maxQty?: Prisma.IntNullableFilter<"PriceTier"> | number | null
   priceCents?: Prisma.IntFilter<"PriceTier"> | number
   zohoItemId?: Prisma.StringNullableFilter<"PriceTier"> | string | null
+  isBase?: Prisma.BoolFilter<"PriceTier"> | boolean
   sortOrder?: Prisma.IntFilter<"PriceTier"> | number
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   promotions?: Prisma.PromotionListRelationFilter
@@ -255,6 +263,7 @@ export type PriceTierOrderByWithRelationInput = {
   maxQty?: Prisma.SortOrderInput | Prisma.SortOrder
   priceCents?: Prisma.SortOrder
   zohoItemId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBase?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   checkoutPage?: Prisma.CheckoutPageOrderByWithRelationInput
   promotions?: Prisma.PromotionOrderByRelationAggregateInput
@@ -270,6 +279,7 @@ export type PriceTierWhereUniqueInput = Prisma.AtLeast<{
   maxQty?: Prisma.IntNullableFilter<"PriceTier"> | number | null
   priceCents?: Prisma.IntFilter<"PriceTier"> | number
   zohoItemId?: Prisma.StringNullableFilter<"PriceTier"> | string | null
+  isBase?: Prisma.BoolFilter<"PriceTier"> | boolean
   sortOrder?: Prisma.IntFilter<"PriceTier"> | number
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   promotions?: Prisma.PromotionListRelationFilter
@@ -282,6 +292,7 @@ export type PriceTierOrderByWithAggregationInput = {
   maxQty?: Prisma.SortOrderInput | Prisma.SortOrder
   priceCents?: Prisma.SortOrder
   zohoItemId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBase?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   _count?: Prisma.PriceTierCountOrderByAggregateInput
   _avg?: Prisma.PriceTierAvgOrderByAggregateInput
@@ -300,6 +311,7 @@ export type PriceTierScalarWhereWithAggregatesInput = {
   maxQty?: Prisma.IntNullableWithAggregatesFilter<"PriceTier"> | number | null
   priceCents?: Prisma.IntWithAggregatesFilter<"PriceTier"> | number
   zohoItemId?: Prisma.StringNullableWithAggregatesFilter<"PriceTier"> | string | null
+  isBase?: Prisma.BoolWithAggregatesFilter<"PriceTier"> | boolean
   sortOrder?: Prisma.IntWithAggregatesFilter<"PriceTier"> | number
 }
 
@@ -309,6 +321,7 @@ export type PriceTierCreateInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutPriceTiersInput
   promotions?: Prisma.PromotionCreateNestedManyWithoutPriceTierInput
@@ -321,6 +334,7 @@ export type PriceTierUncheckedCreateInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
   promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutPriceTierInput
 }
@@ -331,6 +345,7 @@ export type PriceTierUpdateInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutPriceTiersNestedInput
   promotions?: Prisma.PromotionUpdateManyWithoutPriceTierNestedInput
@@ -343,6 +358,7 @@ export type PriceTierUncheckedUpdateInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   promotions?: Prisma.PromotionUncheckedUpdateManyWithoutPriceTierNestedInput
 }
@@ -354,6 +370,7 @@ export type PriceTierCreateManyInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
 }
 
@@ -363,6 +380,7 @@ export type PriceTierUpdateManyMutationInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -373,6 +391,7 @@ export type PriceTierUncheckedUpdateManyInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -393,6 +412,7 @@ export type PriceTierCountOrderByAggregateInput = {
   maxQty?: Prisma.SortOrder
   priceCents?: Prisma.SortOrder
   zohoItemId?: Prisma.SortOrder
+  isBase?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
 }
 
@@ -410,6 +430,7 @@ export type PriceTierMaxOrderByAggregateInput = {
   maxQty?: Prisma.SortOrder
   priceCents?: Prisma.SortOrder
   zohoItemId?: Prisma.SortOrder
+  isBase?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
 }
 
@@ -420,6 +441,7 @@ export type PriceTierMinOrderByAggregateInput = {
   maxQty?: Prisma.SortOrder
   priceCents?: Prisma.SortOrder
   zohoItemId?: Prisma.SortOrder
+  isBase?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
 }
 
@@ -497,6 +519,7 @@ export type PriceTierCreateWithoutCheckoutPageInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
   promotions?: Prisma.PromotionCreateNestedManyWithoutPriceTierInput
 }
@@ -507,6 +530,7 @@ export type PriceTierUncheckedCreateWithoutCheckoutPageInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
   promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutPriceTierInput
 }
@@ -547,6 +571,7 @@ export type PriceTierScalarWhereInput = {
   maxQty?: Prisma.IntNullableFilter<"PriceTier"> | number | null
   priceCents?: Prisma.IntFilter<"PriceTier"> | number
   zohoItemId?: Prisma.StringNullableFilter<"PriceTier"> | string | null
+  isBase?: Prisma.BoolFilter<"PriceTier"> | boolean
   sortOrder?: Prisma.IntFilter<"PriceTier"> | number
 }
 
@@ -556,6 +581,7 @@ export type PriceTierCreateWithoutPromotionsInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutPriceTiersInput
 }
@@ -567,6 +593,7 @@ export type PriceTierUncheckedCreateWithoutPromotionsInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
 }
 
@@ -592,6 +619,7 @@ export type PriceTierUpdateWithoutPromotionsInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutPriceTiersNestedInput
 }
@@ -603,6 +631,7 @@ export type PriceTierUncheckedUpdateWithoutPromotionsInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -612,6 +641,7 @@ export type PriceTierCreateManyCheckoutPageInput = {
   maxQty?: number | null
   priceCents: number
   zohoItemId?: string | null
+  isBase?: boolean
   sortOrder?: number
 }
 
@@ -621,6 +651,7 @@ export type PriceTierUpdateWithoutCheckoutPageInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   promotions?: Prisma.PromotionUpdateManyWithoutPriceTierNestedInput
 }
@@ -631,6 +662,7 @@ export type PriceTierUncheckedUpdateWithoutCheckoutPageInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   promotions?: Prisma.PromotionUncheckedUpdateManyWithoutPriceTierNestedInput
 }
@@ -641,6 +673,7 @@ export type PriceTierUncheckedUpdateManyWithoutCheckoutPageInput = {
   maxQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
   zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -682,6 +715,7 @@ export type PriceTierSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   maxQty?: boolean
   priceCents?: boolean
   zohoItemId?: boolean
+  isBase?: boolean
   sortOrder?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promotions?: boolean | Prisma.PriceTier$promotionsArgs<ExtArgs>
@@ -695,6 +729,7 @@ export type PriceTierSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   maxQty?: boolean
   priceCents?: boolean
   zohoItemId?: boolean
+  isBase?: boolean
   sortOrder?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["priceTier"]>
@@ -706,6 +741,7 @@ export type PriceTierSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   maxQty?: boolean
   priceCents?: boolean
   zohoItemId?: boolean
+  isBase?: boolean
   sortOrder?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["priceTier"]>
@@ -717,10 +753,11 @@ export type PriceTierSelectScalar = {
   maxQty?: boolean
   priceCents?: boolean
   zohoItemId?: boolean
+  isBase?: boolean
   sortOrder?: boolean
 }
 
-export type PriceTierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "minQty" | "maxQty" | "priceCents" | "zohoItemId" | "sortOrder", ExtArgs["result"]["priceTier"]>
+export type PriceTierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "minQty" | "maxQty" | "priceCents" | "zohoItemId" | "isBase" | "sortOrder", ExtArgs["result"]["priceTier"]>
 export type PriceTierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promotions?: boolean | Prisma.PriceTier$promotionsArgs<ExtArgs>
@@ -746,6 +783,7 @@ export type $PriceTierPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     maxQty: number | null
     priceCents: number
     zohoItemId: string | null
+    isBase: boolean
     sortOrder: number
   }, ExtArgs["result"]["priceTier"]>
   composites: {}
@@ -1178,6 +1216,7 @@ export interface PriceTierFieldRefs {
   readonly maxQty: Prisma.FieldRef<"PriceTier", 'Int'>
   readonly priceCents: Prisma.FieldRef<"PriceTier", 'Int'>
   readonly zohoItemId: Prisma.FieldRef<"PriceTier", 'String'>
+  readonly isBase: Prisma.FieldRef<"PriceTier", 'Boolean'>
   readonly sortOrder: Prisma.FieldRef<"PriceTier", 'Int'>
 }
     

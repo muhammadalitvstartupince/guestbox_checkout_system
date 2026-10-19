@@ -69,6 +69,12 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     ? order.checkoutPage.upgradeTitle
     : order.checkoutPage.title;
 
+  // Compute tier (bulk) discount for display
+  const baseTier = order.checkoutPage.priceTiers.find((t) => t.isBase);
+  const tierDiscountPerUnit = baseTier && !promoOriginalPriceCents
+    ? Math.max(0, baseTier.priceCents - unitPriceCents)
+    : 0;
+
   // Compute promo discount for display — skip when promotion handled it
   let promoDiscountLabel: string | null = null;
   if (order.promoCode && !promoOriginalPriceCents) {
@@ -171,15 +177,27 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               }
             />
             <Row label="Billing type" value={billingPlan ? `${billingPlan.label} (${billingPlan.interval})` : "—"} />
-            {billingPlan && (
-              <Row label="Plan price" value={`${formatCents(billingPlan.priceCents)}/${billingPlan.interval === "annually" ? "year" : "month"} × ${order.quantity}`} />
-            )}
+            {billingPlan && (() => {
+              const isAnnual = billingPlan.interval === "annually";
+              const listingCount = isAnnual
+                ? (order.recurringAmountCents && billingPlan.priceCents > 0
+                    ? Math.round(order.recurringAmountCents / billingPlan.priceCents)
+                    : 1)
+                : order.quantity;
+              const intervalLabel = isAnnual ? "year" : "month";
+              return (
+                <Row label="Plan price" value={`${formatCents(billingPlan.priceCents)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"}`} />
+              );
+            })()}
             <Row label="Recurring total" value={formatCents(order.recurringAmountCents)} />
             {order.orderAddons.length > 0 && (
               <Row
                 label="Add-ons"
                 value={order.orderAddons.map((a) => `${a.addon.name} (${formatCents(a.priceCents)})`).join(", ")}
               />
+            )}
+            {tierDiscountPerUnit > 0 && (
+              <Row label="Bulk discount" value={`−${formatCents(tierDiscountPerUnit)}/ea × ${order.quantity} = −${formatCents(tierDiscountPerUnit * order.quantity)} (base ${formatCents(baseTier!.priceCents)}/ea)`} />
             )}
             <Row label="Promo code" value={order.promoCode?.code ?? "—"} />
             {promoOriginalPriceCents ? (

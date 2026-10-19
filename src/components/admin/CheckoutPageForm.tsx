@@ -9,6 +9,7 @@ export interface PriceTierDefault {
   maxQty: string;
   priceCents: string;
   zohoItemId: string;
+  isBase: boolean;
 }
 
 export interface BillingPlanDefault {
@@ -255,7 +256,7 @@ export function CheckoutPageForm({
           Quantity-based pricing — e.g. 1-4 = $149, 5-9 = $139, 10+ = $129. Leave empty to use the base price for all quantities.
         </p>
         {priceTiers.map((tier, i) => (
-          <div key={i} className="grid grid-cols-5 items-end gap-2">
+          <div key={i} className={`grid grid-cols-[1fr_1fr_1fr_1fr_auto_auto] items-end gap-2 rounded-lg p-2 ${tier.isBase ? "bg-indigo-50 ring-1 ring-indigo-200 dark:bg-indigo-500/10 dark:ring-indigo-500/30" : ""}`}>
             <div>
               <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Min Qty</label>
               <input
@@ -308,9 +309,30 @@ export function CheckoutPageForm({
                 className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
               />
             </div>
+            <div>
+              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Base</label>
+              <label className="flex items-center gap-1.5 py-2 text-sm text-zinc-700 dark:text-zinc-300">
+                <input
+                  type="radio"
+                  name="baseTierIndex"
+                  checked={tier.isBase}
+                  onChange={() => {
+                    setPriceTiers((prev) => prev.map((t, j) => ({ ...t, isBase: j === i })));
+                  }}
+                />
+                Base
+              </label>
+            </div>
             <button
               type="button"
-              onClick={() => setPriceTiers((t) => t.filter((_, j) => j !== i))}
+              onClick={() => setPriceTiers((t) => {
+                const next = t.filter((_, j) => j !== i);
+                // If we removed the base tier, auto-mark the first one
+                if (tier.isBase && next.length > 0 && !next.some((n) => n.isBase)) {
+                  next[0] = { ...next[0], isBase: true };
+                }
+                return next;
+              })}
               className="rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
             >
               Remove
@@ -320,7 +342,7 @@ export function CheckoutPageForm({
         <input type="hidden" name="priceTiersJson" value={JSON.stringify(priceTiers)} />
         <button
           type="button"
-          onClick={() => setPriceTiers((t) => [...t, { minQty: "", maxQty: "", priceCents: "", zohoItemId: "" }])}
+          onClick={() => setPriceTiers((t) => [...t, { minQty: "", maxQty: "", priceCents: "", zohoItemId: "", isBase: t.length === 0 }])}
           className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
         >
           + Add Tier

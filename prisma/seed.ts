@@ -67,7 +67,7 @@ async function main() {
   if (tierCount === 0) {
     await prisma.priceTier.createMany({
       data: [
-        { checkoutPageId: checkoutPage.id, minQty: 1, maxQty: 4, priceCents: 14900, zohoItemId: "1298609000079595342", sortOrder: 0 },
+        { checkoutPageId: checkoutPage.id, minQty: 1, maxQty: 4, priceCents: 14900, zohoItemId: "1298609000079595342", isBase: true, sortOrder: 0 },
         { checkoutPageId: checkoutPage.id, minQty: 5, maxQty: 9, priceCents: 13900, zohoItemId: "1298609000079595342", sortOrder: 1 },
         { checkoutPageId: checkoutPage.id, minQty: 10, maxQty: null, priceCents: 12900, zohoItemId: "1298609000079595342", sortOrder: 2 },
       ],

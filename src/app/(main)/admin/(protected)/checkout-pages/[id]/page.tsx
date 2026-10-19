@@ -70,6 +70,7 @@ export default async function EditCheckoutPagePage({ params }: { params: Promise
       maxQty: t.maxQty != null ? String(t.maxQty) : "",
       priceCents: centsToDollarsStr(t.priceCents),
       zohoItemId: t.zohoItemId ?? "",
+      isBase: t.isBase,
     })),
     billingPlans: page.billingPlans.map((p) => ({
       interval: p.interval as "monthly" | "annually",

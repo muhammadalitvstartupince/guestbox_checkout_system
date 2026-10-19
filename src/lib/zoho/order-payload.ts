@@ -18,6 +18,7 @@ export function buildZohoLineItems(
   quantity: number,
   addons: AddonZohoFields[],
   billingPlanZohoItemId?: string | null,
+  billingPlanQty: number = 1,
 ): ZohoLineItem[] {
   const lineItems: ZohoLineItem[] = [];
 
@@ -26,7 +27,7 @@ export function buildZohoLineItems(
   }
 
   if (billingPlanZohoItemId) {
-    lineItems.push({ item_id: billingPlanZohoItemId, quantity: "1", discount: "0.00", tax_id: "" });
+    lineItems.push({ item_id: billingPlanZohoItemId, quantity: String(billingPlanQty), discount: "0.00", tax_id: "" });
   }
 
   for (const addon of addons) {
