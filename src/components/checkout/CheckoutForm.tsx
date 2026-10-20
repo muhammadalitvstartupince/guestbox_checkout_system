@@ -217,6 +217,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const [quantity, setQuantity] = useState(1);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [upgradeSelected, setUpgradeSelected] = useState(false);
+  const [listingQty, setListingQty] = useState(1);
+  // Clamp listing qty to never exceed device qty
+  useEffect(() => {
+    setListingQty((prev) => Math.min(prev, quantity));
+  }, [quantity]);
 
   const hasTiers = checkoutPage.priceTiers.length > 0;
   const baseTierPrice = hasTiers ? checkoutPage.priceTiers[0].priceCents : checkoutPage.basePriceCents;
@@ -306,14 +311,17 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     : upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
   // Only charge the plan price at checkout if chargeAtCheckout is true.
   // Otherwise it's recurring-only (starts at device activation).
+  const planListingMultiplier = hasPlans && selectedPlan
+    ? (selectedPlan.interval === "annually" ? listingQty : quantity)
+    : 1;
   const effectiveRecurringPriceCents = hasPlans && selectedPlan
-    ? (selectedPlan.chargeAtCheckout ? selectedPlan.priceCents : 0)
+    ? (selectedPlan.chargeAtCheckout ? selectedPlan.priceCents * planListingMultiplier : 0)
     : upgradeSelected && checkoutPage.upgrade
       ? checkoutPage.upgrade.recurringPriceCents
       : checkoutPage.recurringPriceCents;
   // The plan price for display (always shown, regardless of chargeAtCheckout)
   const displayRecurringPriceCents = hasPlans && selectedPlan
-    ? selectedPlan.priceCents
+    ? selectedPlan.priceCents * planListingMultiplier
     : effectiveRecurringPriceCents;
 
   const selectedAddons = useMemo(
@@ -332,7 +340,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         recurringPriceCents: effectiveRecurringPriceCents,
         promo: appliedPromo,
       }),
-    [quantity, selectedAddons, effectiveBasePriceCents, effectiveRecurringPriceCents, appliedPromo],
+    [quantity, listingQty, selectedAddons, effectiveBasePriceCents, effectiveRecurringPriceCents, appliedPromo],
   );
 
   const primaryColor = checkoutPage.skinConfig.colors?.primary ?? "#0d1b2a";
@@ -863,6 +871,51 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           })}
         </div>
 
+        {selectedPlan?.interval === "annually" && quantity > 1 && (() => {
+          const listingTotal = selectedPlan.priceCents * listingQty;
+          return (
+            <div className="rounded-2xl border-2 border-zinc-200 bg-gradient-to-b from-white to-zinc-50/80 p-5">
+              <p className="text-center text-base font-bold text-zinc-900">How many listings do you to manage?</p>
+              <p className="mt-1 text-center text-xs text-zinc-500">Each listing is billed at {formatWholeDollars(selectedPlan.priceCents)}/year</p>
+
+              <div className="mt-4 flex items-center justify-center gap-0">
+                <button
+                  type="button"
+                  disabled={listingQty <= 1}
+                  onClick={() => setListingQty((q) => Math.max(1, q - 1))}
+                  className="flex h-12 w-14 items-center justify-center rounded-l-full bg-red-200 text-red-700 transition-colors hover:bg-red-300 disabled:opacity-40"
+                >
+                  <Minus className="h-5 w-5" />
+                </button>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={listingQty}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    if (!isNaN(v) && v >= 1) setListingQty(Math.min(v, quantity));
+                  }}
+                  className="h-12 w-20 border-y border-zinc-300 bg-white text-center text-lg font-bold text-zinc-900 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  disabled={listingQty >= quantity}
+                  onClick={() => setListingQty((q) => Math.min(q + 1, quantity))}
+                  className="flex h-12 w-14 items-center justify-center rounded-r-full bg-emerald-400 text-white transition-colors hover:bg-emerald-500 disabled:opacity-40"
+                >
+                  <Plus className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between rounded-xl bg-zinc-100 px-4 py-2.5">
+                <span className="text-sm text-zinc-600">{listingQty} {listingQty === 1 ? "listing" : "listings"} × {formatWholeDollars(selectedPlan.priceCents)}/yr</span>
+                <span className="text-base font-bold text-zinc-900">{formatWholeDollars(listingTotal)}/yr</span>
+              </div>
+            </div>
+          );
+        })()}
+
         <p className="text-sm text-zinc-500">
           {selectedPlan?.interval === "annually"
             ? "✓ Annual plans are billed upfront to secure the discounted rates."
@@ -880,7 +933,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           <button
             type="button"
             onClick={async () => {
-              if (orderId) await saveBillingPlan(orderId, selectedPlanId);
+              if (orderId) await saveBillingPlan(orderId, selectedPlanId, selectedPlan?.interval === "annually" ? listingQty : quantity);
               setWizardStep(3);
             }}
             className="flex-1 rounded-full py-3 font-bold text-white transition hover:brightness-110"
@@ -905,6 +958,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           ))}
           {upgradeSelected && <input type="hidden" name="upgradeSelected" value="on" />}
           <input type="hidden" name="quantity" value={quantity} />
+          <input type="hidden" name="listingQty" value={selectedPlan?.interval === "annually" ? listingQty : quantity} />
           {selectedPlanId && <input type="hidden" name="billingPlanId" value={selectedPlanId} />}
 
           <section className="space-y-3">
@@ -1090,27 +1144,36 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
           <div className="rounded-lg p-4 text-white" style={{ backgroundColor: primaryColor }}>
             <div className="mb-2 text-sm font-semibold tracking-wide uppercase opacity-90">Order Summary</div>
-            <div className="space-y-0.5 text-sm opacity-90">
+            <div className="space-y-1 text-sm opacity-90">
+              {/* Device line */}
               {isPromoActive ? (
                 <div className="flex items-baseline justify-between">
-                  <span>
-                    {quantity}× {effectiveTitle} @ {formatWholeDollars(activePromotion.promoPriceCents)}/ea
-                  </span>
-                  <span className="ml-2 text-xs text-white/50 line-through">
-                    {formatWholeDollars(activePromotion.originalPriceCents)}/ea
-                  </span>
+                  <span>{quantity}× {effectiveTitle} @ {formatWholeDollars(activePromotion.promoPriceCents)}/ea</span>
+                  <div className="ml-2 flex items-baseline gap-2">
+                    <span className="text-xs text-white/50 line-through">{formatCents(activePromotion.originalPriceCents * quantity)}</span>
+                    <span className="font-medium">{formatCents(activePromotion.promoPriceCents * quantity)}</span>
+                  </div>
                 </div>
               ) : (
-                <div>
-                  {quantity}× {effectiveTitle} @ {formatWholeDollars(unitPrice)}/ea
+                <div className="flex justify-between">
+                  <span>{quantity}× {effectiveTitle} @ {formatWholeDollars(unitPrice)}/ea</span>
+                  <span className="font-medium">{formatCents(unitPrice * quantity)}</span>
                 </div>
               )}
-              {selectedAddons.map((a) => (
-                <div key={a.id}>+ {a.name}</div>
-              ))}
+              {/* Billing plan / listing line */}
               {selectedPlan?.chargeAtCheckout && (
-                <div>+ {selectedPlan.label} ({formatWholeDollars(selectedPlan.priceCents)}/{recurringLabel} per listing)</div>
+                <div className="flex justify-between">
+                  <span>+ {selectedPlan.label} ({planListingMultiplier} {planListingMultiplier === 1 ? "listing" : "listings"} × {formatWholeDollars(selectedPlan.priceCents)}/{recurringLabel})</span>
+                  <span className="font-medium">{formatCents(selectedPlan.priceCents * planListingMultiplier)}</span>
+                </div>
               )}
+              {/* Add-ons */}
+              {selectedAddons.map((a) => (
+                <div key={a.id} className="flex justify-between">
+                  <span>+ {a.name}</span>
+                  <span className="font-medium">{formatCents(a.priceCents)}</span>
+                </div>
+              ))}
             </div>
             {/* During promo: show savings instead of subtotal/discount breakdown */}
             {isPromoActive ? (
@@ -1124,21 +1187,26 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   </span>
                 </div>
               </div>
-            ) : estimate.discountCents > 0 ? (
-              <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                <div className="flex justify-between opacity-80">
-                  <span>Subtotal</span>
-                  <span>{formatCents(estimate.subtotalCents)}</span>
+            ) : estimate.discountCents > 0 ? (() => {
+              const displaySubtotal = selectedPlan?.chargeAtCheckout
+                ? estimate.subtotalCents + estimate.recurringTotalCents
+                : estimate.subtotalCents;
+              return (
+                <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
+                  <div className="flex justify-between opacity-80">
+                    <span>Subtotal</span>
+                    <span>{formatCents(displaySubtotal)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="flex items-center gap-1 opacity-90">
+                      <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
+                    </span>
+                    <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="flex items-center gap-1 opacity-90">
-                    <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
-                  </span>
-                  <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
-                </div>
-              </div>
-            ) : null}
-            <div className="mt-2 flex justify-between text-lg font-semibold">
+              );
+            })() : null}
+            <div className="mt-2 flex justify-between border-t border-white/15 pt-2 text-lg font-semibold">
               <span>Total</span>
               <span>{formatCents(
                 selectedPlan?.chargeAtCheckout

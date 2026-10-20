@@ -181,6 +181,7 @@ export async function saveBillingInfo(
 export async function saveBillingPlan(
   orderId: string,
   billingPlanId: string | null,
+  listingQty: number = 1,
 ): Promise<void> {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
@@ -210,7 +211,7 @@ export async function saveBillingPlan(
   let recurringCents: number | null = null;
   if (billingPlanId && checkoutPage.billingPlans.length > 0) {
     const plan = checkoutPage.billingPlans.find((p) => p.id === billingPlanId);
-    if (plan) recurringCents = plan.priceCents;
+    if (plan) recurringCents = plan.priceCents * Math.max(1, listingQty);
   }
 
   await prisma.order.update({
@@ -287,6 +288,8 @@ export async function completeCheckout(
   // Resolve tier-based pricing: promotion uses promo price as base (discount baked in)
   let resolvedBasePriceCents = checkoutPage.basePriceCents;
   let resolvedZohoItemId = checkoutPage.zohoItemId;
+  let tierDiscountPerUnitCents = 0;
+  const baseTier = checkoutPage.priceTiers.find((t) => t.isBase) ?? null;
   if (activePromo) {
     // Calculate the promo price (original tier price minus promo code discount)
     const origPrice = activePromo.priceTier.priceCents;
@@ -294,19 +297,31 @@ export async function completeCheckout(
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
     resolvedBasePriceCents = Math.max(0, origPrice - promoDiscount);
-    if (activePromo.priceTier.zohoItemId) resolvedZohoItemId = activePromo.priceTier.zohoItemId;
+    // Use base tier's Zoho item if available, otherwise fall back to promo tier's
+    if (baseTier?.zohoItemId) {
+      resolvedZohoItemId = baseTier.zohoItemId;
+    } else if (activePromo.priceTier.zohoItemId) {
+      resolvedZohoItemId = activePromo.priceTier.zohoItemId;
+    }
   } else if (checkoutPage.priceTiers.length > 0) {
     const matchedTier = checkoutPage.priceTiers.find(
       (t) => data.quantity >= t.minQty && (t.maxQty == null || data.quantity <= t.maxQty),
     );
     if (matchedTier) {
       resolvedBasePriceCents = matchedTier.priceCents;
-      if (matchedTier.zohoItemId) resolvedZohoItemId = matchedTier.zohoItemId;
+      if (baseTier) {
+        // Always send the base tier's Zoho item — tier discount handles the price difference
+        resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
+        tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - matchedTier.priceCents);
+      } else if (matchedTier.zohoItemId) {
+        resolvedZohoItemId = matchedTier.zohoItemId;
+      }
     }
   }
 
   // Resolve billing plan
   const billingPlanId = formData.get("billingPlanId")?.toString() ?? null;
+  const listingQty = Math.max(1, Number(formData.get("listingQty")) || 1);
   let resolvedRecurringPriceCents = checkoutPage.recurringPriceCents;
   let resolvedZohoRecurringItemId = checkoutPage.zohoRecurringItemId;
   let chargeRecurringAtCheckout = false;
@@ -316,7 +331,8 @@ export async function completeCheckout(
       chargeRecurringAtCheckout = selectedPlan.chargeAtCheckout;
       // Only include in checkout total if chargeAtCheckout is true.
       // Otherwise the recurring charge starts later (e.g. at device activation).
-      resolvedRecurringPriceCents = chargeRecurringAtCheckout ? selectedPlan.priceCents : 0;
+      // Multiply by listingQty — listings are separate from device quantity.
+      resolvedRecurringPriceCents = chargeRecurringAtCheckout ? selectedPlan.priceCents * listingQty : 0;
       if (selectedPlan.zohoItemId) resolvedZohoRecurringItemId = selectedPlan.zohoItemId;
     }
   }
@@ -447,7 +463,7 @@ export async function completeCheckout(
 
     // Include billing plan in line_item only when chargeAtCheckout is true
     const billingPlanZohoId = chargeRecurringAtCheckout ? resolvedZohoRecurringItemId : null;
-    const lineItems = buildZohoLineItems(product, data.quantity, selectedAddons, billingPlanZohoId);
+    const lineItems = buildZohoLineItems(product, data.quantity, selectedAddons, billingPlanZohoId, listingQty);
     const recurringInvoiceItems = buildZohoRecurringLineItems(product, price.recurringTotalCents, data.quantity);
 
     // Always send shipping address to Zoho — use separate shipping if provided, else billing
@@ -469,15 +485,19 @@ export async function completeCheckout(
 
     // Compute discount in dollars for Zoho (final total, not per-unit)
     let zohoDiscountDollars = 0;
+    // Tier discount: difference between base tier price and matched tier price
+    if (tierDiscountPerUnitCents > 0) {
+      zohoDiscountDollars += (tierDiscountPerUnitCents * data.quantity) / 100;
+    }
     if (activePromo) {
       // Promotion: per-unit savings × quantity
       const perUnitSavingsCents = activePromo.priceTier.priceCents - resolvedBasePriceCents;
-      zohoDiscountDollars = (perUnitSavingsCents * data.quantity) / 100;
+      zohoDiscountDollars += (perUnitSavingsCents * data.quantity) / 100;
     } else if (promo) {
       if (promo.type === "percent") {
-        zohoDiscountDollars = Math.round((price.subtotalCents * promo.value) / 100) / 100;
+        zohoDiscountDollars += Math.round((price.subtotalCents * promo.value) / 100) / 100;
       } else {
-        zohoDiscountDollars = promo.value / 100;
+        zohoDiscountDollars += promo.value / 100;
       }
     }
 
@@ -530,8 +550,9 @@ export async function completeCheckout(
     const planLabel = selectedBillingPlan
       ? `${selectedBillingPlan.label} (${selectedBillingPlan.interval})`
       : "—";
+    const planIntervalLabel = selectedBillingPlan?.interval === "annually" ? "year" : "month";
     const planPrice = selectedBillingPlan
-      ? `${fmtDollars(selectedBillingPlan.priceCents)}/${selectedBillingPlan.interval === "annually" ? "year" : "month"}`
+      ? `${fmtDollars(selectedBillingPlan.priceCents)}/${planIntervalLabel} × ${listingQty} ${listingQty === 1 ? "listing" : "listings"}`
       : "—";
     const addonsText = selectedAddons.length
       ? selectedAddons.map((a) => `${a.name} (${fmtDollars(a.priceCents)})`).join(", ")

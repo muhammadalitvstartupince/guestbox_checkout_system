@@ -1721,6 +1721,7 @@ export const PriceTierScalarFieldEnum = {
   maxQty: 'maxQty',
   priceCents: 'priceCents',
   zohoItemId: 'zohoItemId',
+  isBase: 'isBase',
   sortOrder: 'sortOrder'
 } as const
 

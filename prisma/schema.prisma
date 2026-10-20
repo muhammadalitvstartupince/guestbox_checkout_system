@@ -182,6 +182,7 @@ model PriceTier {
   maxQty         Int?         @map("max_qty")
   priceCents     Int          @map("price_cents")
   zohoItemId     String?      @map("zoho_item_id")
+  isBase         Boolean      @default(false) @map("is_base")
   sortOrder      Int          @default(0) @map("sort_order")
 
   promotions Promotion[]

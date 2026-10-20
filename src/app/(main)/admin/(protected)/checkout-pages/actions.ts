@@ -18,6 +18,7 @@ interface RawPriceTier {
   maxQty: string;
   priceCents: string;
   zohoItemId: string;
+  isBase: boolean;
 }
 
 interface RawBillingPlan {
@@ -30,7 +31,7 @@ interface RawBillingPlan {
 }
 
 function parseTiersAndPlans(formData: FormData) {
-  let priceTiers: { minQty: number; maxQty: number | null; priceCents: number; zohoItemId: string | null }[] = [];
+  let priceTiers: { minQty: number; maxQty: number | null; priceCents: number; zohoItemId: string | null; isBase: boolean }[] = [];
   let billingPlans: { interval: "monthly" | "annually"; label: string; priceCents: number; zohoItemId: string | null; chargeAtCheckout: boolean; isDefault: boolean }[] = [];
 
   try {
@@ -44,7 +45,12 @@ function parseTiersAndPlans(formData: FormData) {
           maxQty: t.maxQty ? parseInt(t.maxQty, 10) : null,
           priceCents: dollarsToCents(t.priceCents),
           zohoItemId: t.zohoItemId || null,
+          isBase: !!t.isBase,
         }));
+      // Enforce exactly one base tier
+      if (priceTiers.length > 0 && !priceTiers.some((t) => t.isBase)) {
+        priceTiers[0].isBase = true;
+      }
     }
   } catch { /* ignore malformed JSON */ }
 
@@ -377,7 +383,7 @@ export async function duplicateCheckoutPage(checkoutPageId: string): Promise<voi
         create: source.addonLinks.map((link) => ({ addonId: link.addonId, sortOrder: link.sortOrder })),
       },
       priceTiers: {
-        create: source.priceTiers.map((t) => ({ minQty: t.minQty, maxQty: t.maxQty, priceCents: t.priceCents, zohoItemId: t.zohoItemId, sortOrder: t.sortOrder })),
+        create: source.priceTiers.map((t) => ({ minQty: t.minQty, maxQty: t.maxQty, priceCents: t.priceCents, zohoItemId: t.zohoItemId, isBase: t.isBase, sortOrder: t.sortOrder })),
       },
       billingPlans: {
         create: source.billingPlans.map((p) => ({ interval: p.interval, label: p.label, priceCents: p.priceCents, zohoItemId: p.zohoItemId, chargeAtCheckout: p.chargeAtCheckout, isDefault: p.isDefault, sortOrder: p.sortOrder })),
