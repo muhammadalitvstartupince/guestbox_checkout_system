@@ -78,6 +78,7 @@ export type OrderMinAggregateOutputType = {
   status: $Enums.OrderStatus | null
   zohoSynced: boolean | null
   createdAt: Date | null
+  abandonedNotifiedAt: Date | null
 }
 
 export type OrderMaxAggregateOutputType = {
@@ -120,6 +121,7 @@ export type OrderMaxAggregateOutputType = {
   status: $Enums.OrderStatus | null
   zohoSynced: boolean | null
   createdAt: Date | null
+  abandonedNotifiedAt: Date | null
 }
 
 export type OrderCountAggregateOutputType = {
@@ -164,6 +166,7 @@ export type OrderCountAggregateOutputType = {
   zohoPayload: number
   zohoResponse: number
   createdAt: number
+  abandonedNotifiedAt: number
   _all: number
 }
 
@@ -220,6 +223,7 @@ export type OrderMinAggregateInputType = {
   status?: true
   zohoSynced?: true
   createdAt?: true
+  abandonedNotifiedAt?: true
 }
 
 export type OrderMaxAggregateInputType = {
@@ -262,6 +266,7 @@ export type OrderMaxAggregateInputType = {
   status?: true
   zohoSynced?: true
   createdAt?: true
+  abandonedNotifiedAt?: true
 }
 
 export type OrderCountAggregateInputType = {
@@ -306,6 +311,7 @@ export type OrderCountAggregateInputType = {
   zohoPayload?: true
   zohoResponse?: true
   createdAt?: true
+  abandonedNotifiedAt?: true
   _all?: true
 }
 
@@ -437,6 +443,7 @@ export type OrderGroupByOutputType = {
   zohoPayload: runtime.JsonValue | null
   zohoResponse: runtime.JsonValue | null
   createdAt: Date
+  abandonedNotifiedAt: Date | null
   _count: OrderCountAggregateOutputType | null
   _avg: OrderAvgAggregateOutputType | null
   _sum: OrderSumAggregateOutputType | null
@@ -504,6 +511,7 @@ export type OrderWhereInput = {
   zohoPayload?: Prisma.JsonNullableFilter<"Order">
   zohoResponse?: Prisma.JsonNullableFilter<"Order">
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+  abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   promoCode?: Prisma.XOR<Prisma.PromoCodeNullableScalarRelationFilter, Prisma.PromoCodeWhereInput> | null
   orderAddons?: Prisma.OrderAddonListRelationFilter
@@ -553,6 +561,7 @@ export type OrderOrderByWithRelationInput = {
   zohoPayload?: Prisma.SortOrderInput | Prisma.SortOrder
   zohoResponse?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkoutPage?: Prisma.CheckoutPageOrderByWithRelationInput
   promoCode?: Prisma.PromoCodeOrderByWithRelationInput
   orderAddons?: Prisma.OrderAddonOrderByRelationAggregateInput
@@ -605,6 +614,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   zohoPayload?: Prisma.JsonNullableFilter<"Order">
   zohoResponse?: Prisma.JsonNullableFilter<"Order">
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+  abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   promoCode?: Prisma.XOR<Prisma.PromoCodeNullableScalarRelationFilter, Prisma.PromoCodeWhereInput> | null
   orderAddons?: Prisma.OrderAddonListRelationFilter
@@ -654,6 +664,7 @@ export type OrderOrderByWithAggregationInput = {
   zohoPayload?: Prisma.SortOrderInput | Prisma.SortOrder
   zohoResponse?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
   _avg?: Prisma.OrderAvgOrderByAggregateInput
   _max?: Prisma.OrderMaxOrderByAggregateInput
@@ -706,6 +717,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   zohoPayload?: Prisma.JsonNullableWithAggregatesFilter<"Order">
   zohoResponse?: Prisma.JsonNullableWithAggregatesFilter<"Order">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
+  abandonedNotifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
 }
 
 export type OrderCreateInput = {
@@ -748,6 +760,7 @@ export type OrderCreateInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
@@ -797,6 +810,7 @@ export type OrderUncheckedCreateInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventUncheckedCreateNestedManyWithoutOrderInput
@@ -842,6 +856,7 @@ export type OrderUpdateInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
@@ -891,6 +906,7 @@ export type OrderUncheckedUpdateInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
@@ -938,6 +954,7 @@ export type OrderCreateManyInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
 }
 
 export type OrderUpdateManyMutationInput = {
@@ -980,6 +997,7 @@ export type OrderUpdateManyMutationInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type OrderUncheckedUpdateManyInput = {
@@ -1024,6 +1042,7 @@ export type OrderUncheckedUpdateManyInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type OrderListRelationFilter = {
@@ -1078,6 +1097,7 @@ export type OrderCountOrderByAggregateInput = {
   zohoPayload?: Prisma.SortOrder
   zohoResponse?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrder
 }
 
 export type OrderAvgOrderByAggregateInput = {
@@ -1126,6 +1146,7 @@ export type OrderMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrder
 }
 
 export type OrderMinOrderByAggregateInput = {
@@ -1168,6 +1189,7 @@ export type OrderMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrder
 }
 
 export type OrderSumOrderByAggregateInput = {
@@ -1351,6 +1373,7 @@ export type OrderCreateWithoutCheckoutPageInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
@@ -1398,6 +1421,7 @@ export type OrderUncheckedCreateWithoutCheckoutPageInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventUncheckedCreateNestedManyWithoutOrderInput
@@ -1474,6 +1498,7 @@ export type OrderScalarWhereInput = {
   zohoPayload?: Prisma.JsonNullableFilter<"Order">
   zohoResponse?: Prisma.JsonNullableFilter<"Order">
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+  abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
 }
 
 export type OrderCreateWithoutPromoCodeInput = {
@@ -1516,6 +1541,7 @@ export type OrderCreateWithoutPromoCodeInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
@@ -1563,6 +1589,7 @@ export type OrderUncheckedCreateWithoutPromoCodeInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventUncheckedCreateNestedManyWithoutOrderInput
@@ -1634,6 +1661,7 @@ export type OrderCreateWithoutEventsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
@@ -1682,6 +1710,7 @@ export type OrderUncheckedCreateWithoutEventsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutOrderInput
 }
@@ -1742,6 +1771,7 @@ export type OrderUpdateWithoutEventsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
@@ -1790,6 +1820,7 @@ export type OrderUncheckedUpdateWithoutEventsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput
 }
@@ -1834,6 +1865,7 @@ export type OrderCreateWithoutOrderAddonsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
@@ -1882,6 +1914,7 @@ export type OrderUncheckedCreateWithoutOrderAddonsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventUncheckedCreateNestedManyWithoutOrderInput
 }
@@ -1942,6 +1975,7 @@ export type OrderUpdateWithoutOrderAddonsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
@@ -1990,6 +2024,7 @@ export type OrderUncheckedUpdateWithoutOrderAddonsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
 }
@@ -2034,6 +2069,7 @@ export type OrderCreateWithoutCardAccessLogsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
@@ -2082,6 +2118,7 @@ export type OrderUncheckedCreateWithoutCardAccessLogsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventUncheckedCreateNestedManyWithoutOrderInput
 }
@@ -2142,6 +2179,7 @@ export type OrderUpdateWithoutCardAccessLogsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
@@ -2190,6 +2228,7 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
 }
@@ -2235,6 +2274,7 @@ export type OrderCreateManyCheckoutPageInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
 }
 
 export type OrderUpdateWithoutCheckoutPageInput = {
@@ -2277,6 +2317,7 @@ export type OrderUpdateWithoutCheckoutPageInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
@@ -2324,6 +2365,7 @@ export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
@@ -2370,6 +2412,7 @@ export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type OrderCreateManyPromoCodeInput = {
@@ -2413,6 +2456,7 @@ export type OrderCreateManyPromoCodeInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
 }
 
 export type OrderUpdateWithoutPromoCodeInput = {
@@ -2455,6 +2499,7 @@ export type OrderUpdateWithoutPromoCodeInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
@@ -2502,6 +2547,7 @@ export type OrderUncheckedUpdateWithoutPromoCodeInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   orderAddons?: Prisma.OrderAddonUncheckedUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
@@ -2548,6 +2594,7 @@ export type OrderUncheckedUpdateManyWithoutPromoCodeInput = {
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -2641,6 +2688,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   zohoPayload?: boolean
   zohoResponse?: boolean
   createdAt?: boolean
+  abandonedNotifiedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
   orderAddons?: boolean | Prisma.Order$orderAddonsArgs<ExtArgs>
@@ -2691,6 +2739,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   zohoPayload?: boolean
   zohoResponse?: boolean
   createdAt?: boolean
+  abandonedNotifiedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
@@ -2737,6 +2786,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   zohoPayload?: boolean
   zohoResponse?: boolean
   createdAt?: boolean
+  abandonedNotifiedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
@@ -2783,9 +2833,10 @@ export type OrderSelectScalar = {
   zohoPayload?: boolean
   zohoResponse?: boolean
   createdAt?: boolean
+  abandonedNotifiedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
@@ -2854,6 +2905,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     zohoPayload: runtime.JsonValue | null
     zohoResponse: runtime.JsonValue | null
     createdAt: Date
+    abandonedNotifiedAt: Date | null
   }, ExtArgs["result"]["order"]>
   composites: {}
 }
@@ -3323,6 +3375,7 @@ export interface OrderFieldRefs {
   readonly zohoPayload: Prisma.FieldRef<"Order", 'Json'>
   readonly zohoResponse: Prisma.FieldRef<"Order", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly abandonedNotifiedAt: Prisma.FieldRef<"Order", 'DateTime'>
 }
     
 
