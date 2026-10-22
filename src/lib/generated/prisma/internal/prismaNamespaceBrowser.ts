@@ -66,7 +66,8 @@ export const ModelName = {
   CardAccessAuditLog: 'CardAccessAuditLog',
   Promotion: 'Promotion',
   PromotionCheckoutPage: 'PromotionCheckoutPage',
-  EmailSettings: 'EmailSettings'
+  EmailSettings: 'EmailSettings',
+  AbandonedCheckoutSettings: 'AbandonedCheckoutSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -268,7 +269,8 @@ export const OrderScalarFieldEnum = {
   zohoSynced: 'zohoSynced',
   zohoPayload: 'zohoPayload',
   zohoResponse: 'zohoResponse',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  abandonedNotifiedAt: 'abandonedNotifiedAt'
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -345,6 +347,17 @@ export const EmailSettingsScalarFieldEnum = {
 } as const
 
 export type EmailSettingsScalarFieldEnum = (typeof EmailSettingsScalarFieldEnum)[keyof typeof EmailSettingsScalarFieldEnum]
+
+
+export const AbandonedCheckoutSettingsScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  slackWebhookUrl: 'slackWebhookUrl',
+  timeoutMinutes: 'timeoutMinutes',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AbandonedCheckoutSettingsScalarFieldEnum = (typeof AbandonedCheckoutSettingsScalarFieldEnum)[keyof typeof AbandonedCheckoutSettingsScalarFieldEnum]
 
 
 export const SortOrder = {

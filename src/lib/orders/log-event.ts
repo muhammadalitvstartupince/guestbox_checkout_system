@@ -20,7 +20,8 @@ export type OrderEventType =
   | "internal_email_sent"
   | "internal_email_failed"
   | "webhook_sent"
-  | "webhook_failed";
+  | "webhook_failed"
+  | "abandoned_notified";
 
 /**
  * Records a timeline entry. Never throws — a logging failure must not be

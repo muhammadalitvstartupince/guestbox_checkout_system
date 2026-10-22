@@ -365,6 +365,8 @@ model Order {
   cardAccessLogs CardAccessAuditLog[]
   events         OrderEvent[]
 
+  abandonedNotifiedAt DateTime? @map("abandoned_notified_at")
+
   @@map("orders")
 }
 
@@ -460,4 +462,14 @@ model EmailSettings {
   updatedAt                    DateTime @updatedAt @map("updated_at")
 
   @@map("email_settings")
+}
+
+model AbandonedCheckoutSettings {
+  id              String   @id @default(uuid()) @db.Uuid
+  enabled         Boolean  @default(false)
+  slackWebhookUrl String?  @map("slack_webhook_url")
+  timeoutMinutes  Int      @default(30) @map("timeout_minutes")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("abandoned_checkout_settings")
 }

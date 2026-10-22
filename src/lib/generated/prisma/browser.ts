@@ -97,3 +97,8 @@ export type PromotionCheckoutPage = Prisma.PromotionCheckoutPageModel
  * 
  */
 export type EmailSettings = Prisma.EmailSettingsModel
+/**
+ * Model AbandonedCheckoutSettings
+ * 
+ */
+export type AbandonedCheckoutSettings = Prisma.AbandonedCheckoutSettingsModel

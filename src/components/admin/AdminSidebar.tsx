@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, Mail, Users } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, Mail, Users, Bell } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -82,6 +82,14 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
         icon: Mail,
         iconBg: "bg-pink-50 dark:bg-pink-500/10",
         iconColor: "text-pink-600 dark:text-pink-400",
+        adminOnly: true,
+      },
+      {
+        href: "/admin/settings/abandoned-alerts",
+        label: "Abandoned Alerts",
+        icon: Bell,
+        iconBg: "bg-orange-50 dark:bg-orange-500/10",
+        iconColor: "text-orange-600 dark:text-orange-400",
         adminOnly: true,
       },
       {

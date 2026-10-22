@@ -412,7 +412,8 @@ export const ModelName = {
   CardAccessAuditLog: 'CardAccessAuditLog',
   Promotion: 'Promotion',
   PromotionCheckoutPage: 'PromotionCheckoutPage',
-  EmailSettings: 'EmailSettings'
+  EmailSettings: 'EmailSettings',
+  AbandonedCheckoutSettings: 'AbandonedCheckoutSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "abandonedCheckoutSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1616,6 +1617,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AbandonedCheckoutSettings: {
+      payload: Prisma.$AbandonedCheckoutSettingsPayload<ExtArgs>
+      fields: Prisma.AbandonedCheckoutSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AbandonedCheckoutSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AbandonedCheckoutSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.AbandonedCheckoutSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AbandonedCheckoutSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.AbandonedCheckoutSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.AbandonedCheckoutSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.AbandonedCheckoutSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AbandonedCheckoutSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.AbandonedCheckoutSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>
+        }
+        update: {
+          args: Prisma.AbandonedCheckoutSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.AbandonedCheckoutSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AbandonedCheckoutSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AbandonedCheckoutSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.AbandonedCheckoutSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbandonedCheckoutSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.AbandonedCheckoutSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAbandonedCheckoutSettings>
+        }
+        groupBy: {
+          args: Prisma.AbandonedCheckoutSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AbandonedCheckoutSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AbandonedCheckoutSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AbandonedCheckoutSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1838,7 +1913,8 @@ export const OrderScalarFieldEnum = {
   zohoSynced: 'zohoSynced',
   zohoPayload: 'zohoPayload',
   zohoResponse: 'zohoResponse',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  abandonedNotifiedAt: 'abandonedNotifiedAt'
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -1915,6 +1991,17 @@ export const EmailSettingsScalarFieldEnum = {
 } as const
 
 export type EmailSettingsScalarFieldEnum = (typeof EmailSettingsScalarFieldEnum)[keyof typeof EmailSettingsScalarFieldEnum]
+
+
+export const AbandonedCheckoutSettingsScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  slackWebhookUrl: 'slackWebhookUrl',
+  timeoutMinutes: 'timeoutMinutes',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AbandonedCheckoutSettingsScalarFieldEnum = (typeof AbandonedCheckoutSettingsScalarFieldEnum)[keyof typeof AbandonedCheckoutSettingsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2298,6 +2385,7 @@ export type GlobalOmitConfig = {
   promotion?: Prisma.PromotionOmit
   promotionCheckoutPage?: Prisma.PromotionCheckoutPageOmit
   emailSettings?: Prisma.EmailSettingsOmit
+  abandonedCheckoutSettings?: Prisma.AbandonedCheckoutSettingsOmit
 }
 
 /* Types for Logging */
