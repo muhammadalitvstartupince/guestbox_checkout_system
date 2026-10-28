@@ -822,11 +822,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         {/* Annual offer banner */}
         {annualPlan && annualSavings > 0 && (
           <div className="rounded-2xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 px-5 py-4">
-            <p className="flex items-center gap-2 text-base font-bold text-zinc-900">
+            <p className="flex items-center gap-2 text-sm font-bold text-zinc-900 sm:text-base">
               <Clock className="h-5 w-5 shrink-0 text-emerald-600" />
-              Limited Time Offer — Save {Math.round((annualSavings / monthlyAsAnnual) * 100)}% When You Pay Annually!
+              <span>Limited Time Offer — Save {Math.round((annualSavings / monthlyAsAnnual) * 100)}% When You Pay Annually!</span>
             </p>
-            <p className="mt-1 text-sm text-zinc-600">Monthly is the default. Annual billing is completely optional — select it below to save.</p>
           </div>
         )}
 
