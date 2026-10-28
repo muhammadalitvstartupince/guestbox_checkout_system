@@ -17,7 +17,7 @@ import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
-import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock } from "lucide-react";
+import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock } from "lucide-react";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
   switch (brand) {
@@ -775,10 +775,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     return (
       <div className="space-y-5">
         <div>
-          <p className="text-lg font-bold text-zinc-900">
-            Limited Time Offer — Save {annualSavings > 0 ? `${Math.round((annualSavings / monthlyAsAnnual) * 100)}%` : ""} When You Pay Annually!
-          </p>
-          <p className="mt-1 text-sm text-zinc-600">Monthly is the default. Annual billing is completely optional — select it below to save.</p>
+          <p className="text-lg font-bold text-zinc-900">Choose Your Subscription Option</p>
         </div>
 
         {/* Monthly plan card */}
@@ -815,12 +812,23 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-600">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports up to 5 devices per property
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> 1 plan supports multiple devices per listing
                 </div>
               </div>
             </label>
           );
         })()}
+
+        {/* Annual offer banner */}
+        {annualPlan && annualSavings > 0 && (
+          <div className="rounded-2xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 px-5 py-4">
+            <p className="flex items-center gap-2 text-base font-bold text-zinc-900">
+              <Clock className="h-5 w-5 shrink-0 text-emerald-600" />
+              Limited Time Offer — Save {Math.round((annualSavings / monthlyAsAnnual) * 100)}% When You Pay Annually!
+            </p>
+            <p className="mt-1 text-sm text-zinc-600">Monthly is the default. Annual billing is completely optional — select it below to save.</p>
+          </div>
+        )}
 
         {/* Annual plan card */}
         {annualPlan && (() => {
@@ -961,7 +969,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           );
         })()}
 
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm font-bold text-zinc-900">
           {selectedPlan?.interval === "annually"
             ? "✓ Annual plans are billed upfront to secure the discounted rates."
             : "✓ Monthly billing only starts when your device is installed and activated."}
