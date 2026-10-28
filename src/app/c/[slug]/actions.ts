@@ -60,17 +60,37 @@ export async function initiateOrder(
 
   const quantity = Math.max(1, Math.min(10, Number(formData.get("quantity")) || 1));
 
-  // Resolve unit price from tiers (if any) for the estimated amount
+  // Resolve unit price: promotion → tier → base
   let unitPriceCents = checkoutPage.basePriceCents;
-  const priceTiers = await prisma.priceTier.findMany({
-    where: { checkoutPageId: checkoutPage.id },
-    orderBy: { sortOrder: "asc" },
+  const now = new Date();
+  const activePromo = await prisma.promotion.findFirst({
+    where: {
+      isActive: true,
+      checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
+      AND: [
+        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+      ],
+    },
+    include: { priceTier: true, promoCode: { select: { discountType: true, discountValue: true } } },
   });
-  if (priceTiers.length > 0) {
-    const matchedTier = priceTiers.find(
-      (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
-    );
-    if (matchedTier) unitPriceCents = matchedTier.priceCents;
+  if (activePromo) {
+    const origPrice = activePromo.priceTier.priceCents;
+    const promoDiscount = activePromo.promoCode.discountType === "percent"
+      ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
+      : activePromo.promoCode.discountValue;
+    unitPriceCents = Math.max(0, origPrice - promoDiscount);
+  } else {
+    const priceTiers = await prisma.priceTier.findMany({
+      where: { checkoutPageId: checkoutPage.id },
+      orderBy: { sortOrder: "asc" },
+    });
+    if (priceTiers.length > 0) {
+      const matchedTier = priceTiers.find(
+        (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
+      );
+      if (matchedTier) unitPriceCents = matchedTier.priceCents;
+    }
   }
 
   const order = await prisma.order.create({
@@ -198,9 +218,27 @@ export async function saveBillingPlan(
 
   const checkoutPage = order.checkoutPage;
 
-  // Resolve unit price from tiers
+  // Resolve unit price: promotion → tier → base
   let unitPriceCents = checkoutPage.basePriceCents;
-  if (checkoutPage.priceTiers.length > 0) {
+  const now = new Date();
+  const activePromo = await prisma.promotion.findFirst({
+    where: {
+      isActive: true,
+      checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
+      AND: [
+        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+      ],
+    },
+    include: { priceTier: true, promoCode: { select: { discountType: true, discountValue: true } } },
+  });
+  if (activePromo) {
+    const origPrice = activePromo.priceTier.priceCents;
+    const promoDiscount = activePromo.promoCode.discountType === "percent"
+      ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
+      : activePromo.promoCode.discountValue;
+    unitPriceCents = Math.max(0, origPrice - promoDiscount);
+  } else if (checkoutPage.priceTiers.length > 0) {
     const matchedTier = checkoutPage.priceTiers.find(
       (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
     );
