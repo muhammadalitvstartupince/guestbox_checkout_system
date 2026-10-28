@@ -812,7 +812,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-600">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> 1 plan supports multiple devices per listing
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> One plan supports multiple devices per listing
                 </div>
               </div>
             </label>
@@ -968,11 +968,13 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           );
         })()}
 
-        <p className="text-sm font-bold text-zinc-900">
+        <div className="text-center">
+        <span className="inline-block rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-extrabold text-emerald-600">
           {selectedPlan?.interval === "annually"
             ? "✓ Annual plans are billed upfront to secure the discounted rates."
             : "✓ Monthly billing only starts when your device is installed and activated."}
-        </p>
+        </span>
+        </div>
 
         <div className="flex gap-3 pt-2">
           <button
