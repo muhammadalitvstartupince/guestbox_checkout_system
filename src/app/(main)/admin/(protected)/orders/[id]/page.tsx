@@ -50,8 +50,8 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   // Resolve per-unit device price — use promo price when a promotion was applied
   let unitPriceCents = order.checkoutPage.basePriceCents;
   let promoOriginalPriceCents: number | null = null;
-  if (activePromo && order.promoCodeId === activePromo.promoCodeId) {
-    // This order used the promotion — show promo price as the unit price
+  if (activePromo && (order.promoCodeId === activePromo.promoCodeId || order.status === "pending")) {
+    // This order used the promotion, or is still pending during an active promo
     const origPrice = activePromo.priceTier.priceCents;
     const disc = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
