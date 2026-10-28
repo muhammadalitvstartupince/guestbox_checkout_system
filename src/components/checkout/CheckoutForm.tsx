@@ -776,100 +776,145 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
       <div className="space-y-5">
         <div>
           <p className="text-lg font-bold text-zinc-900">
-            🎉 Limited Time Offer — Save {annualSavings > 0 ? `${Math.round((annualSavings / monthlyAsAnnual) * 100)}%` : ""} When You Pay Annually!
+            Limited Time Offer — Save {annualSavings > 0 ? `${Math.round((annualSavings / monthlyAsAnnual) * 100)}%` : ""} When You Pay Annually!
           </p>
-          <p className="mt-1 text-sm text-zinc-600">Select a billing cycle that works for you.</p>
+          <p className="mt-1 text-sm text-zinc-600">Monthly is the default. Annual billing is completely optional — select it below to save.</p>
         </div>
 
-        <div className="space-y-5">
-          {checkoutPage.billingPlans.map((plan) => {
-            const isSelected = selectedPlanId === plan.id;
-            const isAnnual = plan.interval === "annually";
-            const intervalLabel = isAnnual ? "year" : "month";
-            return (
-              <div key={plan.id} className="relative">
-                {isAnnual && (
-                  <div className="flex justify-center">
-                    <span className="relative z-10 -mb-3 inline-block rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1 text-[11px] font-bold tracking-wide text-white uppercase shadow">
-                      Most Popular
-                    </span>
+        {/* Monthly plan card */}
+        {monthlyPlan && (() => {
+          const isSelected = selectedPlanId === monthlyPlan.id;
+          return (
+            <label
+              className={`relative block cursor-pointer rounded-2xl border-2 p-5 transition-all ${
+                isSelected
+                  ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
+                  : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
+              }`}
+              onClick={() => setSelectedPlanId(monthlyPlan.id)}
+            >
+              <div className="flex items-center gap-3">
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                  isSelected ? "border-blue-500 bg-blue-500" : "border-zinc-300"
+                }`}>
+                  {isSelected && <Check className="h-3 w-3 text-white" />}
+                </span>
+                <input type="radio" name="billingPlan" checked={isSelected} onChange={() => setSelectedPlanId(monthlyPlan.id)} className="sr-only" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-base font-bold text-zinc-900">{monthlyPlan.label}</span>
+                    <div className="text-right">
+                      <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(monthlyPlan.priceCents)}</span>
+                      <span className="text-sm text-zinc-400">/month</span>
+                    </div>
                   </div>
-                )}
-                <label
-                  className={`relative block cursor-pointer rounded-2xl border-2 p-5 transition-all ${
-                    isSelected
-                      ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
-                      : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
-                  }`}
-                  onClick={() => setSelectedPlanId(plan.id)}
+                </div>
+              </div>
+              <div className="mt-3 ml-8 space-y-1.5">
+                <div className="flex items-center gap-2 text-sm text-zinc-600">
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
+                </div>
+                <div className="flex items-center gap-2 text-sm text-zinc-600">
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports up to 5 devices per property
+                </div>
+              </div>
+            </label>
+          );
+        })()}
+
+        {/* Annual plan card */}
+        {annualPlan && (() => {
+          const isSelected = selectedPlanId === annualPlan.id;
+          const savePct = annualSavings > 0 ? Math.round((annualSavings / monthlyAsAnnual) * 100) : 0;
+          return (
+            <div className="relative">
+              <div className="flex justify-center">
+                <span
+                  className="relative z-10 -mb-3 inline-block animate-bounce rounded-full px-5 py-1.5 text-sm font-extrabold tracking-wide text-white uppercase shadow-lg [animation-duration:2s]"
+                  style={{ backgroundColor: accentColor }}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
-                      isSelected ? "border-blue-500 bg-blue-500" : "border-zinc-300"
-                    }`}>
-                      {isSelected && <Check className="h-3 w-3 text-white" />}
-                    </span>
-                    <input
-                      type="radio"
-                      name="billingPlan"
-                      checked={isSelected}
-                      onChange={() => setSelectedPlanId(plan.id)}
-                      className="sr-only"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="text-base font-bold text-zinc-900">{plan.label}</span>
-                          {isAnnual && (
-                            <span className="ml-2 text-xs font-semibold text-emerald-600">Best value</span>
-                          )}
-                        </div>
-                        <div className="text-right">
-                          <span className="text-2xl font-extrabold text-zinc-900">
-                            {formatWholeDollars(plan.priceCents)}
-                          </span>
-                          <span className="text-sm text-zinc-400">/{intervalLabel}</span>
-                          {isAnnual && monthlyAsAnnual > 0 && (
-                            <div className="text-xs text-zinc-400 line-through">
-                              {formatWholeDollars(monthlyAsAnnual)}/year
-                            </div>
-                          )}
-                        </div>
+                  OPTIONAL — <span className="text-yellow-300">Save {savePct}%</span>
+                </span>
+              </div>
+              <label
+                className={`relative block cursor-pointer rounded-2xl border-2 p-5 pt-6 transition-all ${
+                  isSelected
+                    ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
+                    : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
+                }`}
+                onClick={() => setSelectedPlanId(annualPlan.id)}
+              >
+                <div className="flex items-center gap-3">
+                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                    isSelected ? "border-blue-500 bg-blue-500" : "border-zinc-300"
+                  }`}>
+                    {isSelected && <Check className="h-3 w-3 text-white" />}
+                  </span>
+                  <input type="radio" name="billingPlan" checked={isSelected} onChange={() => setSelectedPlanId(annualPlan.id)} className="sr-only" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-base font-bold text-zinc-900">{annualPlan.label}</span>
+                      <div className="text-right">
+                        <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(annualPlan.priceCents)}</span>
+                        <span className="text-sm text-zinc-400">/year</span>
+                        {monthlyAsAnnual > 0 && (
+                          <div className="text-xs text-zinc-400 line-through">{formatWholeDollars(monthlyAsAnnual)}/year</div>
+                        )}
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="mt-3 ml-8 space-y-1.5">
-                    {plan.interval === "monthly" ? (
-                      <>
-                        <div className="flex items-center gap-2 text-sm text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports up to 5 devices per property
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-2 text-sm text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Priority support
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Save {formatWholeDollars(annualSavings)}/year
-                          {annualSavings > 0 && (
-                            <span className="ml-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-600">
-                              Save {formatWholeDollars(annualSavings)}
-                            </span>
-                          )}
-                        </div>
-                      </>
+                <div className="mt-3 ml-8 space-y-1.5">
+                  <div className="flex items-center gap-2 text-sm text-zinc-600">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Priority support
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-zinc-600">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Save {formatWholeDollars(annualSavings)}/year
+                    {annualSavings > 0 && (
+                      <span className="ml-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-extrabold text-emerald-600">
+                        {formatWholeDollars(annualSavings)} OFF
+                      </span>
                     )}
                   </div>
-                </label>
+                </div>
+              </label>
+            </div>
+          );
+        })()}
+
+        {/* Remaining plans (if any beyond monthly/annual) */}
+        {checkoutPage.billingPlans.filter((p) => p.interval !== "monthly" && p.interval !== "annually").map((plan) => {
+          const isSelected = selectedPlanId === plan.id;
+          return (
+            <label
+              key={plan.id}
+              className={`relative block cursor-pointer rounded-2xl border-2 p-5 transition-all ${
+                isSelected
+                  ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
+                  : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
+              }`}
+              onClick={() => setSelectedPlanId(plan.id)}
+            >
+              <div className="flex items-center gap-3">
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                  isSelected ? "border-blue-500 bg-blue-500" : "border-zinc-300"
+                }`}>
+                  {isSelected && <Check className="h-3 w-3 text-white" />}
+                </span>
+                <input type="radio" name="billingPlan" checked={isSelected} onChange={() => setSelectedPlanId(plan.id)} className="sr-only" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-base font-bold text-zinc-900">{plan.label}</span>
+                    <div className="text-right">
+                      <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(plan.priceCents)}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            );
-          })}
-        </div>
+            </label>
+          );
+        })}
 
         {selectedPlan?.interval === "annually" && quantity > 1 && (() => {
           const listingTotal = selectedPlan.priceCents * listingQty;
