@@ -807,27 +807,17 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   </div>
                 </div>
               </div>
-              <div className="mt-3 ml-8 space-y-1.5">
+              <div className="ml-0.5 space-y-1">
                 <div className="flex items-center gap-2 text-sm text-zinc-600">
                   <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-600">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> One plan supports multiple devices per listing
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple devices per listing
                 </div>
               </div>
             </label>
           );
         })()}
-
-        {/* Annual offer banner */}
-        {annualPlan && annualSavings > 0 && (
-          <div className="rounded-2xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 px-5 py-4">
-            <p className="flex items-center gap-2 text-sm font-bold text-zinc-900 sm:text-base">
-              <Clock className="h-5 w-5 shrink-0 text-emerald-600" />
-              <span>Limited Time Offer — Save {Math.round((annualSavings / monthlyAsAnnual) * 100)}% When You Pay Annually!</span>
-            </p>
-          </div>
-        )}
 
         {/* Annual plan card */}
         {annualPlan && (() => {
@@ -835,22 +825,28 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           const savePct = annualSavings > 0 ? Math.round((annualSavings / monthlyAsAnnual) * 100) : 0;
           return (
             <div className="relative">
-              <div className="flex justify-center">
-                <span
-                  className="relative z-10 -mb-3 inline-block animate-bounce rounded-full px-5 py-1.5 text-sm font-extrabold tracking-wide text-white uppercase shadow-lg [animation-duration:2s]"
-                  style={{ backgroundColor: accentColor }}
-                >
-                  OPTIONAL — <span className="text-yellow-300">Save {savePct}%</span>
-                </span>
-              </div>
               <label
-                className={`relative block cursor-pointer rounded-2xl border-2 p-5 pt-6 transition-all ${
+                className={`relative block cursor-pointer rounded-2xl border-2 p-5 transition-all ${
                   isSelected
                     ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
                     : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
                 }`}
                 onClick={() => setSelectedPlanId(annualPlan.id)}
               >
+                {annualSavings > 0 && (
+                  <div className="mb-3 flex flex-col gap-1.5 rounded-xl border border-dashed border-emerald-300 bg-emerald-50/50 px-2.5 py-1.5 sm:flex-row sm:items-center sm:gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-5 w-5 shrink-0 text-emerald-600" />
+                      <span className="text-sm font-bold text-zinc-900 sm:text-sm">Limited Time Offer</span>
+                    </div>
+                    <span
+                      className="inline-block rounded-xl px-3.5 py-1.5 text-sm leading-snug font-extrabold tracking-wide text-white uppercase shadow-lg sm:whitespace-nowrap sm:rounded-full sm:text-[11px] sm:px-3.5 sm:py-1"
+                      style={{ backgroundColor: accentColor }}
+                    >
+                      OPTIONAL — <span className="text-yellow-300">Save {savePct}%</span> <span className="hidden sm:inline">When You Pay </span>Annually!
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
                     isSelected ? "border-blue-500 bg-blue-500" : "border-zinc-300"
@@ -861,7 +857,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span className="text-base font-bold text-zinc-900">{annualPlan.label}</span>
-                      <div className="text-right">
+                      <div className="translate-y-2.5 text-right">
                         <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(annualPlan.priceCents)}</span>
                         <span className="text-sm text-zinc-400">/year</span>
                         {monthlyAsAnnual > 0 && (
@@ -871,8 +867,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-3 ml-8 space-y-1.5">
+                <div className="-mt-1 ml-0.5 space-y-0.5">
                   <div className="flex items-center gap-2 text-sm text-zinc-600">
                     <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Priority support
                   </div>
