@@ -43,3 +43,11 @@ body {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* Adjust Chatwoot bubble position on mobile */
+@media (max-width: 768px) {
+  .woot-widget-bubble {
+    bottom: 4px !important;
+    right: 4px !important;
+  }
+}
