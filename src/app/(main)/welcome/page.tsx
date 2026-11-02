@@ -143,10 +143,13 @@ export default function WelcomePage() {
             </h1>
 
             <p className="animate-fade-up-2 text-white/80 text-sm leading-relaxed mb-10 max-w-xs mx-auto">
-              Your GuestBox is officially on its way to transforming your guest
-              experience. We&apos;re getting everything ready for you right now, and
-              you&apos;ll receive an email shortly with your order details and next
-              steps.
+              Your GuestBox is officially on its way to transform your guest
+              experience. You&apos;ll receive a shipment confirmation email with
+              tracking information soon.
+              <br /><br />
+              Your GuestBox dashboard account has been registered, with access
+              to all features included in your plan. Please check your email for
+              the link to log in and access your account.
             </p>
 
             <a
