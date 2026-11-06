@@ -14,6 +14,8 @@ const promotionSchema = z.object({
   timezone: z.string().min(1, "Select a timezone"),
   startsAt: z.string().optional(),
   endsAt: z.string().optional(),
+  badgeText: z.string().trim().optional(),
+  urgencyText: z.string().trim().optional(),
 });
 
 /** Convert a naive local datetime string + IANA timezone to a UTC Date. */
@@ -60,6 +62,8 @@ export async function createPromotion(
     timezone: formData.get("timezone"),
     startsAt: formData.get("startsAt")?.toString().trim() || undefined,
     endsAt: formData.get("endsAt")?.toString().trim() || undefined,
+    badgeText: formData.get("badgeText")?.toString().trim() || undefined,
+    urgencyText: formData.get("urgencyText")?.toString().trim() || undefined,
   });
 
   if (!parsed.success) {
@@ -80,6 +84,8 @@ export async function createPromotion(
       timezone: data.timezone,
       startsAt: data.startsAt ? localToUtc(data.startsAt, data.timezone) : null,
       endsAt: data.endsAt ? localToUtc(data.endsAt, data.timezone) : null,
+      ...(data.badgeText ? { badgeText: data.badgeText } : {}),
+      ...(data.urgencyText ? { urgencyText: data.urgencyText } : {}),
       isActive: false,
       checkoutPages: {
         create: data.checkoutPageIds.map((cpId) => ({ checkoutPageId: cpId })),
@@ -108,6 +114,8 @@ export async function updatePromotion(
     timezone: formData.get("timezone"),
     startsAt: formData.get("startsAt")?.toString().trim() || undefined,
     endsAt: formData.get("endsAt")?.toString().trim() || undefined,
+    badgeText: formData.get("badgeText")?.toString().trim() || undefined,
+    urgencyText: formData.get("urgencyText")?.toString().trim() || undefined,
   });
 
   if (!parsed.success) {
@@ -132,6 +140,8 @@ export async function updatePromotion(
         timezone: data.timezone,
         startsAt: data.startsAt ? localToUtc(data.startsAt, data.timezone) : null,
         endsAt: data.endsAt ? localToUtc(data.endsAt, data.timezone) : null,
+        ...(data.badgeText ? { badgeText: data.badgeText } : {}),
+        ...(data.urgencyText ? { urgencyText: data.urgencyText } : {}),
         checkoutPages: {
           create: data.checkoutPageIds.map((cpId) => ({ checkoutPageId: cpId })),
         },

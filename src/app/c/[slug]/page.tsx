@@ -101,6 +101,8 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
     promoPriceCents: number;
     promoCode: string;
     endsAt: string | null;
+    badgeText: string;
+    urgencyText: string;
   } | null = null;
 
   if (activePromoRow) {
@@ -118,6 +120,8 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
       promoPriceCents: result.totalCents,
       promoCode: activePromoRow.promoCode.code,
       endsAt: activePromoRow.endsAt ? activePromoRow.endsAt.toISOString() : null,
+      badgeText: activePromoRow.badgeText,
+      urgencyText: activePromoRow.urgencyText,
     };
   }
 

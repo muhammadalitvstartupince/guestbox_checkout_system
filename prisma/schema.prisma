@@ -416,6 +416,8 @@ model Promotion {
   isActive    Boolean   @default(false) @map("is_active")
   startsAt    DateTime? @map("starts_at")
   endsAt      DateTime? @map("ends_at")
+  badgeText   String    @default("Limited Time") @map("badge_text")
+  urgencyText String    @default("Offer ends soon — don't miss out!") @map("urgency_text")
   // IANA timezone the admin used when setting startsAt/endsAt.
   // Dates are stored as UTC; this is kept for display back in admin.
   timezone    String    @default("America/New_York")
