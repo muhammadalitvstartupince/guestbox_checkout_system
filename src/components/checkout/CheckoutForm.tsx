@@ -83,6 +83,8 @@ export interface ActivePromotionView {
   promoPriceCents: number;
   promoCode: string;
   endsAt: string | null;
+  badgeText: string;
+  urgencyText: string;
 }
 
 export interface CheckoutPageView {
@@ -377,7 +379,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
               <div className="absolute -left-1 -top-1 z-10">
                 <div className="flex items-center gap-1 rounded-br-xl rounded-tl-xl bg-gradient-to-r from-red-600 to-orange-500 px-4 py-1.5 text-xs font-extrabold tracking-widest text-white uppercase shadow-md">
                   <Zap className="h-3.5 w-3.5 fill-yellow-300 text-yellow-300" />
-                  Limited Time
+                  {activePromotion.badgeText || "Limited Time"}
                 </div>
               </div>
 
@@ -409,7 +411,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-red-600" />
                 </span>
-                Offer ends soon — don&apos;t miss out!
+                {activePromotion.urgencyText || "Offer ends soon \u2014 don\u2019t miss out!"}
               </div>
             </div>
           );

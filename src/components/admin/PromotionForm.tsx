@@ -38,6 +38,8 @@ export interface PromotionDefaults {
   timezone: string;
   startsAt: string; // datetime-local string (in promotion's tz)
   endsAt: string;
+  badgeText: string;
+  urgencyText: string;
 }
 
 const TIMEZONES = [
@@ -238,6 +240,18 @@ export function PromotionForm({
         <div>
           <label className={labelClass}>Ends At (optional)</label>
           <input type="datetime-local" name="endsAt" defaultValue={defaults?.endsAt ?? ""} className={`${inputClass} dark:[color-scheme:dark]`} />
+        </div>
+      </div>
+
+      {/* Row 5: Display Text (optional overrides) */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className={labelClass}>Badge Text (optional)</label>
+          <input name="badgeText" className={inputClass} placeholder="Limited Time" defaultValue={defaults?.badgeText ?? ""} />
+        </div>
+        <div>
+          <label className={labelClass}>Urgency Text (optional)</label>
+          <input name="urgencyText" className={inputClass} placeholder="Offer ends soon — don't miss out!" defaultValue={defaults?.urgencyText ?? ""} />
         </div>
       </div>
 
