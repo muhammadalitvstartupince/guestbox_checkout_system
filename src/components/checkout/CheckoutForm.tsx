@@ -250,7 +250,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     state: "",
     zip: "",
   });
-  const [shippingSameAsBilling, setShippingSameAsBilling] = useState(true);
+  const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
   const [shippingForm, setShippingForm] = useState({
     addressLine1: "",
     country: "US",
@@ -538,7 +538,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   // =====================================================================
   function renderDetailsStep() {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <h2 className={`${montserrat.className} text-xl font-bold text-zinc-900 sm:text-2xl`}>SUBMIT YOUR ORDER</h2>
 
         {detailsSubStep === "personal" && renderPersonalSubStep()}
@@ -632,37 +632,43 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-800">{billingState.message}</div>
         )}
         <form key={billingGen} action={billingFormAction} className="space-y-4">
-          <input type="hidden" name="shippingSameAsBilling" value={shippingSameAsBilling ? "on" : ""} />
-          {!shippingSameAsBilling && (
+          <input type="hidden" name="billingSameAsShipping" value={billingSameAsShipping ? "on" : ""} />
+          {!billingSameAsShipping && (
             <>
-              <input type="hidden" name="shippingAddressLine1" value={shippingForm.addressLine1} />
-              <input type="hidden" name="shippingCountry" value={shippingForm.country} />
-              <input type="hidden" name="shippingCity" value={shippingForm.city} />
-              <input type="hidden" name="shippingState" value={shippingForm.state} />
-              <input type="hidden" name="shippingZip" value={shippingForm.zip} />
+              <input type="hidden" name="billingAddressLine1" value={billingForm.addressLine1} />
+              <input type="hidden" name="billingCountry" value={billingForm.country} />
+              <input type="hidden" name="billingCity" value={billingForm.city} />
+              <input type="hidden" name="billingState" value={billingForm.state} />
+              <input type="hidden" name="billingZip" value={billingForm.zip} />
             </>
           )}
+
+          {/* Shipping address — primary, where the device ships */}
+          <div className="-mt-2 mb-1 flex items-center gap-2 text-sm font-medium text-zinc-600">
+            <Truck className="h-4 w-4 text-zinc-500" />
+            <span>This is where your GuestBox device(s) will be shipped.</span>
+          </div>
 
           <Field
             name="addressLine1"
             label="Street Address"
-            value={billingForm.addressLine1}
-            onChange={(v) => setBillingForm((b) => ({ ...b, addressLine1: v }))}
+            value={shippingForm.addressLine1}
+            onChange={(v) => setShippingForm((s) => ({ ...s, addressLine1: v }))}
             errors={billingState.fieldErrors?.addressLine1}
             placeholder="123 Main St"
           />
           <CountryField
             name="country"
             label="Country"
-            value={billingForm.country}
-            onChange={(v) => setBillingForm((b) => ({ ...b, country: v }))}
+            value={shippingForm.country}
+            onChange={(v) => setShippingForm((s) => ({ ...s, country: v }))}
             errors={billingState.fieldErrors?.country}
           />
           <Field
             name="city"
             label="City"
-            value={billingForm.city}
-            onChange={(v) => setBillingForm((b) => ({ ...b, city: v }))}
+            value={shippingForm.city}
+            onChange={(v) => setShippingForm((s) => ({ ...s, city: v }))}
             errors={billingState.fieldErrors?.city}
             placeholder="New York"
           />
@@ -670,69 +676,69 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             <Field
               name="state"
               label="State / Province"
-              value={billingForm.state}
-              onChange={(v) => setBillingForm((b) => ({ ...b, state: v }))}
+              value={shippingForm.state}
+              onChange={(v) => setShippingForm((s) => ({ ...s, state: v }))}
               errors={billingState.fieldErrors?.state}
               placeholder="New York"
             />
             <Field
               name="zip"
               label="Zip Code"
-              value={billingForm.zip}
-              onChange={(v) => setBillingForm((b) => ({ ...b, zip: v }))}
+              value={shippingForm.zip}
+              onChange={(v) => setShippingForm((s) => ({ ...s, zip: v }))}
               errors={billingState.fieldErrors?.zip}
               placeholder="10001"
             />
           </div>
 
-          {/* Shipping same as billing */}
+          {/* Billing same as shipping */}
           <label className="flex items-center gap-2 text-sm font-bold text-zinc-800">
             <input
               type="checkbox"
-              checked={shippingSameAsBilling}
-              onChange={(e) => setShippingSameAsBilling(e.target.checked)}
+              checked={billingSameAsShipping}
+              onChange={(e) => setBillingSameAsShipping(e.target.checked)}
               className="h-4 w-4 rounded border-zinc-300"
             />
-            Shipping address same as billing
+            Billing address same as shipping
           </label>
 
-          {/* Separate shipping address */}
-          {!shippingSameAsBilling && (
+          {/* Separate billing address */}
+          {!billingSameAsShipping && (
             <div className="space-y-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-              <p className="text-sm font-semibold text-zinc-700">Shipping Address</p>
+              <p className="text-sm font-semibold text-zinc-700">Billing Address</p>
               <Field
-                name="shippingAddressLine1_display"
+                name="billingAddressLine1_display"
                 label="Street Address"
-                value={shippingForm.addressLine1}
-                onChange={(v) => setShippingForm((s) => ({ ...s, addressLine1: v }))}
+                value={billingForm.addressLine1}
+                onChange={(v) => setBillingForm((b) => ({ ...b, addressLine1: v }))}
                 placeholder="456 Oak Ave"
               />
               <CountryField
-                name="shippingCountry_display"
+                name="billingCountry_display"
                 label="Country"
-                value={shippingForm.country}
-                onChange={(v) => setShippingForm((s) => ({ ...s, country: v }))}
+                value={billingForm.country}
+                onChange={(v) => setBillingForm((b) => ({ ...b, country: v }))}
               />
               <Field
-                name="shippingCity_display"
+                name="billingCity_display"
                 label="City"
-                value={shippingForm.city}
-                onChange={(v) => setShippingForm((s) => ({ ...s, city: v }))}
+                value={billingForm.city}
+                onChange={(v) => setBillingForm((b) => ({ ...b, city: v }))}
                 placeholder="Los Angeles"
               />
               <div className="grid grid-cols-2 gap-3">
                 <Field
-                  name="shippingState_display"
+                  name="billingState_display"
                   label="State / Province"
-                  value={shippingForm.state}
-                  onChange={(v) => setShippingForm((s) => ({ ...s, state: v }))}
+                  value={billingForm.state}
+                  onChange={(v) => setBillingForm((b) => ({ ...b, state: v }))}
                   placeholder="California"
                 />
                 <Field
-                  name="shippingZip_display"
+                  name="billingZip_display"
                   label="Zip Code"
-                  value={shippingForm.zip}
-                  onChange={(v) => setShippingForm((s) => ({ ...s, zip: v }))}
+                  value={billingForm.zip}
+                  onChange={(v) => setBillingForm((b) => ({ ...b, zip: v }))}
                   placeholder="90001"
                 />
               </div>

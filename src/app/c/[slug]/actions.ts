@@ -170,26 +170,31 @@ export async function saveBillingInfo(
   }
   const data = parsed.data;
 
-  const shippingSameAsBilling = formData.get("shippingSameAsBilling") === "on";
+  // The main validated fields (addressLine1 etc.) now represent the shipping
+  // address (where the device ships). Billing is either the same or comes
+  // from separate hidden fields when the customer unchecks the checkbox.
+  const billingSameAsShipping = formData.get("billingSameAsShipping") === "on";
 
   await prisma.order.update({
     where: { id: order.id },
     data: {
-      addressLine1: data.addressLine1,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-      country: data.country,
-      shippingSameAsBilling,
-      shippingAddressLine1: shippingSameAsBilling ? data.addressLine1 : (formData.get("shippingAddressLine1")?.toString().trim() || data.addressLine1),
-      shippingCity: shippingSameAsBilling ? data.city : (formData.get("shippingCity")?.toString().trim() || data.city),
-      shippingState: shippingSameAsBilling ? data.state : (formData.get("shippingState")?.toString().trim() || data.state),
-      shippingZip: shippingSameAsBilling ? data.zip : (formData.get("shippingZip")?.toString().trim() || data.zip),
-      shippingCountry: shippingSameAsBilling ? data.country : (formData.get("shippingCountry")?.toString().trim() || data.country),
+      // Billing address: same as shipping, or from separate fields
+      addressLine1: billingSameAsShipping ? data.addressLine1 : (formData.get("billingAddressLine1")?.toString().trim() || data.addressLine1),
+      city: billingSameAsShipping ? data.city : (formData.get("billingCity")?.toString().trim() || data.city),
+      state: billingSameAsShipping ? data.state : (formData.get("billingState")?.toString().trim() || data.state),
+      zip: billingSameAsShipping ? data.zip : (formData.get("billingZip")?.toString().trim() || data.zip),
+      country: billingSameAsShipping ? data.country : (formData.get("billingCountry")?.toString().trim() || data.country),
+      // Shipping address: always from main validated fields
+      shippingSameAsBilling: billingSameAsShipping,
+      shippingAddressLine1: data.addressLine1,
+      shippingCity: data.city,
+      shippingState: data.state,
+      shippingZip: data.zip,
+      shippingCountry: data.country,
     },
   });
 
-  await logOrderEvent(order.id, "billing_info_saved", `${data.city}, ${data.state}, ${data.country}`);
+  await logOrderEvent(order.id, "address_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
 
   return { status: "success" };
 }
@@ -577,10 +582,10 @@ export async function completeCheckout(
       : null;
 
     // Build address strings
-    const billingAddr = `${addressLine1}, ${city}, ${state} ${zip}, ${country}`;
-    const shippingAddr = order.shippingSameAsBilling
-      ? "Same as billing"
-      : [order.shippingAddressLine1, order.shippingCity, order.shippingState, order.shippingZip, order.shippingCountry].filter(Boolean).join(", ") || "Same as billing";
+    const shippingAddr = [order.shippingAddressLine1, order.shippingCity, order.shippingState, order.shippingZip, order.shippingCountry].filter(Boolean).join(", ") || `${addressLine1}, ${city}, ${state} ${zip}, ${country}`;
+    const billingAddr = order.shippingSameAsBilling
+      ? "Same as shipping"
+      : `${addressLine1}, ${city}, ${state} ${zip}, ${country}`;
 
     // Unit price for display
     const fmtDollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
@@ -627,8 +632,8 @@ export async function completeCheckout(
   <tr><td colspan="2" style="padding:12px 0 4px;font-weight:bold;font-size:16px;border-bottom:2px solid #e5e7eb">Customer</td></tr>
   <tr><td style="padding:6px 0;color:#666">Email</td><td style="padding:6px 0;text-align:right">${order.email}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Phone</td><td style="padding:6px 0;text-align:right">${order.phone}</td></tr>
-  <tr><td style="padding:6px 0;color:#666">Billing address</td><td style="padding:6px 0;text-align:right">${billingAddr}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Shipping address</td><td style="padding:6px 0;text-align:right">${shippingAddr}</td></tr>
+  <tr><td style="padding:6px 0;color:#666">Billing address</td><td style="padding:6px 0;text-align:right">${billingAddr}</td></tr>
 </table>`.trim();
 
     const emailVars: Record<string, string> = {

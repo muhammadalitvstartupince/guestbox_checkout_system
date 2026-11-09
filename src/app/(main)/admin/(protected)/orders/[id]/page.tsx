@@ -89,14 +89,16 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     }
   }
 
-  const billingAddress = order.addressLine1
-    ? `${order.addressLine1}, ${order.city}, ${order.state} ${order.zip}, ${order.country}`
-    : "Not provided yet — checkout in progress";
+  const shippingAddress = order.shippingAddressLine1
+    ? `${order.shippingAddressLine1}, ${order.shippingCity}, ${order.shippingState} ${order.shippingZip}, ${order.shippingCountry}`
+    : order.addressLine1
+      ? `${order.addressLine1}, ${order.city}, ${order.state} ${order.zip}, ${order.country}`
+      : "Not provided yet — checkout in progress";
 
-  const shippingAddress = order.shippingSameAsBilling
+  const billingAddress = order.shippingSameAsBilling
     ? null
-    : order.shippingAddressLine1
-      ? `${order.shippingAddressLine1}, ${order.shippingCity}, ${order.shippingState} ${order.shippingZip}, ${order.shippingCountry}`
+    : order.addressLine1
+      ? `${order.addressLine1}, ${order.city}, ${order.state} ${order.zip}, ${order.country}`
       : null;
 
   const lastWebhookEvent = [...order.events].reverse().find((e) => e.type === "webhook_sent" || e.type === "webhook_failed");
@@ -140,8 +142,8 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <dl className="space-y-1.5 text-sm">
             <Row label="Email" value={order.email} />
             <Row label="Phone" value={order.phone} />
-            <Row label="Billing address" value={billingAddress} />
-            <Row label="Shipping address" value={shippingAddress ?? "Same as billing"} />
+            <Row label="Shipping address" value={shippingAddress} />
+            <Row label="Billing address" value={billingAddress ?? "Same as shipping"} />
           </dl>
           <div className="mt-3 border-t border-zinc-100 pt-3 dark:border-zinc-800">
             <dt className="text-sm text-zinc-500 dark:text-zinc-400">Landing page (source)</dt>

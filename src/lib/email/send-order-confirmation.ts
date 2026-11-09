@@ -31,14 +31,16 @@ export async function sendOrderConfirmationEmail(orderId: string, note?: string)
     order.upgradeSelected && order.checkoutPage.upgradeTitle ? order.checkoutPage.upgradeTitle : order.checkoutPage.title;
 
   const fmtDollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-  const billingAddr = order.addressLine1
-    ? `${order.addressLine1}, ${order.city}, ${order.state} ${order.zip}, ${order.country}`
-    : "—";
-  const shippingAddr = order.shippingSameAsBilling
-    ? "Same as billing"
-    : order.shippingAddressLine1
-      ? `${order.shippingAddressLine1}, ${order.shippingCity}, ${order.shippingState} ${order.shippingZip}, ${order.shippingCountry}`
-      : "Same as billing";
+  const shippingAddr = order.shippingAddressLine1
+    ? `${order.shippingAddressLine1}, ${order.shippingCity}, ${order.shippingState} ${order.shippingZip}, ${order.shippingCountry}`
+    : order.addressLine1
+      ? `${order.addressLine1}, ${order.city}, ${order.state} ${order.zip}, ${order.country}`
+      : "—";
+  const billingAddr = order.shippingSameAsBilling
+    ? "Same as shipping"
+    : order.addressLine1
+      ? `${order.addressLine1}, ${order.city}, ${order.state} ${order.zip}, ${order.country}`
+      : "—";
 
   const emailVars: Record<string, string> = {
     orderId: order.id,
