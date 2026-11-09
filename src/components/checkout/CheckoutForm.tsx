@@ -362,14 +362,14 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         {isPromoActive && (() => {
           const savePercent = Math.round(((activePromotion.originalPriceCents - activePromotion.promoPriceCents) / activePromotion.originalPriceCents) * 100);
           return (
-            <div className="relative overflow-hidden rounded-2xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-5 pb-5 pt-8 text-center shadow-lg">
+            <div className="relative overflow-hidden rounded-2xl border-2 border-cyan-400 bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 px-5 pb-5 pt-8 text-center shadow-lg">
               {/* Animated shimmer overlay */}
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.6)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
 
               {/* Top ribbon */}
               <div className="absolute -left-1 -top-1 z-10">
-                <div className="flex items-center gap-1 rounded-br-xl rounded-tl-xl bg-gradient-to-r from-red-600 to-orange-500 px-4 py-1.5 text-xs font-extrabold tracking-widest text-white uppercase shadow-md">
-                  <Zap className="h-3.5 w-3.5 fill-yellow-300 text-yellow-300" />
+                <div className="flex items-center gap-1 rounded-br-xl rounded-tl-xl bg-gradient-to-r from-cyan-600 to-blue-500 px-4 py-1.5 text-xs font-extrabold tracking-widest text-white uppercase shadow-md">
+                  <Zap className="h-3.5 w-3.5 fill-cyan-200 text-cyan-200" />
                   {activePromotion.badgeText || "Limited Time"}
                 </div>
               </div>
@@ -385,7 +385,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
               {/* Price display */}
               <div className="mt-2 flex items-baseline justify-center gap-2">
-                <span className="text-xl font-semibold text-zinc-400 line-through decoration-red-400 decoration-2">
+                <span className="text-xl font-semibold text-zinc-400 line-through decoration-cyan-400 decoration-2">
                   {formatWholeDollars(activePromotion.originalPriceCents)}
                 </span>
                 <span className="text-5xl font-black text-zinc-900">
@@ -397,10 +397,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
               <p className="mt-1.5 text-sm font-medium text-zinc-600">{checkoutPage.productName}</p>
 
               {/* Urgency nudge */}
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
+              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-cyan-100 px-3 py-1 text-xs font-bold text-cyan-700">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-600" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-500 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-600" />
                 </span>
                 {activePromotion.urgencyText || "Offer ends soon \u2014 don\u2019t miss out!"}
               </div>
@@ -1372,15 +1372,15 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     <div className={montserrat.className}>
 
       {/* Top announcement bar */}
-      <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-cyan-500 px-4 py-2 text-center text-sm font-semibold text-white">
+      <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-cyan-500 px-4 py-3 text-center text-base font-semibold text-white sm:py-3.5 sm:text-lg">
         <span>Have Questions?</span>
         <a
           href="https://guestbox.tv/schedule-live-demo"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-0.5 text-xs font-bold uppercase tracking-wide transition-colors hover:bg-white/30"
+          className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-1.5 text-sm font-extrabold uppercase tracking-wide text-cyan-700 shadow-md transition-transform hover:scale-105"
         >
-          <Phone className="h-3 w-3" />
+          <Phone className="h-4 w-4" />
           Schedule Call
         </a>
       </div>
