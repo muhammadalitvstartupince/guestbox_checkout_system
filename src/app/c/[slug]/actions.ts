@@ -194,7 +194,7 @@ export async function saveBillingInfo(
     },
   });
 
-  await logOrderEvent(order.id, "address_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
+  await logOrderEvent(order.id, "billing_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
 
   return { status: "success" };
 }
