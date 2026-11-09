@@ -21,8 +21,8 @@ export function parseContactInfoData(formData: FormData) {
   });
 }
 
-// Step 2 — billing address only. Submitting this updates the order created
-// in step 1 with address fields; no charge happens yet.
+// Step 2 — address fields. The main form collects the shipping address (where
+// the device ships). Billing is either the same or entered separately.
 export const billingInfoSchema = z.object({
   addressLine1: z.string().trim().min(1, "Street address is required"),
   city: z.string().trim().min(1, "City is required"),

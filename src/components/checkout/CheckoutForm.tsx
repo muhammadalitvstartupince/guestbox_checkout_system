@@ -17,7 +17,7 @@ import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
-import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock } from "lucide-react";
+import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone } from "lucide-react";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
   switch (brand) {
@@ -250,7 +250,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     state: "",
     zip: "",
   });
-  const [shippingSameAsBilling, setShippingSameAsBilling] = useState(true);
+  const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
   const [shippingForm, setShippingForm] = useState({
     addressLine1: "",
     country: "US",
@@ -263,7 +263,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     expMonth: "",
     expYear: "",
     cvv: "",
-    promoCode: isPromoActive ? activePromotion.promoCode : "",
+    promoCode: "",
     agree: false,
   });
 
@@ -295,16 +295,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   }
 
   function handleEditPromo() {
-    if (!isPromoActive) setPromoCheck({ status: "idle" });
+    setPromoCheck({ status: "idle" });
   }
-
-  // Auto-validate the promo code when a promotion is active
-  useEffect(() => {
-    if (isPromoActive && promoCheck.status === "idle") {
-      handleValidatePromo();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPromoActive]);
 
   const effectiveTitle = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.title : checkoutPage.productName;
   // During promotion: use promo price directly as base (discount is baked in)
@@ -331,8 +323,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     [checkoutPage.addons, selectedAddonIds],
   );
 
-  // During promotion the discount is baked into effectiveBasePriceCents — don't double-apply
-  const appliedPromo = (!isPromoActive && promoCheck.status === "valid") ? (promoCheck.discount ?? null) : null;
+  const appliedPromo = promoCheck.status === "valid" ? (promoCheck.discount ?? null) : null;
   const estimate = useMemo(
     () =>
       calculateOrderPrice({
@@ -538,7 +529,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   // =====================================================================
   function renderDetailsStep() {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <h2 className={`${montserrat.className} text-xl font-bold text-zinc-900 sm:text-2xl`}>SUBMIT YOUR ORDER</h2>
 
         {detailsSubStep === "personal" && renderPersonalSubStep()}
@@ -632,37 +623,45 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-800">{billingState.message}</div>
         )}
         <form key={billingGen} action={billingFormAction} className="space-y-4">
-          <input type="hidden" name="shippingSameAsBilling" value={shippingSameAsBilling ? "on" : ""} />
-          {!shippingSameAsBilling && (
+          <input type="hidden" name="billingSameAsShipping" value={billingSameAsShipping ? "on" : ""} />
+          {!billingSameAsShipping && (
             <>
-              <input type="hidden" name="shippingAddressLine1" value={shippingForm.addressLine1} />
-              <input type="hidden" name="shippingCountry" value={shippingForm.country} />
-              <input type="hidden" name="shippingCity" value={shippingForm.city} />
-              <input type="hidden" name="shippingState" value={shippingForm.state} />
-              <input type="hidden" name="shippingZip" value={shippingForm.zip} />
+              <input type="hidden" name="billingAddressLine1" value={billingForm.addressLine1} />
+              <input type="hidden" name="billingCountry" value={billingForm.country} />
+              <input type="hidden" name="billingCity" value={billingForm.city} />
+              <input type="hidden" name="billingState" value={billingForm.state} />
+              <input type="hidden" name="billingZip" value={billingForm.zip} />
             </>
           )}
+
+          {/* Shipping address — primary, where the device ships */}
+          <div className="-mt-2 mb-1">
+            <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
+              <Truck className="mr-1.5 inline h-4 w-4 align-text-bottom" />
+              This is where your GuestBox device(s) will be shipped.
+            </span>
+          </div>
 
           <Field
             name="addressLine1"
             label="Street Address"
-            value={billingForm.addressLine1}
-            onChange={(v) => setBillingForm((b) => ({ ...b, addressLine1: v }))}
+            value={shippingForm.addressLine1}
+            onChange={(v) => setShippingForm((s) => ({ ...s, addressLine1: v }))}
             errors={billingState.fieldErrors?.addressLine1}
             placeholder="123 Main St"
           />
           <CountryField
             name="country"
             label="Country"
-            value={billingForm.country}
-            onChange={(v) => setBillingForm((b) => ({ ...b, country: v }))}
+            value={shippingForm.country}
+            onChange={(v) => setShippingForm((s) => ({ ...s, country: v }))}
             errors={billingState.fieldErrors?.country}
           />
           <Field
             name="city"
             label="City"
-            value={billingForm.city}
-            onChange={(v) => setBillingForm((b) => ({ ...b, city: v }))}
+            value={shippingForm.city}
+            onChange={(v) => setShippingForm((s) => ({ ...s, city: v }))}
             errors={billingState.fieldErrors?.city}
             placeholder="New York"
           />
@@ -670,69 +669,69 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             <Field
               name="state"
               label="State / Province"
-              value={billingForm.state}
-              onChange={(v) => setBillingForm((b) => ({ ...b, state: v }))}
+              value={shippingForm.state}
+              onChange={(v) => setShippingForm((s) => ({ ...s, state: v }))}
               errors={billingState.fieldErrors?.state}
               placeholder="New York"
             />
             <Field
               name="zip"
               label="Zip Code"
-              value={billingForm.zip}
-              onChange={(v) => setBillingForm((b) => ({ ...b, zip: v }))}
+              value={shippingForm.zip}
+              onChange={(v) => setShippingForm((s) => ({ ...s, zip: v }))}
               errors={billingState.fieldErrors?.zip}
               placeholder="10001"
             />
           </div>
 
-          {/* Shipping same as billing */}
+          {/* Billing same as shipping */}
           <label className="flex items-center gap-2 text-sm font-bold text-zinc-800">
             <input
               type="checkbox"
-              checked={shippingSameAsBilling}
-              onChange={(e) => setShippingSameAsBilling(e.target.checked)}
+              checked={billingSameAsShipping}
+              onChange={(e) => setBillingSameAsShipping(e.target.checked)}
               className="h-4 w-4 rounded border-zinc-300"
             />
-            Shipping address same as billing
+            Billing address same as shipping
           </label>
 
-          {/* Separate shipping address */}
-          {!shippingSameAsBilling && (
+          {/* Separate billing address */}
+          {!billingSameAsShipping && (
             <div className="space-y-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-              <p className="text-sm font-semibold text-zinc-700">Shipping Address</p>
+              <p className="text-sm font-semibold text-zinc-700">Billing Address</p>
               <Field
-                name="shippingAddressLine1_display"
+                name="billingAddressLine1_display"
                 label="Street Address"
-                value={shippingForm.addressLine1}
-                onChange={(v) => setShippingForm((s) => ({ ...s, addressLine1: v }))}
+                value={billingForm.addressLine1}
+                onChange={(v) => setBillingForm((b) => ({ ...b, addressLine1: v }))}
                 placeholder="456 Oak Ave"
               />
               <CountryField
-                name="shippingCountry_display"
+                name="billingCountry_display"
                 label="Country"
-                value={shippingForm.country}
-                onChange={(v) => setShippingForm((s) => ({ ...s, country: v }))}
+                value={billingForm.country}
+                onChange={(v) => setBillingForm((b) => ({ ...b, country: v }))}
               />
               <Field
-                name="shippingCity_display"
+                name="billingCity_display"
                 label="City"
-                value={shippingForm.city}
-                onChange={(v) => setShippingForm((s) => ({ ...s, city: v }))}
+                value={billingForm.city}
+                onChange={(v) => setBillingForm((b) => ({ ...b, city: v }))}
                 placeholder="Los Angeles"
               />
               <div className="grid grid-cols-2 gap-3">
                 <Field
-                  name="shippingState_display"
+                  name="billingState_display"
                   label="State / Province"
-                  value={shippingForm.state}
-                  onChange={(v) => setShippingForm((s) => ({ ...s, state: v }))}
+                  value={billingForm.state}
+                  onChange={(v) => setBillingForm((b) => ({ ...b, state: v }))}
                   placeholder="California"
                 />
                 <Field
-                  name="shippingZip_display"
+                  name="billingZip_display"
                   label="Zip Code"
-                  value={shippingForm.zip}
-                  onChange={(v) => setShippingForm((s) => ({ ...s, zip: v }))}
+                  value={billingForm.zip}
+                  onChange={(v) => setBillingForm((b) => ({ ...b, zip: v }))}
                   placeholder="90001"
                 />
               </div>
@@ -1133,7 +1132,26 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           )}
 
           {(checkoutPage.showPromoCode || isPromoActive) && (
-            <section>
+            <section className="space-y-3">
+              {/* Show the promotion's code as already applied when active */}
+              {isPromoActive && (
+                <div className="flex items-center gap-3 rounded-lg border border-amber-300 bg-gradient-to-r from-amber-50 to-yellow-50 px-4 py-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                    <Ticket className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate font-mono text-sm font-bold tracking-wide text-amber-800">
+                        {activePromotion.promoCode}
+                      </span>
+                      <Check className="h-4 w-4 shrink-0 text-amber-600" />
+                    </div>
+                    <div className="text-xs font-medium text-amber-700">Promotion applied — saving {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Extra promo code input (or regular promo when no promotion) */}
               {promoCheck.status === "valid" ? (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-300 bg-gradient-to-r from-emerald-50 to-white px-4 py-3">
                   <input type="hidden" name="promoCode" value={promoCheck.appliedCode ?? ""} />
@@ -1151,7 +1169,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                       <div className="text-xs font-medium text-emerald-700">{promoCheck.message} applied</div>
                     </div>
                   </div>
-                  {!isPromoActive && (
                   <button
                     type="button"
                     onClick={handleEditPromo}
@@ -1159,7 +1176,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   >
                     <PencilLine className="h-3.5 w-3.5" /> Change
                   </button>
-                  )}
                 </div>
               ) : (
                 <>
@@ -1226,34 +1242,37 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               ))}
             </div>
-            {/* During promo: show savings instead of subtotal/discount breakdown */}
-            {isPromoActive ? (
-              <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                <div className="flex justify-between text-emerald-400">
-                  <span className="flex items-center gap-1">
-                    <Ticket className="h-3.5 w-3.5" /> You save
-                  </span>
-                  <span className="font-semibold">
-                    {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}
-                  </span>
-                </div>
-              </div>
-            ) : estimate.discountCents > 0 ? (() => {
+            {(isPromoActive || estimate.discountCents > 0) ? (() => {
+              const promoSavingsCents = isPromoActive
+                ? (activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity
+                : 0;
               const displaySubtotal = selectedPlan?.chargeAtCheckout
                 ? estimate.subtotalCents + estimate.recurringTotalCents
                 : estimate.subtotalCents;
               return (
                 <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                  <div className="flex justify-between opacity-80">
-                    <span>Subtotal</span>
-                    <span>{formatCents(displaySubtotal)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="flex items-center gap-1 opacity-90">
-                      <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
-                    </span>
-                    <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
-                  </div>
+                  {(isPromoActive || estimate.discountCents > 0) && (
+                    <div className="flex justify-between opacity-80">
+                      <span>Subtotal</span>
+                      <span>{formatCents(displaySubtotal)}</span>
+                    </div>
+                  )}
+                  {isPromoActive && (
+                    <div className="flex justify-between text-emerald-400">
+                      <span className="flex items-center gap-1">
+                        <Ticket className="h-3.5 w-3.5" /> Promotion savings
+                      </span>
+                      <span className="font-semibold">-{formatCents(promoSavingsCents)}</span>
+                    </div>
+                  )}
+                  {estimate.discountCents > 0 && (
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1 opacity-90">
+                        <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
+                      </span>
+                      <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
+                    </div>
+                  )}
                 </div>
               );
             })() : null}
@@ -1351,6 +1370,20 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
   return (
     <div className={montserrat.className}>
+
+      {/* Top announcement bar */}
+      <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-cyan-500 px-4 py-2 text-center text-sm font-semibold text-white">
+        <span>Have Questions?</span>
+        <a
+          href="https://guestbox.tv/schedule-live-demo"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-0.5 text-xs font-bold uppercase tracking-wide transition-colors hover:bg-white/30"
+        >
+          <Phone className="h-3 w-3" />
+          Schedule Call
+        </a>
+      </div>
 
       {/* Zone 1: Header + checkout form — gradient + overlay */}
       <div className="relative">
