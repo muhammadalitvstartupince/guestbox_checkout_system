@@ -35,23 +35,21 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     ? await prisma.billingPlan.findUnique({ where: { id: order.selectedBillingPlanId }, select: { label: true, interval: true, priceCents: true } })
     : null;
 
-  // Check if this order was placed during an active promotion
-  const activePromo = await prisma.promotion.findFirst({
-    where: {
-      checkoutPages: { some: { checkoutPageId: order.checkoutPageId } },
-      promoCodeId: order.promoCodeId ?? undefined,
-    },
-    include: {
-      priceTier: { select: { priceCents: true } },
-      promoCode: { select: { discountType: true, discountValue: true } },
-    },
-  });
+  // Load the promotion if this order was placed during one
+  const activePromo = order.promotionId
+    ? await prisma.promotion.findUnique({
+        where: { id: order.promotionId },
+        include: {
+          priceTier: { select: { priceCents: true } },
+          promoCode: { select: { code: true, discountType: true, discountValue: true } },
+        },
+      })
+    : null;
 
   // Resolve per-unit device price — use promo price when a promotion was applied
   let unitPriceCents = order.checkoutPage.basePriceCents;
   let promoOriginalPriceCents: number | null = null;
-  if (activePromo && (order.promoCodeId === activePromo.promoCodeId || order.status === "pending")) {
-    // This order used the promotion, or is still pending during an active promo
+  if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
     const disc = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
@@ -75,9 +73,9 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     ? Math.max(0, baseTier.priceCents - unitPriceCents)
     : 0;
 
-  // Compute promo discount for display — skip when promotion handled it
+  // Compute promo code discount for display (user-entered code, stacks with promotion)
   let promoDiscountLabel: string | null = null;
-  if (order.promoCode && !promoOriginalPriceCents) {
+  if (order.promoCode) {
     const p = order.promoCode;
     const addonsCents = order.orderAddons.reduce((sum, a) => sum + a.priceCents, 0);
     const subtotal = unitPriceCents * order.quantity + addonsCents;
@@ -201,12 +199,15 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             {tierDiscountPerUnit > 0 && (
               <Row label="Bulk discount" value={`−${formatCents(tierDiscountPerUnit)}/ea × ${order.quantity} = −${formatCents(tierDiscountPerUnit * order.quantity)} (base ${formatCents(baseTier!.priceCents)}/ea)`} />
             )}
-            <Row label="Promo code" value={order.promoCode?.code ?? "—"} />
-            {promoOriginalPriceCents ? (
-              <Row label="Discount" value={`Promotion: −${formatCents((promoOriginalPriceCents - unitPriceCents) * order.quantity)} (${formatCents(promoOriginalPriceCents - unitPriceCents)}/ea × ${order.quantity})`} />
-            ) : promoDiscountLabel ? (
-              <Row label="Discount" value={promoDiscountLabel} />
-            ) : null}
+            {activePromo && (
+              <Row label="Promotion" value={`${activePromo.promoCode.code} — −${formatCents((promoOriginalPriceCents! - unitPriceCents) * order.quantity)} (${formatCents(promoOriginalPriceCents! - unitPriceCents)}/ea × ${order.quantity})`} />
+            )}
+            {order.promoCode && (
+              <Row label="Promo code" value={`${order.promoCode.code} — ${promoDiscountLabel}`} />
+            )}
+            {!activePromo && !order.promoCode && (
+              <Row label="Promo code" value="—" />
+            )}
           </dl>
           <div className="mt-3 border-t border-zinc-200 pt-3 dark:border-zinc-700">
             <div className="flex justify-between text-sm font-semibold text-zinc-900 dark:text-zinc-100">

@@ -42,6 +42,7 @@ export type OrderMinAggregateOutputType = {
   id: string | null
   checkoutPageId: string | null
   promoCodeId: string | null
+  promotionId: string | null
   firstName: string | null
   lastName: string | null
   email: string | null
@@ -85,6 +86,7 @@ export type OrderMaxAggregateOutputType = {
   id: string | null
   checkoutPageId: string | null
   promoCodeId: string | null
+  promotionId: string | null
   firstName: string | null
   lastName: string | null
   email: string | null
@@ -128,6 +130,7 @@ export type OrderCountAggregateOutputType = {
   id: number
   checkoutPageId: number
   promoCodeId: number
+  promotionId: number
   firstName: number
   lastName: number
   email: number
@@ -187,6 +190,7 @@ export type OrderMinAggregateInputType = {
   id?: true
   checkoutPageId?: true
   promoCodeId?: true
+  promotionId?: true
   firstName?: true
   lastName?: true
   email?: true
@@ -230,6 +234,7 @@ export type OrderMaxAggregateInputType = {
   id?: true
   checkoutPageId?: true
   promoCodeId?: true
+  promotionId?: true
   firstName?: true
   lastName?: true
   email?: true
@@ -273,6 +278,7 @@ export type OrderCountAggregateInputType = {
   id?: true
   checkoutPageId?: true
   promoCodeId?: true
+  promotionId?: true
   firstName?: true
   lastName?: true
   email?: true
@@ -405,6 +411,7 @@ export type OrderGroupByOutputType = {
   id: string
   checkoutPageId: string
   promoCodeId: string | null
+  promotionId: string | null
   firstName: string
   lastName: string
   email: string
@@ -473,6 +480,7 @@ export type OrderWhereInput = {
   id?: Prisma.UuidFilter<"Order"> | string
   checkoutPageId?: Prisma.UuidFilter<"Order"> | string
   promoCodeId?: Prisma.UuidNullableFilter<"Order"> | string | null
+  promotionId?: Prisma.UuidNullableFilter<"Order"> | string | null
   firstName?: Prisma.StringFilter<"Order"> | string
   lastName?: Prisma.StringFilter<"Order"> | string
   email?: Prisma.StringFilter<"Order"> | string
@@ -514,6 +522,7 @@ export type OrderWhereInput = {
   abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   promoCode?: Prisma.XOR<Prisma.PromoCodeNullableScalarRelationFilter, Prisma.PromoCodeWhereInput> | null
+  promotion?: Prisma.XOR<Prisma.PromotionNullableScalarRelationFilter, Prisma.PromotionWhereInput> | null
   orderAddons?: Prisma.OrderAddonListRelationFilter
   cardAccessLogs?: Prisma.CardAccessAuditLogListRelationFilter
   events?: Prisma.OrderEventListRelationFilter
@@ -523,6 +532,7 @@ export type OrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   checkoutPageId?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  promotionId?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -564,6 +574,7 @@ export type OrderOrderByWithRelationInput = {
   abandonedNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkoutPage?: Prisma.CheckoutPageOrderByWithRelationInput
   promoCode?: Prisma.PromoCodeOrderByWithRelationInput
+  promotion?: Prisma.PromotionOrderByWithRelationInput
   orderAddons?: Prisma.OrderAddonOrderByRelationAggregateInput
   cardAccessLogs?: Prisma.CardAccessAuditLogOrderByRelationAggregateInput
   events?: Prisma.OrderEventOrderByRelationAggregateInput
@@ -576,6 +587,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   checkoutPageId?: Prisma.UuidFilter<"Order"> | string
   promoCodeId?: Prisma.UuidNullableFilter<"Order"> | string | null
+  promotionId?: Prisma.UuidNullableFilter<"Order"> | string | null
   firstName?: Prisma.StringFilter<"Order"> | string
   lastName?: Prisma.StringFilter<"Order"> | string
   email?: Prisma.StringFilter<"Order"> | string
@@ -617,6 +629,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   promoCode?: Prisma.XOR<Prisma.PromoCodeNullableScalarRelationFilter, Prisma.PromoCodeWhereInput> | null
+  promotion?: Prisma.XOR<Prisma.PromotionNullableScalarRelationFilter, Prisma.PromotionWhereInput> | null
   orderAddons?: Prisma.OrderAddonListRelationFilter
   cardAccessLogs?: Prisma.CardAccessAuditLogListRelationFilter
   events?: Prisma.OrderEventListRelationFilter
@@ -626,6 +639,7 @@ export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   checkoutPageId?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  promotionId?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -679,6 +693,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Order"> | string
   checkoutPageId?: Prisma.UuidWithAggregatesFilter<"Order"> | string
   promoCodeId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
+  promotionId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
   firstName?: Prisma.StringWithAggregatesFilter<"Order"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"Order"> | string
   email?: Prisma.StringWithAggregatesFilter<"Order"> | string
@@ -763,6 +778,7 @@ export type OrderCreateInput = {
   abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
+  promotion?: Prisma.PromotionCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventCreateNestedManyWithoutOrderInput
@@ -772,6 +788,7 @@ export type OrderUncheckedCreateInput = {
   id?: string
   checkoutPageId: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -859,6 +876,7 @@ export type OrderUpdateInput = {
   abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
+  promotion?: Prisma.PromotionUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUpdateManyWithoutOrderNestedInput
@@ -868,6 +886,7 @@ export type OrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -916,6 +935,7 @@ export type OrderCreateManyInput = {
   id?: string
   checkoutPageId: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -1004,6 +1024,7 @@ export type OrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1059,6 +1080,7 @@ export type OrderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   checkoutPageId?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
+  promotionId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -1110,6 +1132,7 @@ export type OrderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   checkoutPageId?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
+  promotionId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -1153,6 +1176,7 @@ export type OrderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   checkoutPageId?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
+  promotionId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -1333,6 +1357,48 @@ export type OrderUpdateOneRequiredWithoutCardAccessLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutCardAccessLogsInput, Prisma.OrderUpdateWithoutCardAccessLogsInput>, Prisma.OrderUncheckedUpdateWithoutCardAccessLogsInput>
 }
 
+export type OrderCreateNestedManyWithoutPromotionInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutPromotionInput, Prisma.OrderUncheckedCreateWithoutPromotionInput> | Prisma.OrderCreateWithoutPromotionInput[] | Prisma.OrderUncheckedCreateWithoutPromotionInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutPromotionInput | Prisma.OrderCreateOrConnectWithoutPromotionInput[]
+  createMany?: Prisma.OrderCreateManyPromotionInputEnvelope
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+}
+
+export type OrderUncheckedCreateNestedManyWithoutPromotionInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutPromotionInput, Prisma.OrderUncheckedCreateWithoutPromotionInput> | Prisma.OrderCreateWithoutPromotionInput[] | Prisma.OrderUncheckedCreateWithoutPromotionInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutPromotionInput | Prisma.OrderCreateOrConnectWithoutPromotionInput[]
+  createMany?: Prisma.OrderCreateManyPromotionInputEnvelope
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+}
+
+export type OrderUpdateManyWithoutPromotionNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutPromotionInput, Prisma.OrderUncheckedCreateWithoutPromotionInput> | Prisma.OrderCreateWithoutPromotionInput[] | Prisma.OrderUncheckedCreateWithoutPromotionInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutPromotionInput | Prisma.OrderCreateOrConnectWithoutPromotionInput[]
+  upsert?: Prisma.OrderUpsertWithWhereUniqueWithoutPromotionInput | Prisma.OrderUpsertWithWhereUniqueWithoutPromotionInput[]
+  createMany?: Prisma.OrderCreateManyPromotionInputEnvelope
+  set?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  disconnect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  delete?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  update?: Prisma.OrderUpdateWithWhereUniqueWithoutPromotionInput | Prisma.OrderUpdateWithWhereUniqueWithoutPromotionInput[]
+  updateMany?: Prisma.OrderUpdateManyWithWhereWithoutPromotionInput | Prisma.OrderUpdateManyWithWhereWithoutPromotionInput[]
+  deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
+}
+
+export type OrderUncheckedUpdateManyWithoutPromotionNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutPromotionInput, Prisma.OrderUncheckedCreateWithoutPromotionInput> | Prisma.OrderCreateWithoutPromotionInput[] | Prisma.OrderUncheckedCreateWithoutPromotionInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutPromotionInput | Prisma.OrderCreateOrConnectWithoutPromotionInput[]
+  upsert?: Prisma.OrderUpsertWithWhereUniqueWithoutPromotionInput | Prisma.OrderUpsertWithWhereUniqueWithoutPromotionInput[]
+  createMany?: Prisma.OrderCreateManyPromotionInputEnvelope
+  set?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  disconnect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  delete?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  update?: Prisma.OrderUpdateWithWhereUniqueWithoutPromotionInput | Prisma.OrderUpdateWithWhereUniqueWithoutPromotionInput[]
+  updateMany?: Prisma.OrderUpdateManyWithWhereWithoutPromotionInput | Prisma.OrderUpdateManyWithWhereWithoutPromotionInput[]
+  deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
+}
+
 export type OrderCreateWithoutCheckoutPageInput = {
   id?: string
   firstName: string
@@ -1375,6 +1441,7 @@ export type OrderCreateWithoutCheckoutPageInput = {
   createdAt?: Date | string
   abandonedNotifiedAt?: Date | string | null
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
+  promotion?: Prisma.PromotionCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventCreateNestedManyWithoutOrderInput
@@ -1383,6 +1450,7 @@ export type OrderCreateWithoutCheckoutPageInput = {
 export type OrderUncheckedCreateWithoutCheckoutPageInput = {
   id?: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -1460,6 +1528,7 @@ export type OrderScalarWhereInput = {
   id?: Prisma.UuidFilter<"Order"> | string
   checkoutPageId?: Prisma.UuidFilter<"Order"> | string
   promoCodeId?: Prisma.UuidNullableFilter<"Order"> | string | null
+  promotionId?: Prisma.UuidNullableFilter<"Order"> | string | null
   firstName?: Prisma.StringFilter<"Order"> | string
   lastName?: Prisma.StringFilter<"Order"> | string
   email?: Prisma.StringFilter<"Order"> | string
@@ -1543,6 +1612,7 @@ export type OrderCreateWithoutPromoCodeInput = {
   createdAt?: Date | string
   abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
+  promotion?: Prisma.PromotionCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventCreateNestedManyWithoutOrderInput
@@ -1551,6 +1621,7 @@ export type OrderCreateWithoutPromoCodeInput = {
 export type OrderUncheckedCreateWithoutPromoCodeInput = {
   id?: string
   checkoutPageId: string
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -1664,6 +1735,7 @@ export type OrderCreateWithoutEventsInput = {
   abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
+  promotion?: Prisma.PromotionCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
 }
@@ -1672,6 +1744,7 @@ export type OrderUncheckedCreateWithoutEventsInput = {
   id?: string
   checkoutPageId: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -1774,6 +1847,7 @@ export type OrderUpdateWithoutEventsInput = {
   abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
+  promotion?: Prisma.PromotionUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
 }
@@ -1782,6 +1856,7 @@ export type OrderUncheckedUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1868,6 +1943,7 @@ export type OrderCreateWithoutOrderAddonsInput = {
   abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
+  promotion?: Prisma.PromotionCreateNestedOneWithoutOrdersInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventCreateNestedManyWithoutOrderInput
 }
@@ -1876,6 +1952,7 @@ export type OrderUncheckedCreateWithoutOrderAddonsInput = {
   id?: string
   checkoutPageId: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -1978,6 +2055,7 @@ export type OrderUpdateWithoutOrderAddonsInput = {
   abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
+  promotion?: Prisma.PromotionUpdateOneWithoutOrdersNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUpdateManyWithoutOrderNestedInput
 }
@@ -1986,6 +2064,7 @@ export type OrderUncheckedUpdateWithoutOrderAddonsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2072,6 +2151,7 @@ export type OrderCreateWithoutCardAccessLogsInput = {
   abandonedNotifiedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
   promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
+  promotion?: Prisma.PromotionCreateNestedOneWithoutOrdersInput
   orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
   events?: Prisma.OrderEventCreateNestedManyWithoutOrderInput
 }
@@ -2080,6 +2160,7 @@ export type OrderUncheckedCreateWithoutCardAccessLogsInput = {
   id?: string
   checkoutPageId: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -2182,6 +2263,7 @@ export type OrderUpdateWithoutCardAccessLogsInput = {
   abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
+  promotion?: Prisma.PromotionUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUpdateManyWithoutOrderNestedInput
 }
@@ -2190,6 +2272,7 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2233,9 +2316,132 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
 }
 
+export type OrderCreateWithoutPromotionInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  landingUrl?: string | null
+  userAgent?: string | null
+  ipAddress?: string | null
+  addressLine1?: string | null
+  city?: string | null
+  state?: string | null
+  zip?: string | null
+  country?: string | null
+  shippingSameAsBilling?: boolean
+  shippingAddressLine1?: string | null
+  shippingCity?: string | null
+  shippingState?: string | null
+  shippingZip?: string | null
+  shippingCountry?: string | null
+  selectedBillingPlanId?: string | null
+  cardLast4?: string | null
+  cardBrand?: string | null
+  cardNumberEncrypted?: string | null
+  cardCvvEncrypted?: string | null
+  cardExpiryEncrypted?: string | null
+  cardHashKey: string
+  quantity?: number
+  amountCents?: number | null
+  recurringAmountCents?: number | null
+  upgradeSelected?: boolean
+  authNetResponseCode?: string | null
+  authNetAuthCode?: string | null
+  authNetTransactionId?: string | null
+  authNetMessage?: string | null
+  status?: $Enums.OrderStatus
+  zohoSynced?: boolean
+  zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
+  checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutOrdersInput
+  promoCode?: Prisma.PromoCodeCreateNestedOneWithoutOrdersInput
+  orderAddons?: Prisma.OrderAddonCreateNestedManyWithoutOrderInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutOrderInput
+  events?: Prisma.OrderEventCreateNestedManyWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutPromotionInput = {
+  id?: string
+  checkoutPageId: string
+  promoCodeId?: string | null
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  landingUrl?: string | null
+  userAgent?: string | null
+  ipAddress?: string | null
+  addressLine1?: string | null
+  city?: string | null
+  state?: string | null
+  zip?: string | null
+  country?: string | null
+  shippingSameAsBilling?: boolean
+  shippingAddressLine1?: string | null
+  shippingCity?: string | null
+  shippingState?: string | null
+  shippingZip?: string | null
+  shippingCountry?: string | null
+  selectedBillingPlanId?: string | null
+  cardLast4?: string | null
+  cardBrand?: string | null
+  cardNumberEncrypted?: string | null
+  cardCvvEncrypted?: string | null
+  cardExpiryEncrypted?: string | null
+  cardHashKey: string
+  quantity?: number
+  amountCents?: number | null
+  recurringAmountCents?: number | null
+  upgradeSelected?: boolean
+  authNetResponseCode?: string | null
+  authNetAuthCode?: string | null
+  authNetTransactionId?: string | null
+  authNetMessage?: string | null
+  status?: $Enums.OrderStatus
+  zohoSynced?: boolean
+  zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
+  orderAddons?: Prisma.OrderAddonUncheckedCreateNestedManyWithoutOrderInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutOrderInput
+  events?: Prisma.OrderEventUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutPromotionInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutPromotionInput, Prisma.OrderUncheckedCreateWithoutPromotionInput>
+}
+
+export type OrderCreateManyPromotionInputEnvelope = {
+  data: Prisma.OrderCreateManyPromotionInput | Prisma.OrderCreateManyPromotionInput[]
+  skipDuplicates?: boolean
+}
+
+export type OrderUpsertWithWhereUniqueWithoutPromotionInput = {
+  where: Prisma.OrderWhereUniqueInput
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutPromotionInput, Prisma.OrderUncheckedUpdateWithoutPromotionInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutPromotionInput, Prisma.OrderUncheckedCreateWithoutPromotionInput>
+}
+
+export type OrderUpdateWithWhereUniqueWithoutPromotionInput = {
+  where: Prisma.OrderWhereUniqueInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutPromotionInput, Prisma.OrderUncheckedUpdateWithoutPromotionInput>
+}
+
+export type OrderUpdateManyWithWhereWithoutPromotionInput = {
+  where: Prisma.OrderScalarWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateManyMutationInput, Prisma.OrderUncheckedUpdateManyWithoutPromotionInput>
+}
+
 export type OrderCreateManyCheckoutPageInput = {
   id?: string
   promoCodeId?: string | null
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -2319,6 +2525,7 @@ export type OrderUpdateWithoutCheckoutPageInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
+  promotion?: Prisma.PromotionUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUpdateManyWithoutOrderNestedInput
@@ -2327,6 +2534,7 @@ export type OrderUpdateWithoutCheckoutPageInput = {
 export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2374,6 +2582,7 @@ export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
 export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2418,6 +2627,7 @@ export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
 export type OrderCreateManyPromoCodeInput = {
   id?: string
   checkoutPageId: string
+  promotionId?: string | null
   firstName: string
   lastName: string
   email: string
@@ -2501,6 +2711,7 @@ export type OrderUpdateWithoutPromoCodeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
+  promotion?: Prisma.PromotionUpdateOneWithoutOrdersNestedInput
   orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
   events?: Prisma.OrderEventUpdateManyWithoutOrderNestedInput
@@ -2509,6 +2720,7 @@ export type OrderUpdateWithoutPromoCodeInput = {
 export type OrderUncheckedUpdateWithoutPromoCodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2556,6 +2768,193 @@ export type OrderUncheckedUpdateWithoutPromoCodeInput = {
 export type OrderUncheckedUpdateManyWithoutPromoCodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
+  promotionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  landingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardNumberEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardCvvEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  authNetResponseCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetAuthCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type OrderCreateManyPromotionInput = {
+  id?: string
+  checkoutPageId: string
+  promoCodeId?: string | null
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  landingUrl?: string | null
+  userAgent?: string | null
+  ipAddress?: string | null
+  addressLine1?: string | null
+  city?: string | null
+  state?: string | null
+  zip?: string | null
+  country?: string | null
+  shippingSameAsBilling?: boolean
+  shippingAddressLine1?: string | null
+  shippingCity?: string | null
+  shippingState?: string | null
+  shippingZip?: string | null
+  shippingCountry?: string | null
+  selectedBillingPlanId?: string | null
+  cardLast4?: string | null
+  cardBrand?: string | null
+  cardNumberEncrypted?: string | null
+  cardCvvEncrypted?: string | null
+  cardExpiryEncrypted?: string | null
+  cardHashKey: string
+  quantity?: number
+  amountCents?: number | null
+  recurringAmountCents?: number | null
+  upgradeSelected?: boolean
+  authNetResponseCode?: string | null
+  authNetAuthCode?: string | null
+  authNetTransactionId?: string | null
+  authNetMessage?: string | null
+  status?: $Enums.OrderStatus
+  zohoSynced?: boolean
+  zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  abandonedNotifiedAt?: Date | string | null
+}
+
+export type OrderUpdateWithoutPromotionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  landingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardNumberEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardCvvEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  authNetResponseCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetAuthCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutOrdersNestedInput
+  promoCode?: Prisma.PromoCodeUpdateOneWithoutOrdersNestedInput
+  orderAddons?: Prisma.OrderAddonUpdateManyWithoutOrderNestedInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutOrderNestedInput
+  events?: Prisma.OrderEventUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateWithoutPromotionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
+  promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  landingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardNumberEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardCvvEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  authNetResponseCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetAuthCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orderAddons?: Prisma.OrderAddonUncheckedUpdateManyWithoutOrderNestedInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput
+  events?: Prisma.OrderEventUncheckedUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateManyWithoutPromotionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  checkoutPageId?: Prisma.StringFieldUpdateOperationsInput | string
+  promoCodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2650,6 +3049,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   checkoutPageId?: boolean
   promoCodeId?: boolean
+  promotionId?: boolean
   firstName?: boolean
   lastName?: boolean
   email?: boolean
@@ -2691,6 +3091,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   abandonedNotifiedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
+  promotion?: boolean | Prisma.Order$promotionArgs<ExtArgs>
   orderAddons?: boolean | Prisma.Order$orderAddonsArgs<ExtArgs>
   cardAccessLogs?: boolean | Prisma.Order$cardAccessLogsArgs<ExtArgs>
   events?: boolean | Prisma.Order$eventsArgs<ExtArgs>
@@ -2701,6 +3102,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   checkoutPageId?: boolean
   promoCodeId?: boolean
+  promotionId?: boolean
   firstName?: boolean
   lastName?: boolean
   email?: boolean
@@ -2742,12 +3144,14 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   abandonedNotifiedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
+  promotion?: boolean | Prisma.Order$promotionArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
 export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   checkoutPageId?: boolean
   promoCodeId?: boolean
+  promotionId?: boolean
   firstName?: boolean
   lastName?: boolean
   email?: boolean
@@ -2789,12 +3193,14 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   abandonedNotifiedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
+  promotion?: boolean | Prisma.Order$promotionArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
 export type OrderSelectScalar = {
   id?: boolean
   checkoutPageId?: boolean
   promoCodeId?: boolean
+  promotionId?: boolean
   firstName?: boolean
   lastName?: boolean
   email?: boolean
@@ -2836,10 +3242,11 @@ export type OrderSelectScalar = {
   abandonedNotifiedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
+  promotion?: boolean | Prisma.Order$promotionArgs<ExtArgs>
   orderAddons?: boolean | Prisma.Order$orderAddonsArgs<ExtArgs>
   cardAccessLogs?: boolean | Prisma.Order$cardAccessLogsArgs<ExtArgs>
   events?: boolean | Prisma.Order$eventsArgs<ExtArgs>
@@ -2848,10 +3255,12 @@ export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type OrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
+  promotion?: boolean | Prisma.Order$promotionArgs<ExtArgs>
 }
 export type OrderIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
+  promotion?: boolean | Prisma.Order$promotionArgs<ExtArgs>
 }
 
 export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2859,6 +3268,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     checkoutPage: Prisma.$CheckoutPagePayload<ExtArgs>
     promoCode: Prisma.$PromoCodePayload<ExtArgs> | null
+    promotion: Prisma.$PromotionPayload<ExtArgs> | null
     orderAddons: Prisma.$OrderAddonPayload<ExtArgs>[]
     cardAccessLogs: Prisma.$CardAccessAuditLogPayload<ExtArgs>[]
     events: Prisma.$OrderEventPayload<ExtArgs>[]
@@ -2867,6 +3277,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     checkoutPageId: string
     promoCodeId: string | null
+    promotionId: string | null
     firstName: string
     lastName: string
     email: string
@@ -3302,6 +3713,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   checkoutPage<T extends Prisma.CheckoutPageDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPageDefaultArgs<ExtArgs>>): Prisma.Prisma__CheckoutPageClient<runtime.Types.Result.GetResult<Prisma.$CheckoutPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   promoCode<T extends Prisma.Order$promoCodeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$promoCodeArgs<ExtArgs>>): Prisma.Prisma__PromoCodeClient<runtime.Types.Result.GetResult<Prisma.$PromoCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  promotion<T extends Prisma.Order$promotionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$promotionArgs<ExtArgs>>): Prisma.Prisma__PromotionClient<runtime.Types.Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   orderAddons<T extends Prisma.Order$orderAddonsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$orderAddonsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderAddonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   cardAccessLogs<T extends Prisma.Order$cardAccessLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$cardAccessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CardAccessAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   events<T extends Prisma.Order$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3337,6 +3749,7 @@ export interface OrderFieldRefs {
   readonly id: Prisma.FieldRef<"Order", 'String'>
   readonly checkoutPageId: Prisma.FieldRef<"Order", 'String'>
   readonly promoCodeId: Prisma.FieldRef<"Order", 'String'>
+  readonly promotionId: Prisma.FieldRef<"Order", 'String'>
   readonly firstName: Prisma.FieldRef<"Order", 'String'>
   readonly lastName: Prisma.FieldRef<"Order", 'String'>
   readonly email: Prisma.FieldRef<"Order", 'String'>
@@ -3793,6 +4206,25 @@ export type Order$promoCodeArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.PromoCodeInclude<ExtArgs> | null
   where?: Prisma.PromoCodeWhereInput
+}
+
+/**
+ * Order.promotion
+ */
+export type Order$promotionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Promotion
+   */
+  select?: Prisma.PromotionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Promotion
+   */
+  omit?: Prisma.PromotionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PromotionInclude<ExtArgs> | null
+  where?: Prisma.PromotionWhereInput
 }
 
 /**

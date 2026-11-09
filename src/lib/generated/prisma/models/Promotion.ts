@@ -30,6 +30,8 @@ export type PromotionMinAggregateOutputType = {
   isActive: boolean | null
   startsAt: Date | null
   endsAt: Date | null
+  badgeText: string | null
+  urgencyText: string | null
   timezone: string | null
   promoCodeId: string | null
   priceTierId: string | null
@@ -43,6 +45,8 @@ export type PromotionMaxAggregateOutputType = {
   isActive: boolean | null
   startsAt: Date | null
   endsAt: Date | null
+  badgeText: string | null
+  urgencyText: string | null
   timezone: string | null
   promoCodeId: string | null
   priceTierId: string | null
@@ -56,6 +60,8 @@ export type PromotionCountAggregateOutputType = {
   isActive: number
   startsAt: number
   endsAt: number
+  badgeText: number
+  urgencyText: number
   timezone: number
   promoCodeId: number
   priceTierId: number
@@ -71,6 +77,8 @@ export type PromotionMinAggregateInputType = {
   isActive?: true
   startsAt?: true
   endsAt?: true
+  badgeText?: true
+  urgencyText?: true
   timezone?: true
   promoCodeId?: true
   priceTierId?: true
@@ -84,6 +92,8 @@ export type PromotionMaxAggregateInputType = {
   isActive?: true
   startsAt?: true
   endsAt?: true
+  badgeText?: true
+  urgencyText?: true
   timezone?: true
   promoCodeId?: true
   priceTierId?: true
@@ -97,6 +107,8 @@ export type PromotionCountAggregateInputType = {
   isActive?: true
   startsAt?: true
   endsAt?: true
+  badgeText?: true
+  urgencyText?: true
   timezone?: true
   promoCodeId?: true
   priceTierId?: true
@@ -183,6 +195,8 @@ export type PromotionGroupByOutputType = {
   isActive: boolean
   startsAt: Date | null
   endsAt: Date | null
+  badgeText: string
+  urgencyText: string
   timezone: string
   promoCodeId: string
   priceTierId: string
@@ -217,6 +231,8 @@ export type PromotionWhereInput = {
   isActive?: Prisma.BoolFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
+  badgeText?: Prisma.StringFilter<"Promotion"> | string
+  urgencyText?: Prisma.StringFilter<"Promotion"> | string
   timezone?: Prisma.StringFilter<"Promotion"> | string
   promoCodeId?: Prisma.UuidFilter<"Promotion"> | string
   priceTierId?: Prisma.UuidFilter<"Promotion"> | string
@@ -225,6 +241,7 @@ export type PromotionWhereInput = {
   promoCode?: Prisma.XOR<Prisma.PromoCodeScalarRelationFilter, Prisma.PromoCodeWhereInput>
   priceTier?: Prisma.XOR<Prisma.PriceTierScalarRelationFilter, Prisma.PriceTierWhereInput>
   checkoutPages?: Prisma.PromotionCheckoutPageListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
 }
 
 export type PromotionOrderByWithRelationInput = {
@@ -233,6 +250,8 @@ export type PromotionOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  badgeText?: Prisma.SortOrder
+  urgencyText?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
   priceTierId?: Prisma.SortOrder
@@ -241,6 +260,7 @@ export type PromotionOrderByWithRelationInput = {
   promoCode?: Prisma.PromoCodeOrderByWithRelationInput
   priceTier?: Prisma.PriceTierOrderByWithRelationInput
   checkoutPages?: Prisma.PromotionCheckoutPageOrderByRelationAggregateInput
+  orders?: Prisma.OrderOrderByRelationAggregateInput
 }
 
 export type PromotionWhereUniqueInput = Prisma.AtLeast<{
@@ -252,6 +272,8 @@ export type PromotionWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
+  badgeText?: Prisma.StringFilter<"Promotion"> | string
+  urgencyText?: Prisma.StringFilter<"Promotion"> | string
   timezone?: Prisma.StringFilter<"Promotion"> | string
   promoCodeId?: Prisma.UuidFilter<"Promotion"> | string
   priceTierId?: Prisma.UuidFilter<"Promotion"> | string
@@ -260,6 +282,7 @@ export type PromotionWhereUniqueInput = Prisma.AtLeast<{
   promoCode?: Prisma.XOR<Prisma.PromoCodeScalarRelationFilter, Prisma.PromoCodeWhereInput>
   priceTier?: Prisma.XOR<Prisma.PriceTierScalarRelationFilter, Prisma.PriceTierWhereInput>
   checkoutPages?: Prisma.PromotionCheckoutPageListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
 }, "id">
 
 export type PromotionOrderByWithAggregationInput = {
@@ -268,6 +291,8 @@ export type PromotionOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  badgeText?: Prisma.SortOrder
+  urgencyText?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
   priceTierId?: Prisma.SortOrder
@@ -287,6 +312,8 @@ export type PromotionScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Promotion"> | Date | string | null
+  badgeText?: Prisma.StringWithAggregatesFilter<"Promotion"> | string
+  urgencyText?: Prisma.StringWithAggregatesFilter<"Promotion"> | string
   timezone?: Prisma.StringWithAggregatesFilter<"Promotion"> | string
   promoCodeId?: Prisma.UuidWithAggregatesFilter<"Promotion"> | string
   priceTierId?: Prisma.UuidWithAggregatesFilter<"Promotion"> | string
@@ -300,12 +327,15 @@ export type PromotionCreateInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   promoCode: Prisma.PromoCodeCreateNestedOneWithoutPromotionsInput
   priceTier: Prisma.PriceTierCreateNestedOneWithoutPromotionsInput
   checkoutPages?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutPromotionInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionUncheckedCreateInput = {
@@ -314,12 +344,15 @@ export type PromotionUncheckedCreateInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   promoCodeId: string
   priceTierId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   checkoutPages?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutPromotionInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionUpdateInput = {
@@ -328,12 +361,15 @@ export type PromotionUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   promoCode?: Prisma.PromoCodeUpdateOneRequiredWithoutPromotionsNestedInput
   priceTier?: Prisma.PriceTierUpdateOneRequiredWithoutPromotionsNestedInput
   checkoutPages?: Prisma.PromotionCheckoutPageUpdateManyWithoutPromotionNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionUncheckedUpdateInput = {
@@ -342,12 +378,15 @@ export type PromotionUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.StringFieldUpdateOperationsInput | string
   priceTierId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   checkoutPages?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutPromotionNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionCreateManyInput = {
@@ -356,6 +395,8 @@ export type PromotionCreateManyInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   promoCodeId: string
   priceTierId: string
@@ -369,6 +410,8 @@ export type PromotionUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +423,8 @@ export type PromotionUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.StringFieldUpdateOperationsInput | string
   priceTierId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -397,12 +442,19 @@ export type PromotionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type PromotionNullableScalarRelationFilter = {
+  is?: Prisma.PromotionWhereInput | null
+  isNot?: Prisma.PromotionWhereInput | null
+}
+
 export type PromotionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  badgeText?: Prisma.SortOrder
+  urgencyText?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
   priceTierId?: Prisma.SortOrder
@@ -416,6 +468,8 @@ export type PromotionMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  badgeText?: Prisma.SortOrder
+  urgencyText?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
   priceTierId?: Prisma.SortOrder
@@ -429,6 +483,8 @@ export type PromotionMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  badgeText?: Prisma.SortOrder
+  urgencyText?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   promoCodeId?: Prisma.SortOrder
   priceTierId?: Prisma.SortOrder
@@ -525,6 +581,22 @@ export type PromotionUncheckedUpdateManyWithoutPromoCodeNestedInput = {
   deleteMany?: Prisma.PromotionScalarWhereInput | Prisma.PromotionScalarWhereInput[]
 }
 
+export type PromotionCreateNestedOneWithoutOrdersInput = {
+  create?: Prisma.XOR<Prisma.PromotionCreateWithoutOrdersInput, Prisma.PromotionUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.PromotionCreateOrConnectWithoutOrdersInput
+  connect?: Prisma.PromotionWhereUniqueInput
+}
+
+export type PromotionUpdateOneWithoutOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.PromotionCreateWithoutOrdersInput, Prisma.PromotionUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.PromotionCreateOrConnectWithoutOrdersInput
+  upsert?: Prisma.PromotionUpsertWithoutOrdersInput
+  disconnect?: Prisma.PromotionWhereInput | boolean
+  delete?: Prisma.PromotionWhereInput | boolean
+  connect?: Prisma.PromotionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PromotionUpdateToOneWithWhereWithoutOrdersInput, Prisma.PromotionUpdateWithoutOrdersInput>, Prisma.PromotionUncheckedUpdateWithoutOrdersInput>
+}
+
 export type PromotionCreateNestedOneWithoutCheckoutPagesInput = {
   create?: Prisma.XOR<Prisma.PromotionCreateWithoutCheckoutPagesInput, Prisma.PromotionUncheckedCreateWithoutCheckoutPagesInput>
   connectOrCreate?: Prisma.PromotionCreateOrConnectWithoutCheckoutPagesInput
@@ -545,11 +617,14 @@ export type PromotionCreateWithoutPriceTierInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   promoCode: Prisma.PromoCodeCreateNestedOneWithoutPromotionsInput
   checkoutPages?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutPromotionInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionUncheckedCreateWithoutPriceTierInput = {
@@ -558,11 +633,14 @@ export type PromotionUncheckedCreateWithoutPriceTierInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   promoCodeId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   checkoutPages?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutPromotionInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionCreateOrConnectWithoutPriceTierInput = {
@@ -600,6 +678,8 @@ export type PromotionScalarWhereInput = {
   isActive?: Prisma.BoolFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
+  badgeText?: Prisma.StringFilter<"Promotion"> | string
+  urgencyText?: Prisma.StringFilter<"Promotion"> | string
   timezone?: Prisma.StringFilter<"Promotion"> | string
   promoCodeId?: Prisma.UuidFilter<"Promotion"> | string
   priceTierId?: Prisma.UuidFilter<"Promotion"> | string
@@ -613,11 +693,14 @@ export type PromotionCreateWithoutPromoCodeInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   priceTier: Prisma.PriceTierCreateNestedOneWithoutPromotionsInput
   checkoutPages?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutPromotionInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionUncheckedCreateWithoutPromoCodeInput = {
@@ -626,11 +709,14 @@ export type PromotionUncheckedCreateWithoutPromoCodeInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   priceTierId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   checkoutPages?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutPromotionInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionCreateOrConnectWithoutPromoCodeInput = {
@@ -659,17 +745,100 @@ export type PromotionUpdateManyWithWhereWithoutPromoCodeInput = {
   data: Prisma.XOR<Prisma.PromotionUpdateManyMutationInput, Prisma.PromotionUncheckedUpdateManyWithoutPromoCodeInput>
 }
 
+export type PromotionCreateWithoutOrdersInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  promoCode: Prisma.PromoCodeCreateNestedOneWithoutPromotionsInput
+  priceTier: Prisma.PriceTierCreateNestedOneWithoutPromotionsInput
+  checkoutPages?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutPromotionInput
+}
+
+export type PromotionUncheckedCreateWithoutOrdersInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
+  timezone?: string
+  promoCodeId: string
+  priceTierId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checkoutPages?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutPromotionInput
+}
+
+export type PromotionCreateOrConnectWithoutOrdersInput = {
+  where: Prisma.PromotionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PromotionCreateWithoutOrdersInput, Prisma.PromotionUncheckedCreateWithoutOrdersInput>
+}
+
+export type PromotionUpsertWithoutOrdersInput = {
+  update: Prisma.XOR<Prisma.PromotionUpdateWithoutOrdersInput, Prisma.PromotionUncheckedUpdateWithoutOrdersInput>
+  create: Prisma.XOR<Prisma.PromotionCreateWithoutOrdersInput, Prisma.PromotionUncheckedCreateWithoutOrdersInput>
+  where?: Prisma.PromotionWhereInput
+}
+
+export type PromotionUpdateToOneWithWhereWithoutOrdersInput = {
+  where?: Prisma.PromotionWhereInput
+  data: Prisma.XOR<Prisma.PromotionUpdateWithoutOrdersInput, Prisma.PromotionUncheckedUpdateWithoutOrdersInput>
+}
+
+export type PromotionUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  promoCode?: Prisma.PromoCodeUpdateOneRequiredWithoutPromotionsNestedInput
+  priceTier?: Prisma.PriceTierUpdateOneRequiredWithoutPromotionsNestedInput
+  checkoutPages?: Prisma.PromotionCheckoutPageUpdateManyWithoutPromotionNestedInput
+}
+
+export type PromotionUncheckedUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  promoCodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  priceTierId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checkoutPages?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutPromotionNestedInput
+}
+
 export type PromotionCreateWithoutCheckoutPagesInput = {
   id?: string
   name: string
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   promoCode: Prisma.PromoCodeCreateNestedOneWithoutPromotionsInput
   priceTier: Prisma.PriceTierCreateNestedOneWithoutPromotionsInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionUncheckedCreateWithoutCheckoutPagesInput = {
@@ -678,11 +847,14 @@ export type PromotionUncheckedCreateWithoutCheckoutPagesInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   promoCodeId: string
   priceTierId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromotionInput
 }
 
 export type PromotionCreateOrConnectWithoutCheckoutPagesInput = {
@@ -707,11 +879,14 @@ export type PromotionUpdateWithoutCheckoutPagesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   promoCode?: Prisma.PromoCodeUpdateOneRequiredWithoutPromotionsNestedInput
   priceTier?: Prisma.PriceTierUpdateOneRequiredWithoutPromotionsNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionUncheckedUpdateWithoutCheckoutPagesInput = {
@@ -720,11 +895,14 @@ export type PromotionUncheckedUpdateWithoutCheckoutPagesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.StringFieldUpdateOperationsInput | string
   priceTierId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionCreateManyPriceTierInput = {
@@ -733,6 +911,8 @@ export type PromotionCreateManyPriceTierInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   promoCodeId: string
   createdAt?: Date | string
@@ -745,11 +925,14 @@ export type PromotionUpdateWithoutPriceTierInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   promoCode?: Prisma.PromoCodeUpdateOneRequiredWithoutPromotionsNestedInput
   checkoutPages?: Prisma.PromotionCheckoutPageUpdateManyWithoutPromotionNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionUncheckedUpdateWithoutPriceTierInput = {
@@ -758,11 +941,14 @@ export type PromotionUncheckedUpdateWithoutPriceTierInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   checkoutPages?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutPromotionNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionUncheckedUpdateManyWithoutPriceTierInput = {
@@ -771,6 +957,8 @@ export type PromotionUncheckedUpdateManyWithoutPriceTierInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   promoCodeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -783,6 +971,8 @@ export type PromotionCreateManyPromoCodeInput = {
   isActive?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  badgeText?: string
+  urgencyText?: string
   timezone?: string
   priceTierId: string
   createdAt?: Date | string
@@ -795,11 +985,14 @@ export type PromotionUpdateWithoutPromoCodeInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   priceTier?: Prisma.PriceTierUpdateOneRequiredWithoutPromotionsNestedInput
   checkoutPages?: Prisma.PromotionCheckoutPageUpdateManyWithoutPromotionNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionUncheckedUpdateWithoutPromoCodeInput = {
@@ -808,11 +1001,14 @@ export type PromotionUncheckedUpdateWithoutPromoCodeInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   priceTierId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   checkoutPages?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutPromotionNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPromotionNestedInput
 }
 
 export type PromotionUncheckedUpdateManyWithoutPromoCodeInput = {
@@ -821,6 +1017,8 @@ export type PromotionUncheckedUpdateManyWithoutPromoCodeInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  badgeText?: Prisma.StringFieldUpdateOperationsInput | string
+  urgencyText?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   priceTierId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -834,10 +1032,12 @@ export type PromotionUncheckedUpdateManyWithoutPromoCodeInput = {
 
 export type PromotionCountOutputType = {
   checkoutPages: number
+  orders: number
 }
 
 export type PromotionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPages?: boolean | PromotionCountOutputTypeCountCheckoutPagesArgs
+  orders?: boolean | PromotionCountOutputTypeCountOrdersArgs
 }
 
 /**
@@ -857,6 +1057,13 @@ export type PromotionCountOutputTypeCountCheckoutPagesArgs<ExtArgs extends runti
   where?: Prisma.PromotionCheckoutPageWhereInput
 }
 
+/**
+ * PromotionCountOutputType without action
+ */
+export type PromotionCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderWhereInput
+}
+
 
 export type PromotionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -864,6 +1071,8 @@ export type PromotionSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   isActive?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  badgeText?: boolean
+  urgencyText?: boolean
   timezone?: boolean
   promoCodeId?: boolean
   priceTierId?: boolean
@@ -872,6 +1081,7 @@ export type PromotionSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   promoCode?: boolean | Prisma.PromoCodeDefaultArgs<ExtArgs>
   priceTier?: boolean | Prisma.PriceTierDefaultArgs<ExtArgs>
   checkoutPages?: boolean | Prisma.Promotion$checkoutPagesArgs<ExtArgs>
+  orders?: boolean | Prisma.Promotion$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.PromotionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["promotion"]>
 
@@ -881,6 +1091,8 @@ export type PromotionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   isActive?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  badgeText?: boolean
+  urgencyText?: boolean
   timezone?: boolean
   promoCodeId?: boolean
   priceTierId?: boolean
@@ -896,6 +1108,8 @@ export type PromotionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   isActive?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  badgeText?: boolean
+  urgencyText?: boolean
   timezone?: boolean
   promoCodeId?: boolean
   priceTierId?: boolean
@@ -911,6 +1125,8 @@ export type PromotionSelectScalar = {
   isActive?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  badgeText?: boolean
+  urgencyText?: boolean
   timezone?: boolean
   promoCodeId?: boolean
   priceTierId?: boolean
@@ -918,11 +1134,12 @@ export type PromotionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PromotionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "startsAt" | "endsAt" | "timezone" | "promoCodeId" | "priceTierId" | "createdAt" | "updatedAt", ExtArgs["result"]["promotion"]>
+export type PromotionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "startsAt" | "endsAt" | "badgeText" | "urgencyText" | "timezone" | "promoCodeId" | "priceTierId" | "createdAt" | "updatedAt", ExtArgs["result"]["promotion"]>
 export type PromotionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   promoCode?: boolean | Prisma.PromoCodeDefaultArgs<ExtArgs>
   priceTier?: boolean | Prisma.PriceTierDefaultArgs<ExtArgs>
   checkoutPages?: boolean | Prisma.Promotion$checkoutPagesArgs<ExtArgs>
+  orders?: boolean | Prisma.Promotion$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.PromotionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PromotionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -940,6 +1157,7 @@ export type $PromotionPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     promoCode: Prisma.$PromoCodePayload<ExtArgs>
     priceTier: Prisma.$PriceTierPayload<ExtArgs>
     checkoutPages: Prisma.$PromotionCheckoutPagePayload<ExtArgs>[]
+    orders: Prisma.$OrderPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -947,6 +1165,8 @@ export type $PromotionPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     isActive: boolean
     startsAt: Date | null
     endsAt: Date | null
+    badgeText: string
+    urgencyText: string
     timezone: string
     promoCodeId: string
     priceTierId: string
@@ -1349,6 +1569,7 @@ export interface Prisma__PromotionClient<T, Null = never, ExtArgs extends runtim
   promoCode<T extends Prisma.PromoCodeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PromoCodeDefaultArgs<ExtArgs>>): Prisma.Prisma__PromoCodeClient<runtime.Types.Result.GetResult<Prisma.$PromoCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   priceTier<T extends Prisma.PriceTierDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PriceTierDefaultArgs<ExtArgs>>): Prisma.Prisma__PriceTierClient<runtime.Types.Result.GetResult<Prisma.$PriceTierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   checkoutPages<T extends Prisma.Promotion$checkoutPagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Promotion$checkoutPagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PromotionCheckoutPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orders<T extends Prisma.Promotion$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Promotion$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1383,6 +1604,8 @@ export interface PromotionFieldRefs {
   readonly isActive: Prisma.FieldRef<"Promotion", 'Boolean'>
   readonly startsAt: Prisma.FieldRef<"Promotion", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Promotion", 'DateTime'>
+  readonly badgeText: Prisma.FieldRef<"Promotion", 'String'>
+  readonly urgencyText: Prisma.FieldRef<"Promotion", 'String'>
   readonly timezone: Prisma.FieldRef<"Promotion", 'String'>
   readonly promoCodeId: Prisma.FieldRef<"Promotion", 'String'>
   readonly priceTierId: Prisma.FieldRef<"Promotion", 'String'>
@@ -1810,6 +2033,30 @@ export type Promotion$checkoutPagesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.PromotionCheckoutPageScalarFieldEnum | Prisma.PromotionCheckoutPageScalarFieldEnum[]
+}
+
+/**
+ * Promotion.orders
+ */
+export type Promotion$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
+  cursor?: Prisma.OrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
 }
 
 /**

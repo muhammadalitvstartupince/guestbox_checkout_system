@@ -289,6 +289,9 @@ model Order {
   promoCodeId String?    @map("promo_code_id") @db.Uuid
   promoCode   PromoCode? @relation(fields: [promoCodeId], references: [id])
 
+  promotionId String?    @map("promotion_id") @db.Uuid
+  promotion   Promotion? @relation(fields: [promotionId], references: [id])
+
   firstName String @map("first_name")
   lastName  String @map("last_name")
   email     String
@@ -432,6 +435,7 @@ model Promotion {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   checkoutPages PromotionCheckoutPage[]
+  orders        Order[]
 
   @@map("promotions")
 }

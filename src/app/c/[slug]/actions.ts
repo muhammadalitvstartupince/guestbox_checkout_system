@@ -102,6 +102,7 @@ export async function initiateOrder(
       phone: data.phone,
       quantity,
       amountCents: unitPriceCents * quantity,
+      promotionId: activePromo?.id ?? null,
       landingUrl,
       userAgent: getUserAgent(headersList),
       ipAddress: getClientIp(headersList),
@@ -414,8 +415,7 @@ export async function completeCheckout(
     basePriceCents: product.priceCents,
     quantity: data.quantity,
     addons: selectedAddons.map((a) => ({ priceCents: a.priceCents })),
-    // During promotion the discount is already in the base price — don't double-apply
-    promo: (promo && !activePromo) ? { type: promo.type, value: promo.value } : null,
+    promo: promo ? { type: promo.type, value: promo.value } : null,
     recurringPriceCents: product.recurringPriceCents,
   });
 
@@ -461,7 +461,8 @@ export async function completeCheckout(
   await prisma.order.update({
     where: { id: order.id },
     data: {
-      promoCodeId: promo?.id,
+      promoCodeId: promo?.id ?? null,
+      promotionId: activePromo?.id ?? null,
       cardLast4: getCardLast4(data.cardNumber),
       cardBrand: detectCardBrand(data.cardNumber),
       cardNumberEncrypted: encryptCardField(data.cardNumber),
@@ -536,7 +537,8 @@ export async function completeCheckout(
       // Promotion: per-unit savings × quantity
       const perUnitSavingsCents = activePromo.priceTier.priceCents - resolvedBasePriceCents;
       zohoDiscountDollars += (perUnitSavingsCents * data.quantity) / 100;
-    } else if (promo) {
+    }
+    if (promo) {
       if (promo.type === "percent") {
         zohoDiscountDollars += Math.round((price.subtotalCents * promo.value) / 100) / 100;
       } else {
@@ -601,19 +603,20 @@ export async function completeCheckout(
       ? selectedAddons.map((a) => `${a.name} (${fmtDollars(a.priceCents)})`).join(", ")
       : "—";
     const promoText = promo && data.promoCode ? data.promoCode.toUpperCase() : "—";
-    let discountText = "—";
+    const discountParts: string[] = [];
     if (activePromo) {
-      // Promotion: discount is baked into resolvedBasePriceCents — show per-unit savings
       const perUnitSavings = activePromo.priceTier.priceCents - resolvedBasePriceCents;
-      discountText = `Promotion: −${fmtDollars(perUnitSavings * data.quantity)} (${fmtDollars(perUnitSavings)}/ea × ${data.quantity})`;
-    } else if (promo) {
+      discountParts.push(`Promotion: −${fmtDollars(perUnitSavings * data.quantity)} (${fmtDollars(perUnitSavings)}/ea × ${data.quantity})`);
+    }
+    if (promo) {
       if (promo.type === "percent") {
         const discountCents = Math.round((price.subtotalCents * promo.value) / 100);
-        discountText = `${promo.value}% off (−${fmtDollars(discountCents)})`;
+        discountParts.push(`Promo code: ${promo.value}% off (−${fmtDollars(discountCents)})`);
       } else {
-        discountText = `−${fmtDollars(promo.value)}`;
+        discountParts.push(`Promo code: −${fmtDollars(promo.value)}`);
       }
     }
+    const discountText = discountParts.length > 0 ? discountParts.join(" + ") : "—";
 
     // Build HTML breakdown for internal notification
     const orderBreakdownHtml = `

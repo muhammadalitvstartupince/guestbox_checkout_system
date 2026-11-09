@@ -17,7 +17,7 @@ import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
-import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock } from "lucide-react";
+import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone } from "lucide-react";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
   switch (brand) {
@@ -263,7 +263,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     expMonth: "",
     expYear: "",
     cvv: "",
-    promoCode: isPromoActive ? activePromotion.promoCode : "",
+    promoCode: "",
     agree: false,
   });
 
@@ -295,16 +295,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   }
 
   function handleEditPromo() {
-    if (!isPromoActive) setPromoCheck({ status: "idle" });
+    setPromoCheck({ status: "idle" });
   }
-
-  // Auto-validate the promo code when a promotion is active
-  useEffect(() => {
-    if (isPromoActive && promoCheck.status === "idle") {
-      handleValidatePromo();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPromoActive]);
 
   const effectiveTitle = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.title : checkoutPage.productName;
   // During promotion: use promo price directly as base (discount is baked in)
@@ -331,8 +323,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     [checkoutPage.addons, selectedAddonIds],
   );
 
-  // During promotion the discount is baked into effectiveBasePriceCents — don't double-apply
-  const appliedPromo = (!isPromoActive && promoCheck.status === "valid") ? (promoCheck.discount ?? null) : null;
+  const appliedPromo = promoCheck.status === "valid" ? (promoCheck.discount ?? null) : null;
   const estimate = useMemo(
     () =>
       calculateOrderPrice({
@@ -644,9 +635,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           )}
 
           {/* Shipping address — primary, where the device ships */}
-          <div className="-mt-2 mb-1 flex items-center gap-2 text-sm font-medium text-zinc-600">
-            <Truck className="h-4 w-4 text-zinc-500" />
-            <span>This is where your GuestBox device(s) will be shipped.</span>
+          <div className="-mt-2 mb-1">
+            <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
+              <Truck className="mr-1.5 inline h-4 w-4 align-text-bottom" />
+              This is where your GuestBox device(s) will be shipped.
+            </span>
           </div>
 
           <Field
@@ -1139,7 +1132,26 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           )}
 
           {(checkoutPage.showPromoCode || isPromoActive) && (
-            <section>
+            <section className="space-y-3">
+              {/* Show the promotion's code as already applied when active */}
+              {isPromoActive && (
+                <div className="flex items-center gap-3 rounded-lg border border-amber-300 bg-gradient-to-r from-amber-50 to-yellow-50 px-4 py-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                    <Ticket className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate font-mono text-sm font-bold tracking-wide text-amber-800">
+                        {activePromotion.promoCode}
+                      </span>
+                      <Check className="h-4 w-4 shrink-0 text-amber-600" />
+                    </div>
+                    <div className="text-xs font-medium text-amber-700">Promotion applied — saving {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Extra promo code input (or regular promo when no promotion) */}
               {promoCheck.status === "valid" ? (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-300 bg-gradient-to-r from-emerald-50 to-white px-4 py-3">
                   <input type="hidden" name="promoCode" value={promoCheck.appliedCode ?? ""} />
@@ -1157,7 +1169,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                       <div className="text-xs font-medium text-emerald-700">{promoCheck.message} applied</div>
                     </div>
                   </div>
-                  {!isPromoActive && (
                   <button
                     type="button"
                     onClick={handleEditPromo}
@@ -1165,7 +1176,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   >
                     <PencilLine className="h-3.5 w-3.5" /> Change
                   </button>
-                  )}
                 </div>
               ) : (
                 <>
@@ -1232,34 +1242,37 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               ))}
             </div>
-            {/* During promo: show savings instead of subtotal/discount breakdown */}
-            {isPromoActive ? (
-              <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                <div className="flex justify-between text-emerald-400">
-                  <span className="flex items-center gap-1">
-                    <Ticket className="h-3.5 w-3.5" /> You save
-                  </span>
-                  <span className="font-semibold">
-                    {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}
-                  </span>
-                </div>
-              </div>
-            ) : estimate.discountCents > 0 ? (() => {
+            {(isPromoActive || estimate.discountCents > 0) ? (() => {
+              const promoSavingsCents = isPromoActive
+                ? (activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity
+                : 0;
               const displaySubtotal = selectedPlan?.chargeAtCheckout
                 ? estimate.subtotalCents + estimate.recurringTotalCents
                 : estimate.subtotalCents;
               return (
                 <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                  <div className="flex justify-between opacity-80">
-                    <span>Subtotal</span>
-                    <span>{formatCents(displaySubtotal)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="flex items-center gap-1 opacity-90">
-                      <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
-                    </span>
-                    <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
-                  </div>
+                  {(isPromoActive || estimate.discountCents > 0) && (
+                    <div className="flex justify-between opacity-80">
+                      <span>Subtotal</span>
+                      <span>{formatCents(displaySubtotal)}</span>
+                    </div>
+                  )}
+                  {isPromoActive && (
+                    <div className="flex justify-between text-emerald-400">
+                      <span className="flex items-center gap-1">
+                        <Ticket className="h-3.5 w-3.5" /> Promotion savings
+                      </span>
+                      <span className="font-semibold">-{formatCents(promoSavingsCents)}</span>
+                    </div>
+                  )}
+                  {estimate.discountCents > 0 && (
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1 opacity-90">
+                        <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
+                      </span>
+                      <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
+                    </div>
+                  )}
                 </div>
               );
             })() : null}
@@ -1357,6 +1370,20 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
   return (
     <div className={montserrat.className}>
+
+      {/* Top announcement bar */}
+      <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-cyan-500 px-4 py-2 text-center text-sm font-semibold text-white">
+        <span>Have Questions?</span>
+        <a
+          href="https://guestbox.tv/schedule-live-demo"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-0.5 text-xs font-bold uppercase tracking-wide transition-colors hover:bg-white/30"
+        >
+          <Phone className="h-3 w-3" />
+          Schedule Call
+        </a>
+      </div>
 
       {/* Zone 1: Header + checkout form — gradient + overlay */}
       <div className="relative">
