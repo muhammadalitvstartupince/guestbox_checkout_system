@@ -216,6 +216,7 @@ export const PromoCodeScalarFieldEnum = {
   code: 'code',
   discountType: 'discountType',
   discountValue: 'discountValue',
+  appliesTo: 'appliesTo',
   appliesToCheckoutPageId: 'appliesToCheckoutPageId',
   maxRedemptions: 'maxRedemptions',
   timesRedeemed: 'timesRedeemed',

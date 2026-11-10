@@ -7,6 +7,16 @@ function formatDiscount(type: string, value: number) {
   return type === "percent" ? `${value}%` : `$${(value / 100).toFixed(2)}`;
 }
 
+const targetLabels: Record<string, string> = {
+  device: "Device",
+  monthly: "Monthly",
+  annual: "Annual",
+  device_monthly: "Device + Monthly",
+  device_annual: "Device + Annual",
+  monthly_annual: "Monthly + Annual",
+  all: "All",
+};
+
 export default async function AdminPromoCodesPage() {
   await verifyAdminSession();
 
@@ -28,7 +38,8 @@ export default async function AdminPromoCodesPage() {
             <tr className="border-b border-zinc-100 text-xs tracking-wide text-zinc-500 uppercase dark:border-zinc-800 dark:text-zinc-400">
               <th className="px-5 py-3 font-medium">Code</th>
               <th className="px-5 py-3 font-medium">Discount</th>
-              <th className="px-5 py-3 font-medium">Applies To</th>
+              <th className="px-5 py-3 font-medium">Target</th>
+              <th className="px-5 py-3 font-medium">Checkout Page</th>
               <th className="px-5 py-3 font-medium">Redemptions</th>
               <th className="px-5 py-3 font-medium">Expires</th>
               <th className="px-5 py-3 font-medium">Active</th>
@@ -44,6 +55,9 @@ export default async function AdminPromoCodesPage() {
                 <td className="px-5 py-3 font-mono text-zinc-900 dark:text-zinc-100">{promo.code}</td>
                 <td className="px-5 py-3 text-zinc-900 dark:text-zinc-100">
                   {formatDiscount(promo.discountType, promo.discountValue)}
+                </td>
+                <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
+                  {targetLabels[promo.appliesTo] ?? "Device"}
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
                   {promo.appliesToCheckoutPage?.title ?? "All pages"}
@@ -70,7 +84,7 @@ export default async function AdminPromoCodesPage() {
             ))}
             {promoCodes.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-5 py-10 text-center text-zinc-400 dark:text-zinc-500">
+                <td colSpan={8} className="px-5 py-10 text-center text-zinc-400 dark:text-zinc-500">
                   No promo codes yet.
                 </td>
               </tr>

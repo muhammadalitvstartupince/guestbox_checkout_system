@@ -1,4 +1,4 @@
--- Update skin accent color from cyan to blue to match GuestBox branding
+-- Update skin accent color to blue to match GuestBox branding
 UPDATE skins
 SET config = jsonb_set(config, '{colors,accent}', '"#0284c7"')
-WHERE config->'colors'->>'accent' = '#00b4d8';
+WHERE config->'colors'->>'accent' IN ('#00b4d8', '#ef9a1d');

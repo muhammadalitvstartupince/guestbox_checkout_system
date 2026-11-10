@@ -43,6 +43,7 @@ export type PromoCodeMinAggregateOutputType = {
   code: string | null
   discountType: $Enums.DiscountType | null
   discountValue: number | null
+  appliesTo: $Enums.PromoAppliesTo | null
   appliesToCheckoutPageId: string | null
   maxRedemptions: number | null
   timesRedeemed: number | null
@@ -57,6 +58,7 @@ export type PromoCodeMaxAggregateOutputType = {
   code: string | null
   discountType: $Enums.DiscountType | null
   discountValue: number | null
+  appliesTo: $Enums.PromoAppliesTo | null
   appliesToCheckoutPageId: string | null
   maxRedemptions: number | null
   timesRedeemed: number | null
@@ -71,6 +73,7 @@ export type PromoCodeCountAggregateOutputType = {
   code: number
   discountType: number
   discountValue: number
+  appliesTo: number
   appliesToCheckoutPageId: number
   maxRedemptions: number
   timesRedeemed: number
@@ -99,6 +102,7 @@ export type PromoCodeMinAggregateInputType = {
   code?: true
   discountType?: true
   discountValue?: true
+  appliesTo?: true
   appliesToCheckoutPageId?: true
   maxRedemptions?: true
   timesRedeemed?: true
@@ -113,6 +117,7 @@ export type PromoCodeMaxAggregateInputType = {
   code?: true
   discountType?: true
   discountValue?: true
+  appliesTo?: true
   appliesToCheckoutPageId?: true
   maxRedemptions?: true
   timesRedeemed?: true
@@ -127,6 +132,7 @@ export type PromoCodeCountAggregateInputType = {
   code?: true
   discountType?: true
   discountValue?: true
+  appliesTo?: true
   appliesToCheckoutPageId?: true
   maxRedemptions?: true
   timesRedeemed?: true
@@ -228,6 +234,7 @@ export type PromoCodeGroupByOutputType = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo: $Enums.PromoAppliesTo
   appliesToCheckoutPageId: string | null
   maxRedemptions: number | null
   timesRedeemed: number
@@ -265,6 +272,7 @@ export type PromoCodeWhereInput = {
   code?: Prisma.StringFilter<"PromoCode"> | string
   discountType?: Prisma.EnumDiscountTypeFilter<"PromoCode"> | $Enums.DiscountType
   discountValue?: Prisma.IntFilter<"PromoCode"> | number
+  appliesTo?: Prisma.EnumPromoAppliesToFilter<"PromoCode"> | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.UuidNullableFilter<"PromoCode"> | string | null
   maxRedemptions?: Prisma.IntNullableFilter<"PromoCode"> | number | null
   timesRedeemed?: Prisma.IntFilter<"PromoCode"> | number
@@ -282,6 +290,7 @@ export type PromoCodeOrderByWithRelationInput = {
   code?: Prisma.SortOrder
   discountType?: Prisma.SortOrder
   discountValue?: Prisma.SortOrder
+  appliesTo?: Prisma.SortOrder
   appliesToCheckoutPageId?: Prisma.SortOrderInput | Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrderInput | Prisma.SortOrder
   timesRedeemed?: Prisma.SortOrder
@@ -302,6 +311,7 @@ export type PromoCodeWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PromoCodeWhereInput | Prisma.PromoCodeWhereInput[]
   discountType?: Prisma.EnumDiscountTypeFilter<"PromoCode"> | $Enums.DiscountType
   discountValue?: Prisma.IntFilter<"PromoCode"> | number
+  appliesTo?: Prisma.EnumPromoAppliesToFilter<"PromoCode"> | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.UuidNullableFilter<"PromoCode"> | string | null
   maxRedemptions?: Prisma.IntNullableFilter<"PromoCode"> | number | null
   timesRedeemed?: Prisma.IntFilter<"PromoCode"> | number
@@ -319,6 +329,7 @@ export type PromoCodeOrderByWithAggregationInput = {
   code?: Prisma.SortOrder
   discountType?: Prisma.SortOrder
   discountValue?: Prisma.SortOrder
+  appliesTo?: Prisma.SortOrder
   appliesToCheckoutPageId?: Prisma.SortOrderInput | Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrderInput | Prisma.SortOrder
   timesRedeemed?: Prisma.SortOrder
@@ -341,6 +352,7 @@ export type PromoCodeScalarWhereWithAggregatesInput = {
   code?: Prisma.StringWithAggregatesFilter<"PromoCode"> | string
   discountType?: Prisma.EnumDiscountTypeWithAggregatesFilter<"PromoCode"> | $Enums.DiscountType
   discountValue?: Prisma.IntWithAggregatesFilter<"PromoCode"> | number
+  appliesTo?: Prisma.EnumPromoAppliesToWithAggregatesFilter<"PromoCode"> | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.UuidNullableWithAggregatesFilter<"PromoCode"> | string | null
   maxRedemptions?: Prisma.IntNullableWithAggregatesFilter<"PromoCode"> | number | null
   timesRedeemed?: Prisma.IntWithAggregatesFilter<"PromoCode"> | number
@@ -355,6 +367,7 @@ export type PromoCodeCreateInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   maxRedemptions?: number | null
   timesRedeemed?: number
   startsAt?: Date | string | null
@@ -371,6 +384,7 @@ export type PromoCodeUncheckedCreateInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: string | null
   maxRedemptions?: number | null
   timesRedeemed?: number
@@ -387,6 +401,7 @@ export type PromoCodeUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -403,6 +418,7 @@ export type PromoCodeUncheckedUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -419,6 +435,7 @@ export type PromoCodeCreateManyInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: string | null
   maxRedemptions?: number | null
   timesRedeemed?: number
@@ -433,6 +450,7 @@ export type PromoCodeUpdateManyMutationInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -446,6 +464,7 @@ export type PromoCodeUncheckedUpdateManyInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -470,6 +489,7 @@ export type PromoCodeCountOrderByAggregateInput = {
   code?: Prisma.SortOrder
   discountType?: Prisma.SortOrder
   discountValue?: Prisma.SortOrder
+  appliesTo?: Prisma.SortOrder
   appliesToCheckoutPageId?: Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   timesRedeemed?: Prisma.SortOrder
@@ -490,6 +510,7 @@ export type PromoCodeMaxOrderByAggregateInput = {
   code?: Prisma.SortOrder
   discountType?: Prisma.SortOrder
   discountValue?: Prisma.SortOrder
+  appliesTo?: Prisma.SortOrder
   appliesToCheckoutPageId?: Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   timesRedeemed?: Prisma.SortOrder
@@ -504,6 +525,7 @@ export type PromoCodeMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
   discountType?: Prisma.SortOrder
   discountValue?: Prisma.SortOrder
+  appliesTo?: Prisma.SortOrder
   appliesToCheckoutPageId?: Prisma.SortOrder
   maxRedemptions?: Prisma.SortOrder
   timesRedeemed?: Prisma.SortOrder
@@ -575,6 +597,10 @@ export type EnumDiscountTypeFieldUpdateOperationsInput = {
   set?: $Enums.DiscountType
 }
 
+export type EnumPromoAppliesToFieldUpdateOperationsInput = {
+  set?: $Enums.PromoAppliesTo
+}
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
@@ -614,6 +640,7 @@ export type PromoCodeCreateWithoutAppliesToCheckoutPageInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   maxRedemptions?: number | null
   timesRedeemed?: number
   startsAt?: Date | string | null
@@ -629,6 +656,7 @@ export type PromoCodeUncheckedCreateWithoutAppliesToCheckoutPageInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   maxRedemptions?: number | null
   timesRedeemed?: number
   startsAt?: Date | string | null
@@ -673,6 +701,7 @@ export type PromoCodeScalarWhereInput = {
   code?: Prisma.StringFilter<"PromoCode"> | string
   discountType?: Prisma.EnumDiscountTypeFilter<"PromoCode"> | $Enums.DiscountType
   discountValue?: Prisma.IntFilter<"PromoCode"> | number
+  appliesTo?: Prisma.EnumPromoAppliesToFilter<"PromoCode"> | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.UuidNullableFilter<"PromoCode"> | string | null
   maxRedemptions?: Prisma.IntNullableFilter<"PromoCode"> | number | null
   timesRedeemed?: Prisma.IntFilter<"PromoCode"> | number
@@ -687,6 +716,7 @@ export type PromoCodeCreateWithoutOrdersInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   maxRedemptions?: number | null
   timesRedeemed?: number
   startsAt?: Date | string | null
@@ -702,6 +732,7 @@ export type PromoCodeUncheckedCreateWithoutOrdersInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: string | null
   maxRedemptions?: number | null
   timesRedeemed?: number
@@ -733,6 +764,7 @@ export type PromoCodeUpdateWithoutOrdersInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -748,6 +780,7 @@ export type PromoCodeUncheckedUpdateWithoutOrdersInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -763,6 +796,7 @@ export type PromoCodeCreateWithoutPromotionsInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   maxRedemptions?: number | null
   timesRedeemed?: number
   startsAt?: Date | string | null
@@ -778,6 +812,7 @@ export type PromoCodeUncheckedCreateWithoutPromotionsInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: string | null
   maxRedemptions?: number | null
   timesRedeemed?: number
@@ -809,6 +844,7 @@ export type PromoCodeUpdateWithoutPromotionsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -824,6 +860,7 @@ export type PromoCodeUncheckedUpdateWithoutPromotionsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   appliesToCheckoutPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -839,6 +876,7 @@ export type PromoCodeCreateManyAppliesToCheckoutPageInput = {
   code: string
   discountType: $Enums.DiscountType
   discountValue: number
+  appliesTo?: $Enums.PromoAppliesTo
   maxRedemptions?: number | null
   timesRedeemed?: number
   startsAt?: Date | string | null
@@ -852,6 +890,7 @@ export type PromoCodeUpdateWithoutAppliesToCheckoutPageInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -867,6 +906,7 @@ export type PromoCodeUncheckedUpdateWithoutAppliesToCheckoutPageInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -882,6 +922,7 @@ export type PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   discountType?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   discountValue?: Prisma.IntFieldUpdateOperationsInput | number
+  appliesTo?: Prisma.EnumPromoAppliesToFieldUpdateOperationsInput | $Enums.PromoAppliesTo
   maxRedemptions?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -935,6 +976,7 @@ export type PromoCodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   code?: boolean
   discountType?: boolean
   discountValue?: boolean
+  appliesTo?: boolean
   appliesToCheckoutPageId?: boolean
   maxRedemptions?: boolean
   timesRedeemed?: boolean
@@ -953,6 +995,7 @@ export type PromoCodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   code?: boolean
   discountType?: boolean
   discountValue?: boolean
+  appliesTo?: boolean
   appliesToCheckoutPageId?: boolean
   maxRedemptions?: boolean
   timesRedeemed?: boolean
@@ -968,6 +1011,7 @@ export type PromoCodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   code?: boolean
   discountType?: boolean
   discountValue?: boolean
+  appliesTo?: boolean
   appliesToCheckoutPageId?: boolean
   maxRedemptions?: boolean
   timesRedeemed?: boolean
@@ -983,6 +1027,7 @@ export type PromoCodeSelectScalar = {
   code?: boolean
   discountType?: boolean
   discountValue?: boolean
+  appliesTo?: boolean
   appliesToCheckoutPageId?: boolean
   maxRedemptions?: boolean
   timesRedeemed?: boolean
@@ -992,7 +1037,7 @@ export type PromoCodeSelectScalar = {
   createdAt?: boolean
 }
 
-export type PromoCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "discountType" | "discountValue" | "appliesToCheckoutPageId" | "maxRedemptions" | "timesRedeemed" | "startsAt" | "expiresAt" | "isActive" | "createdAt", ExtArgs["result"]["promoCode"]>
+export type PromoCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "discountType" | "discountValue" | "appliesTo" | "appliesToCheckoutPageId" | "maxRedemptions" | "timesRedeemed" | "startsAt" | "expiresAt" | "isActive" | "createdAt", ExtArgs["result"]["promoCode"]>
 export type PromoCodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appliesToCheckoutPage?: boolean | Prisma.PromoCode$appliesToCheckoutPageArgs<ExtArgs>
   orders?: boolean | Prisma.PromoCode$ordersArgs<ExtArgs>
@@ -1018,6 +1063,7 @@ export type $PromoCodePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     code: string
     discountType: $Enums.DiscountType
     discountValue: number
+    appliesTo: $Enums.PromoAppliesTo
     appliesToCheckoutPageId: string | null
     maxRedemptions: number | null
     timesRedeemed: number
@@ -1455,6 +1501,7 @@ export interface PromoCodeFieldRefs {
   readonly code: Prisma.FieldRef<"PromoCode", 'String'>
   readonly discountType: Prisma.FieldRef<"PromoCode", 'DiscountType'>
   readonly discountValue: Prisma.FieldRef<"PromoCode", 'Int'>
+  readonly appliesTo: Prisma.FieldRef<"PromoCode", 'PromoAppliesTo'>
   readonly appliesToCheckoutPageId: Prisma.FieldRef<"PromoCode", 'String'>
   readonly maxRedemptions: Prisma.FieldRef<"PromoCode", 'Int'>
   readonly timesRedeemed: Prisma.FieldRef<"PromoCode", 'Int'>

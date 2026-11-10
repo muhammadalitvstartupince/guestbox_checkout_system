@@ -274,7 +274,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const [promoCheck, setPromoCheck] = useState<{
     status: "idle" | "checking" | "valid" | "invalid";
     message?: string;
-    discount?: { type: "percent" | "fixed"; value: number };
+    discount?: { type: "percent" | "fixed"; value: number; appliesTo?: string };
     appliedCode?: string;
   }>({ status: "idle" });
 
@@ -324,16 +324,18 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   );
 
   const appliedPromo = promoCheck.status === "valid" ? (promoCheck.discount ?? null) : null;
+  const selectedBillingInterval = selectedPlan?.interval ?? null;
   const estimate = useMemo(
     () =>
       calculateOrderPrice({
         basePriceCents: effectiveBasePriceCents,
         quantity,
         addons: selectedAddons.map((a) => ({ priceCents: a.priceCents })),
-        recurringPriceCents: effectiveRecurringPriceCents,
-        promo: appliedPromo,
+        recurringPriceCents: displayRecurringPriceCents,
+        promo: appliedPromo ? { type: appliedPromo.type, value: appliedPromo.value, appliesTo: appliedPromo.appliesTo as any } : null,
+        selectedInterval: selectedBillingInterval,
       }),
-    [quantity, listingQty, selectedAddons, effectiveBasePriceCents, effectiveRecurringPriceCents, appliedPromo],
+    [quantity, listingQty, selectedAddons, effectiveBasePriceCents, displayRecurringPriceCents, appliedPromo, selectedBillingInterval],
   );
 
   const primaryColor = checkoutPage.skinConfig.colors?.primary ?? "#0d1b2a";
@@ -1242,7 +1244,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               ))}
             </div>
-            {(isPromoActive || estimate.discountCents > 0) ? (() => {
+            {(isPromoActive || estimate.discountCents > 0 || (selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0)) ? (() => {
               const promoSavingsCents = isPromoActive
                 ? (activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity
                 : 0;
@@ -1251,7 +1253,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 : estimate.subtotalCents;
               return (
                 <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                  {(isPromoActive || estimate.discountCents > 0) && (
+                  {(isPromoActive || estimate.discountCents > 0 || (selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0)) && (
                     <div className="flex justify-between opacity-80">
                       <span>Subtotal</span>
                       <span>{formatCents(displaySubtotal)}</span>
@@ -1265,12 +1267,16 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                       <span className="font-semibold">-{formatCents(promoSavingsCents)}</span>
                     </div>
                   )}
-                  {estimate.discountCents > 0 && (
+                  {(estimate.discountCents > 0 || (selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0)) && (
                     <div className="flex justify-between">
                       <span className="flex items-center gap-1 opacity-90">
                         <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
                       </span>
-                      <span className="font-semibold text-emerald-400">-{formatCents(estimate.discountCents)}</span>
+                      <span className="font-semibold text-emerald-400">-{formatCents(
+                        selectedPlan?.chargeAtCheckout
+                          ? estimate.discountCents + estimate.recurringDiscountCents
+                          : estimate.discountCents
+                      )}</span>
                     </div>
                   )}
                 </div>
@@ -1280,13 +1286,20 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
               <span>Total</span>
               <span>{formatCents(
                 selectedPlan?.chargeAtCheckout
-                  ? estimate.totalCents + estimate.recurringTotalCents
+                  ? estimate.totalCents + estimate.recurringTotalCents - estimate.recurringDiscountCents
                   : estimate.totalCents
               )}</span>
             </div>
-            {estimate.recurringTotalCents > 0 && !selectedPlan?.chargeAtCheckout && (
-              <div className="mt-1 text-sm opacity-90">
-                Then {formatCents(estimate.recurringTotalCents)}/{recurringLabel}
+            {estimate.recurringTotalCents > 0 && !selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0 && (
+              <div className="mt-2 rounded-lg border border-white/15 px-3 py-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="opacity-80">Recurring plan</span>
+                  <span className="text-white/50 line-through">{formatCents(estimate.recurringTotalCents)}/{recurringLabel}</span>
+                </div>
+                <div className="flex justify-between font-semibold">
+                  <span className="text-emerald-400">Discounted rate</span>
+                  <span className="text-emerald-400">{formatCents(estimate.recurringTotalCents - estimate.recurringDiscountCents)}/{recurringLabel}</span>
+                </div>
               </div>
             )}
           </div>

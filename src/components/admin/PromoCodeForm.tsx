@@ -48,7 +48,22 @@ export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; 
           <input name="discountValue" required className={inputClass} placeholder="10" />
         </div>
         <div>
-          <label className={labelClass}>Applies To (optional)</label>
+          <label className={labelClass}>Discount Target</label>
+          <select name="appliesTo" defaultValue="device" className={`${inputClass} bg-white dark:bg-zinc-800`}>
+            <option value="device">Device only</option>
+            <option value="monthly">Monthly plan only</option>
+            <option value="annual">Annual plan only</option>
+            <option value="device_monthly">Device + Monthly</option>
+            <option value="device_annual">Device + Annual</option>
+            <option value="monthly_annual">Monthly + Annual</option>
+            <option value="all">All (Device + Plan)</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-3">
+        <div>
+          <label className={labelClass}>Checkout Page (optional)</label>
           <select name="appliesToCheckoutPageId" defaultValue="" className={`${inputClass} bg-white dark:bg-zinc-800`}>
             <option value="">All checkout pages</option>
             {checkoutPages.map((p) => (

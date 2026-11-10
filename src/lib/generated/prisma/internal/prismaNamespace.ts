@@ -1860,6 +1860,7 @@ export const PromoCodeScalarFieldEnum = {
   code: 'code',
   discountType: 'discountType',
   discountValue: 'discountValue',
+  appliesTo: 'appliesTo',
   appliesToCheckoutPageId: 'appliesToCheckoutPageId',
   maxRedemptions: 'maxRedemptions',
   timesRedeemed: 'timesRedeemed',
@@ -2191,6 +2192,20 @@ export type EnumDiscountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'DiscountType[]'
  */
 export type ListEnumDiscountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscountType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PromoAppliesTo'
+ */
+export type EnumPromoAppliesToFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PromoAppliesTo'>
+    
+
+
+/**
+ * Reference to a field of type 'PromoAppliesTo[]'
+ */
+export type ListEnumPromoAppliesToFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PromoAppliesTo[]'>
     
 
 

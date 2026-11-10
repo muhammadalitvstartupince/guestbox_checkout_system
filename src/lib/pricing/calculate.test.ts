@@ -9,6 +9,7 @@ describe("calculateOrderPrice", () => {
       discountCents: 0,
       totalCents: 129900,
       recurringTotalCents: 0,
+      recurringDiscountCents: 0,
     });
   });
 
@@ -59,22 +60,24 @@ describe("calculateOrderPrice", () => {
     expect(result.totalCents).toBe(0);
   });
 
-  it("never applies the promo discount to the recurring total", () => {
+  it("device-only promo does not discount recurring", () => {
     const result = calculateOrderPrice({
       basePriceCents: 10000,
       quantity: 2,
       recurringPriceCents: 4900,
-      promo: { type: "percent", value: 50 },
+      promo: { type: "percent", value: 50, appliesTo: "device" },
+      selectedInterval: "monthly",
     });
-    expect(result.recurringTotalCents).toBe(9800);
-    expect(result.totalCents).toBe(10000); // 20000 subtotal - 50% = 10000
+    expect(result.recurringDiscountCents).toBe(0);
+    expect(result.discountCents).toBe(10000); // 50% of 20000
+    expect(result.totalCents).toBe(10000);
   });
 
-  it("scales the recurring total by quantity", () => {
+  it("passes recurring through as-is (caller pre-multiplies)", () => {
     const result = calculateOrderPrice({
       basePriceCents: 10000,
       quantity: 3,
-      recurringPriceCents: 4900,
+      recurringPriceCents: 14700, // caller passes 4900 * 3
     });
     expect(result.recurringTotalCents).toBe(14700);
   });
@@ -133,5 +136,94 @@ describe("calculateOrderPrice", () => {
         promo: { type: "fixed", value: -100 },
       }),
     ).toThrow(/fixed/);
+  });
+
+  // --- appliesTo target tests ---
+
+  it("monthly promo discounts recurring when monthly selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 2400,
+      promo: { type: "percent", value: 25, appliesTo: "monthly" },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents).toBe(0);
+    expect(result.recurringDiscountCents).toBe(600); // 25% of 2400
+  });
+
+  it("monthly promo has no effect when annual selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 24900,
+      promo: { type: "percent", value: 25, appliesTo: "monthly" },
+      selectedInterval: "annually",
+    });
+    expect(result.discountCents).toBe(0);
+    expect(result.recurringDiscountCents).toBe(0);
+  });
+
+  it("fixed device_monthly splits discount proportionally across device and plan", () => {
+    // $10 fixed off (20000 device + 4800 plan = 24800 combined)
+    // device share: round(1000 * 20000 / 24800) = 806
+    // recurring share: 1000 - 806 = 194
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 2,
+      recurringPriceCents: 4800,
+      promo: { type: "fixed", value: 1000, appliesTo: "device_monthly" },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents + result.recurringDiscountCents).toBe(1000);
+    expect(result.discountCents).toBe(806);
+    expect(result.recurringDiscountCents).toBe(194);
+  });
+
+  it("all promo discounts device and whichever plan is selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 9900,
+      quantity: 1,
+      recurringPriceCents: 24900,
+      promo: { type: "percent", value: 10, appliesTo: "all" },
+      selectedInterval: "annually",
+    });
+    expect(result.discountCents).toBe(990); // 10% of 9900
+    expect(result.recurringDiscountCents).toBe(2490); // 10% of 24900
+  });
+
+  it("no recurring discount when no interval selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 2400,
+      promo: { type: "percent", value: 50, appliesTo: "all" },
+    });
+    expect(result.discountCents).toBe(5000);
+    expect(result.recurringDiscountCents).toBe(0); // no interval selected
+  });
+
+  it("monthly_annual discounts both monthly and annual", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 2400,
+      promo: { type: "percent", value: 20, appliesTo: "monthly_annual" },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents).toBe(0); // no device discount
+    expect(result.recurringDiscountCents).toBe(480); // 20% of 2400
+  });
+
+  it("defaults appliesTo to device when omitted", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 2400,
+      promo: { type: "percent", value: 50 },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents).toBe(5000);
+    expect(result.recurringDiscountCents).toBe(0);
   });
 });

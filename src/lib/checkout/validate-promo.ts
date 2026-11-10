@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/client";
 export interface PromoValidationResult {
   valid: boolean;
   message: string;
-  promo?: { id: string; type: "percent" | "fixed"; value: number };
+  promo?: { id: string; type: "percent" | "fixed"; value: number; appliesTo: string };
 }
 
 /** Shared by the live "Validate" button (checkPromoCode) and the actual
@@ -37,12 +37,24 @@ export async function validatePromoCode(checkoutPageId: string, rawCode: string)
     return { valid: false, message: "That promo code has already reached its redemption limit." };
   }
 
+  const targetLabels: Record<string, string> = {
+    device: "",
+    monthly: " (monthly plan)",
+    annual: " (annual plan)",
+    device_monthly: " (device + monthly)",
+    device_annual: " (device + annual)",
+    monthly_annual: " (monthly + annual)",
+    all: " (device + plan)",
+  };
+  const targetLabel = targetLabels[promoRow.appliesTo] ?? "";
   const discountLabel =
-    promoRow.discountType === "percent" ? `${promoRow.discountValue}% off` : `$${(promoRow.discountValue / 100).toFixed(2)} off`;
+    promoRow.discountType === "percent"
+      ? `${promoRow.discountValue}% off${targetLabel}`
+      : `$${(promoRow.discountValue / 100).toFixed(2)} off${targetLabel}`;
 
   return {
     valid: true,
     message: `Valid — ${discountLabel}`,
-    promo: { id: promoRow.id, type: promoRow.discountType, value: promoRow.discountValue },
+    promo: { id: promoRow.id, type: promoRow.discountType, value: promoRow.discountValue, appliesTo: promoRow.appliesTo },
   };
 }
