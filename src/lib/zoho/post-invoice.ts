@@ -53,6 +53,12 @@ export interface PostZohoInvoiceInput {
   fulfillmentItems?: ZohoLineItem[];
   shippingAddress?: ZohoShippingAddress;
   discountAmount?: number; // dollars, not cents
+  recurringDiscount?: {
+    plan: string;
+    discount_per_cycle: number;
+    quantity: number;
+    number_of_cycles: null;
+  };
 }
 
 export interface PostZohoInvoiceResult {
@@ -69,12 +75,6 @@ function centsToDollars(cents: number): number {
 export async function postZohoInvoice(
   input: PostZohoInvoiceInput,
 ): Promise<PostZohoInvoiceResult> {
-  const token = process.env.ZOHO_API_TOKEN;
-  if (!token) {
-    return { success: false, payload: {}, error: "ZOHO_API_TOKEN is not configured" };
-  }
-  const endpoint = process.env.ZOHO_ENDPOINT_URL ?? DEFAULT_ENDPOINT;
-
   const payload: Record<string, unknown> = {
     fname: input.firstName,
     lname: input.lastName,
@@ -107,6 +107,15 @@ export async function postZohoInvoice(
   if (input.discountAmount && input.discountAmount > 0) {
     payload.discount = input.discountAmount;
   }
+  if (input.recurringDiscount) {
+    payload.recurring_discount = input.recurringDiscount;
+  }
+
+  const token = process.env.ZOHO_API_TOKEN;
+  if (!token) {
+    return { success: false, payload, error: "ZOHO_API_TOKEN is not configured" };
+  }
+  const endpoint = process.env.ZOHO_ENDPOINT_URL ?? DEFAULT_ENDPOINT;
 
   try {
     const response = await fetch(endpoint, {

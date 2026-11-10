@@ -31,9 +31,9 @@ describe("buildZohoLineItems", () => {
 });
 
 describe("buildZohoRecurringLineItems", () => {
-  it("returns one recurring line item scaled by quantity", () => {
+  it("returns one recurring line item with total rate (caller pre-multiplies)", () => {
     const items = buildZohoRecurringLineItems({ zohoItemId: null, zohoRecurringItemId: "REC1" }, 4900, 2);
-    expect(items).toEqual([{ item_id: "REC1", rate: "49.00", quantity: "2", discount: "0.00", tax_id: "" }]);
+    expect(items).toEqual([{ item_id: "REC1", rate: "49.00", quantity: "1", discount: "0.00", tax_id: "" }]);
   });
 
   it("returns an empty array when there is no zohoRecurringItemId", () => {

@@ -15,10 +15,14 @@ export interface AddonSelection {
   priceCents: number;
 }
 
+export type PromoTarget = "device" | "monthly" | "annual" | "device_monthly" | "device_annual" | "monthly_annual" | "all";
+
 export interface PromoDiscount {
   type: "percent" | "fixed";
   /** percent: 1-100. fixed: cents. */
   value: number;
+  /** Which components the discount covers. Defaults to "device" (backward compat). */
+  appliesTo?: PromoTarget;
 }
 
 export interface PriceCalculationInput {
@@ -29,6 +33,8 @@ export interface PriceCalculationInput {
   promo?: PromoDiscount | null;
   /** recurring unit price, in cents, if this checkout has a subscription component */
   recurringPriceCents?: number | null;
+  /** selected billing interval — needed to match promo target against plan */
+  selectedInterval?: string | null;
 }
 
 export interface PriceCalculationResult {
@@ -37,9 +43,10 @@ export interface PriceCalculationResult {
   discountCents: number;
   /** subtotal - discount, floored at 0 */
   totalCents: number;
-  /** Recurring amount (not multiplied by quantity — annual/monthly plans are
-   *  per-account, not per-device). 0 when there is no recurring component. */
+  /** Recurring amount (pre-discount). 0 when there is no recurring component. */
   recurringTotalCents: number;
+  /** Discount applied to the recurring amount. 0 when promo doesn't target the plan. */
+  recurringDiscountCents: number;
 }
 
 export function calculateOrderPrice(
@@ -67,13 +74,31 @@ export function calculateOrderPrice(
 
   const addonsTotalCents = addons.reduce((sum, a) => sum + a.priceCents, 0);
   const subtotalCents = basePriceCents * quantity + addonsTotalCents;
-
-  const discountCents = clampDiscount(subtotalCents, computeDiscount(subtotalCents, promo));
-  const totalCents = subtotalCents - discountCents;
-
   const recurringTotalCents = recurringPriceCents != null ? recurringPriceCents : 0;
 
-  return { subtotalCents, discountCents, totalCents, recurringTotalCents };
+  const appliesTo = promo?.appliesTo ?? "device";
+  const targetsDevice = promoTargetsDevice(appliesTo);
+  const targetsRecurring = promoTargetsRecurring(appliesTo, input.selectedInterval);
+
+  let discountCents = 0;
+  let recurringDiscountCents = 0;
+
+  if (promo && promo.type === "fixed" && targetsDevice && targetsRecurring) {
+    // Fixed discount applied once to combined total, split proportionally
+    const combinedTotal = subtotalCents + recurringTotalCents;
+    const totalDiscount = clampDiscount(combinedTotal, computeDiscount(combinedTotal, promo));
+    if (combinedTotal > 0) {
+      discountCents = Math.round(totalDiscount * subtotalCents / combinedTotal);
+      recurringDiscountCents = totalDiscount - discountCents;
+    }
+  } else {
+    discountCents = targetsDevice ? clampDiscount(subtotalCents, computeDiscount(subtotalCents, promo)) : 0;
+    recurringDiscountCents = targetsRecurring ? clampDiscount(recurringTotalCents, computeDiscount(recurringTotalCents, promo)) : 0;
+  }
+
+  const totalCents = subtotalCents - discountCents;
+
+  return { subtotalCents, discountCents, totalCents, recurringTotalCents, recurringDiscountCents };
 }
 
 function computeDiscount(subtotalCents: number, promo?: PromoDiscount | null): number {
@@ -98,4 +123,22 @@ function computeDiscount(subtotalCents: number, promo?: PromoDiscount | null): n
 
 function clampDiscount(subtotalCents: number, discountCents: number): number {
   return Math.min(Math.max(discountCents, 0), subtotalCents);
+}
+
+function promoTargetsDevice(appliesTo: PromoTarget): boolean {
+  return appliesTo === "device" || appliesTo === "device_monthly" || appliesTo === "device_annual" || appliesTo === "all";
+}
+
+function promoTargetsRecurring(appliesTo: PromoTarget, selectedInterval?: string | null): boolean {
+  if (!selectedInterval) return false;
+  const interval = selectedInterval === "annually" ? "annual" : selectedInterval;
+  switch (appliesTo) {
+    case "monthly": return interval === "monthly";
+    case "annual": return interval === "annual";
+    case "device_monthly": return interval === "monthly";
+    case "device_annual": return interval === "annual";
+    case "monthly_annual": return interval === "monthly" || interval === "annual";
+    case "all": return interval === "monthly" || interval === "annual";
+    default: return false;
+  }
 }

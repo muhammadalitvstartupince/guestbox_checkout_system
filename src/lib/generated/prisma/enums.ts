@@ -43,6 +43,19 @@ export const DiscountType = {
 export type DiscountType = (typeof DiscountType)[keyof typeof DiscountType]
 
 
+export const PromoAppliesTo = {
+  device: 'device',
+  monthly: 'monthly',
+  annual: 'annual',
+  device_monthly: 'device_monthly',
+  device_annual: 'device_annual',
+  monthly_annual: 'monthly_annual',
+  all: 'all'
+} as const
+
+export type PromoAppliesTo = (typeof PromoAppliesTo)[keyof typeof PromoAppliesTo]
+
+
 export const OrderStatus = {
   pending: 'pending',
   paid: 'paid',

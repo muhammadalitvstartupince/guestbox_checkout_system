@@ -44,6 +44,18 @@ enum DiscountType {
   @@map("discount_type")
 }
 
+enum PromoAppliesTo {
+  device
+  monthly
+  annual
+  device_monthly
+  device_annual
+  monthly_annual
+  all
+
+  @@map("promo_applies_to")
+}
+
 enum OrderStatus {
   pending
   paid
@@ -261,9 +273,10 @@ model CheckoutPageAddon {
 model PromoCode {
   id            String       @id @default(uuid()) @db.Uuid
   code          String       @unique
-  discountType  DiscountType @map("discount_type")
+  discountType  DiscountType  @map("discount_type")
   // percent: 1-100. fixed: cents.
-  discountValue Int          @map("discount_value")
+  discountValue Int           @map("discount_value")
+  appliesTo     PromoAppliesTo @default(device) @map("applies_to")
 
   appliesToCheckoutPageId String?       @map("applies_to_checkout_page_id") @db.Uuid
   appliesToCheckoutPage   CheckoutPage? @relation(fields: [appliesToCheckoutPageId], references: [id], onDelete: Cascade)

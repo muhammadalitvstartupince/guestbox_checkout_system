@@ -125,7 +125,7 @@ export async function initiateOrder(
 export async function checkPromoCode(
   checkoutPageSlug: string,
   code: string,
-): Promise<{ valid: boolean; message: string; discount?: { type: "percent" | "fixed"; value: number } }> {
+): Promise<{ valid: boolean; message: string; discount?: { type: "percent" | "fixed"; value: number; appliesTo: string } }> {
   const checkoutPage = await prisma.checkoutPage.findUnique({
     where: { slug: checkoutPageSlug },
     include: { promotionLinks: { include: { promotion: { select: { isActive: true } } } } },
@@ -139,7 +139,7 @@ export async function checkPromoCode(
   return {
     valid: result.valid,
     message: result.message,
-    discount: result.promo ? { type: result.promo.type, value: result.promo.value } : undefined,
+    discount: result.promo ? { type: result.promo.type, value: result.promo.value, appliesTo: result.promo.appliesTo } : undefined,
   };
 }
 
@@ -367,16 +367,15 @@ export async function completeCheckout(
   const billingPlanId = formData.get("billingPlanId")?.toString() ?? null;
   const listingQty = Math.max(1, Number(formData.get("listingQty")) || 1);
   let resolvedRecurringPriceCents = checkoutPage.recurringPriceCents;
+  let fullRecurringPriceCents = checkoutPage.recurringPriceCents; // always the real price, for discount calc
   let resolvedZohoRecurringItemId = checkoutPage.zohoRecurringItemId;
   let chargeRecurringAtCheckout = false;
   if (billingPlanId && checkoutPage.billingPlans.length > 0) {
     const selectedPlan = checkoutPage.billingPlans.find((p) => p.id === billingPlanId);
     if (selectedPlan) {
       chargeRecurringAtCheckout = selectedPlan.chargeAtCheckout;
-      // Only include in checkout total if chargeAtCheckout is true.
-      // Otherwise the recurring charge starts later (e.g. at device activation).
-      // Multiply by listingQty — listings are separate from device quantity.
-      resolvedRecurringPriceCents = chargeRecurringAtCheckout ? selectedPlan.priceCents * listingQty : 0;
+      fullRecurringPriceCents = selectedPlan.priceCents * listingQty;
+      resolvedRecurringPriceCents = chargeRecurringAtCheckout ? fullRecurringPriceCents : 0;
       if (selectedPlan.zohoItemId) resolvedZohoRecurringItemId = selectedPlan.zohoItemId;
     }
   }
@@ -397,7 +396,7 @@ export async function completeCheckout(
   const validAddonIds = new Set(pageAddons.map((a) => a.id));
   const selectedAddons = pageAddons.filter((a) => data.addonIds.includes(a.id) && validAddonIds.has(a.id));
 
-  let promo: { id: string; type: "percent" | "fixed"; value: number } | null = null;
+  let promo: { id: string; type: "percent" | "fixed"; value: number; appliesTo: string } | null = null;
   // Validate promo code — but during a promotion the discount is baked into the base price
   if (data.promoCode) {
     const promoResult = await validatePromoCode(checkoutPage.id, data.promoCode);
@@ -411,18 +410,25 @@ export async function completeCheckout(
     promo = promoResult.promo!;
   }
 
+  // Resolve selected billing plan's interval for promo target matching
+  const selectedPlan = billingPlanId
+    ? checkoutPage.billingPlans.find((p) => p.id === billingPlanId) ?? null
+    : null;
+  const selectedInterval = selectedPlan?.interval ?? null;
+
   const price = calculateOrderPrice({
     basePriceCents: product.priceCents,
     quantity: data.quantity,
     addons: selectedAddons.map((a) => ({ priceCents: a.priceCents })),
-    promo: promo ? { type: promo.type, value: promo.value } : null,
-    recurringPriceCents: product.recurringPriceCents,
+    promo: promo ? { type: promo.type, value: promo.value, appliesTo: promo.appliesTo as any } : null,
+    recurringPriceCents: fullRecurringPriceCents,
+    selectedInterval,
   });
 
   // When the billing plan is charged at checkout, include the recurring
-  // amount in the one-time charge — matches what the checkout UI displays.
+  // amount (minus any promo discount on the plan) in the one-time charge.
   const chargeAmountCents = chargeRecurringAtCheckout
-    ? price.totalCents + price.recurringTotalCents
+    ? price.totalCents + price.recurringTotalCents - price.recurringDiscountCents
     : price.totalCents;
 
   await logOrderEvent(order.id, "payment_attempted", `Charging $${(chargeAmountCents / 100).toFixed(2)}`);
@@ -538,12 +544,26 @@ export async function completeCheckout(
       const perUnitSavingsCents = activePromo.priceTier.priceCents - resolvedBasePriceCents;
       zohoDiscountDollars += (perUnitSavingsCents * data.quantity) / 100;
     }
-    if (promo) {
-      if (promo.type === "percent") {
-        zohoDiscountDollars += Math.round((price.subtotalCents * promo.value) / 100) / 100;
-      } else {
-        zohoDiscountDollars += promo.value / 100;
-      }
+    // Device discount from promo code
+    if (promo && price.discountCents > 0) {
+      zohoDiscountDollars += price.discountCents / 100;
+    }
+    // Recurring discount added to discountAmount when first cycle is charged at checkout
+    if (chargeRecurringAtCheckout && price.recurringDiscountCents > 0) {
+      zohoDiscountDollars += price.recurringDiscountCents / 100;
+    }
+
+    // Build recurring_discount metadata for Zoho (future cycles)
+    let zohoRecurringDiscount: { plan: string; discount_per_cycle: number; quantity: number; number_of_cycles: null } | undefined;
+    if (promo && price.recurringDiscountCents > 0 && selectedPlan) {
+      const planLabel = selectedPlan.interval === "annually" ? "Annual" : "Monthly";
+      const recurringQty = selectedPlan.interval === "annually" ? listingQty : data.quantity;
+      zohoRecurringDiscount = {
+        plan: planLabel,
+        discount_per_cycle: Math.round(price.recurringDiscountCents / recurringQty) / 100,
+        quantity: recurringQty,
+        number_of_cycles: null,
+      };
     }
 
     const zohoResult = await postZohoInvoice({
@@ -563,6 +583,7 @@ export async function completeCheckout(
       recurringInvoiceItems,
       shippingAddress: zohoShippingAddress,
       discountAmount: zohoDiscountDollars || undefined,
+      recurringDiscount: zohoRecurringDiscount,
       fulfillmentItems: lineItems,
     });
 
@@ -608,13 +629,11 @@ export async function completeCheckout(
       const perUnitSavings = activePromo.priceTier.priceCents - resolvedBasePriceCents;
       discountParts.push(`Promotion: −${fmtDollars(perUnitSavings * data.quantity)} (${fmtDollars(perUnitSavings)}/ea × ${data.quantity})`);
     }
-    if (promo) {
-      if (promo.type === "percent") {
-        const discountCents = Math.round((price.subtotalCents * promo.value) / 100);
-        discountParts.push(`Promo code: ${promo.value}% off (−${fmtDollars(discountCents)})`);
-      } else {
-        discountParts.push(`Promo code: −${fmtDollars(promo.value)}`);
-      }
+    if (promo && price.discountCents > 0) {
+      discountParts.push(`Promo (device): −${fmtDollars(price.discountCents)}`);
+    }
+    if (promo && price.recurringDiscountCents > 0) {
+      discountParts.push(`Promo (plan): −${fmtDollars(price.recurringDiscountCents)}/cycle`);
     }
     const discountText = discountParts.length > 0 ? discountParts.join(" + ") : "—";
 
@@ -627,7 +646,7 @@ export async function completeCheckout(
   <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}${activePromo ? ` (was ${fmtDollars(activePromo.priceTier.priceCents)}/ea — promo)` : ""}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Billing type</td><td style="padding:6px 0;text-align:right">${planLabel}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Plan price</td><td style="padding:6px 0;text-align:right">${planPrice}</td></tr>
-  <tr><td style="padding:6px 0;color:#666">Recurring total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? fmtDollars(price.recurringTotalCents) : "—"}</td></tr>
+  <tr><td style="padding:6px 0;color:#666">Recurring total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Add-ons</td><td style="padding:6px 0;text-align:right">${addonsText}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Promo code</td><td style="padding:6px 0;text-align:right">${promoText}</td></tr>
   ${(promo || activePromo) ? `<tr><td style="padding:6px 0;color:#666">Discount</td><td style="padding:6px 0;text-align:right;color:#dc2626">${discountText}</td></tr>` : ""}
@@ -651,7 +670,9 @@ export async function completeCheckout(
       unitPrice: fmtDollars(resolvedBasePriceCents),
       billingType: planLabel,
       planPrice,
-      recurringTotal: price.recurringTotalCents ? fmtDollars(price.recurringTotalCents) : "—",
+      recurringTotal: price.recurringTotalCents
+        ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}`
+        : "—",
       addons: addonsText,
       promoCode: promoText,
       discount: discountText,

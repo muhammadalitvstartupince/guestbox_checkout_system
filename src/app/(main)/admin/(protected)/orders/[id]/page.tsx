@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db/client";
 import { RevealCardPanel } from "@/components/admin/RevealCardPanel";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
 import { OrderTimeline } from "@/components/admin/OrderTimeline";
+import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { retryZohoSync, resendConfirmationEmail } from "./actions";
 
 function formatCents(cents: number | null) {
@@ -19,7 +20,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     where: { id },
     include: {
       checkoutPage: { select: { title: true, type: true, upgradeTitle: true, webhookUrl: true, basePriceCents: true, priceTiers: { orderBy: { sortOrder: "asc" as const } } } },
-      promoCode: { select: { code: true, discountType: true, discountValue: true } },
+      promoCode: { select: { code: true, discountType: true, discountValue: true, appliesTo: true } },
       orderAddons: { include: { addon: { select: { name: true } } } },
       cardAccessLogs: {
         orderBy: { viewedAt: "desc" },
@@ -75,15 +76,23 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
 
   // Compute promo code discount for display (user-entered code, stacks with promotion)
   let promoDiscountLabel: string | null = null;
+  let promoRecurringDiscountCents = 0;
   if (order.promoCode) {
     const p = order.promoCode;
-    const addonsCents = order.orderAddons.reduce((sum, a) => sum + a.priceCents, 0);
-    const subtotal = unitPriceCents * order.quantity + addonsCents;
+    const promoPrice = calculateOrderPrice({
+      basePriceCents: unitPriceCents,
+      quantity: order.quantity,
+      addons: order.orderAddons.map((a) => ({ priceCents: a.priceCents })),
+      promo: { type: p.discountType, value: p.discountValue, appliesTo: p.appliesTo as any },
+      recurringPriceCents: order.recurringAmountCents ?? 0,
+      selectedInterval: billingPlan?.interval ?? null,
+    });
+    promoRecurringDiscountCents = promoPrice.recurringDiscountCents;
+    const totalPromoDiscount = promoPrice.discountCents + promoPrice.recurringDiscountCents;
     if (p.discountType === "percent") {
-      const discountCents = Math.round((subtotal * p.discountValue) / 100);
-      promoDiscountLabel = `${p.discountValue}% off (−${formatCents(discountCents)})`;
+      promoDiscountLabel = `${p.discountValue}% off (−${formatCents(totalPromoDiscount)})`;
     } else {
-      promoDiscountLabel = `−${formatCents(p.discountValue)}`;
+      promoDiscountLabel = `−${formatCents(totalPromoDiscount)}`;
     }
   }
 
@@ -189,7 +198,11 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 <Row label="Plan price" value={`${formatCents(billingPlan.priceCents)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"}`} />
               );
             })()}
-            <Row label="Recurring total" value={formatCents(order.recurringAmountCents)} />
+            <Row label="Recurring total" value={
+              promoRecurringDiscountCents > 0 && order.recurringAmountCents
+                ? `${formatCents(order.recurringAmountCents - promoRecurringDiscountCents)} (was ${formatCents(order.recurringAmountCents)})`
+                : formatCents(order.recurringAmountCents)
+            } />
             {order.orderAddons.length > 0 && (
               <Row
                 label="Add-ons"
@@ -247,7 +260,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           </dl>
           {order.zohoPayload != null && (
             <div className="mt-3 border-t border-zinc-100 pt-3 dark:border-zinc-800">
-              <dt className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Payload Sent</dt>
+              <dt className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">{order.zohoSynced ? "Payload Sent" : "Attempted Payload"}</dt>
               <pre className="overflow-x-auto rounded-lg bg-zinc-50 p-3 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
                 {JSON.stringify(order.zohoPayload, null, 2)}
               </pre>
