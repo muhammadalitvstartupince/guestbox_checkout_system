@@ -20,7 +20,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     where: { id },
     include: {
       checkoutPage: { select: { title: true, type: true, upgradeTitle: true, webhookUrl: true, basePriceCents: true, priceTiers: { orderBy: { sortOrder: "asc" as const } } } },
-      promoCode: { select: { code: true, discountType: true, discountValue: true, appliesTo: true } },
+      promoCode: { select: { code: true, discountMode: true, discountType: true, discountValue: true, appliesTo: true, deviceDiscountType: true, deviceDiscountValue: true, monthlyDiscountType: true, monthlyDiscountValue: true, annualDiscountType: true, annualDiscountValue: true } },
       orderAddons: { include: { addon: { select: { name: true } } } },
       cardAccessLogs: {
         orderBy: { viewedAt: "desc" },
@@ -79,17 +79,31 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   let promoRecurringDiscountCents = 0;
   if (order.promoCode) {
     const p = order.promoCode;
+    const promoCalcInput = p.discountMode === "split"
+      ? {
+          mode: "split" as const,
+          device: p.deviceDiscountType && p.deviceDiscountValue != null ? { type: p.deviceDiscountType, value: p.deviceDiscountValue } : null,
+          monthly: p.monthlyDiscountType && p.monthlyDiscountValue != null ? { type: p.monthlyDiscountType, value: p.monthlyDiscountValue } : null,
+          annual: p.annualDiscountType && p.annualDiscountValue != null ? { type: p.annualDiscountType, value: p.annualDiscountValue } : null,
+        }
+      : { type: p.discountType, value: p.discountValue, appliesTo: p.appliesTo as any };
     const promoPrice = calculateOrderPrice({
       basePriceCents: unitPriceCents,
       quantity: order.quantity,
       addons: order.orderAddons.map((a) => ({ priceCents: a.priceCents })),
-      promo: { type: p.discountType, value: p.discountValue, appliesTo: p.appliesTo as any },
+      promo: promoCalcInput,
       recurringPriceCents: order.recurringAmountCents ?? 0,
       selectedInterval: billingPlan?.interval ?? null,
     });
     promoRecurringDiscountCents = promoPrice.recurringDiscountCents;
     const totalPromoDiscount = promoPrice.discountCents + promoPrice.recurringDiscountCents;
-    if (p.discountType === "percent") {
+
+    if (p.discountMode === "split") {
+      const parts: string[] = [];
+      if (promoPrice.discountCents > 0) parts.push(`Device: −${formatCents(promoPrice.discountCents)}`);
+      if (promoPrice.recurringDiscountCents > 0) parts.push(`Plan: −${formatCents(promoPrice.recurringDiscountCents)}/cycle`);
+      promoDiscountLabel = parts.length > 0 ? parts.join(", ") : `−${formatCents(totalPromoDiscount)}`;
+    } else if (p.discountType === "percent") {
       promoDiscountLabel = `${p.discountValue}% off (−${formatCents(totalPromoDiscount)})`;
     } else {
       promoDiscountLabel = `−${formatCents(totalPromoDiscount)}`;
@@ -221,6 +235,14 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             {!activePromo && !order.promoCode && (
               <Row label="Promo code" value="—" />
             )}
+            <Row
+              label="Shipping"
+              value={
+                order.shippingRateCents
+                  ? `${formatCents(order.shippingRateCents)} — ${order.shippingCarrier ?? ""} ${order.shippingService ?? ""}${order.shippingEstDays ? ` (~${order.shippingEstDays} days)` : ""}`
+                  : "FREE (domestic)"
+              }
+            />
           </dl>
           <div className="mt-3 border-t border-zinc-200 pt-3 dark:border-zinc-700">
             <div className="flex justify-between text-sm font-semibold text-zinc-900 dark:text-zinc-100">

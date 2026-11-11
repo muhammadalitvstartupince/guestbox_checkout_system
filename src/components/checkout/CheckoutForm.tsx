@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useMemo, useState } from "react";
-import { initiateOrder, saveBillingInfo, saveBillingPlan, completeCheckout, checkPromoCode } from "@/app/c/[slug]/actions";
+import { initiateOrder, saveBillingInfo, saveBillingPlan, completeCheckout, checkPromoCode, getShippingOptions, selectShippingRate } from "@/app/c/[slug]/actions";
 import { OrderSuccessModal } from "@/components/checkout/OrderSuccessModal";
 import { PhoneNumberField } from "@/components/checkout/PhoneNumberField";
 import { CountryField } from "@/components/checkout/CountryField";
@@ -186,12 +186,29 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     }
   }
 
+  // Shipping rate state (international only) — declared early so the billing
+  // transition block below can kick off background fetch immediately.
+  const [shippingRates, setShippingRates] = useState<Array<{ objectId: string; carrier: string; service: string; amountCents: number; currency: string; estimatedDays: number | null; attributes: string[]; carrierLogo: string | null }>>([]);
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [shippingError, setShippingError] = useState<string | null>(null);
+  const [selectedShipping, setSelectedShipping] = useState<{ objectId: string; carrier: string; service: string; amountCents: number; estimatedDays: number | null } | null>(null);
+
   const [lastBillingState, setLastBillingState] = useState(billingState);
   const [billingGen, setBillingGen] = useState(0);
   if (billingState !== lastBillingState) {
     setLastBillingState(billingState);
     setBillingGen((g) => g + 1);
     if (billingState.status === "success") {
+      if (billingState.isInternational && orderId) {
+        // Start fetching shipping rates in the background immediately
+        setShippingLoading(true);
+        setShippingError(null);
+        getShippingOptions(orderId).then((result) => {
+          setShippingRates(result.rates);
+          if (result.error) setShippingError(result.error);
+          setShippingLoading(false);
+        });
+      }
       if (hasPlans) {
         setDetailsSubStep("billing-cycle");
       } else {
@@ -274,7 +291,15 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const [promoCheck, setPromoCheck] = useState<{
     status: "idle" | "checking" | "valid" | "invalid";
     message?: string;
-    discount?: { type: "percent" | "fixed"; value: number; appliesTo?: string };
+    discount?: {
+      mode?: "single" | "split";
+      type?: "percent" | "fixed";
+      value?: number;
+      appliesTo?: string;
+      device?: { type: "percent" | "fixed"; value: number } | null;
+      monthly?: { type: "percent" | "fixed"; value: number } | null;
+      annual?: { type: "percent" | "fixed"; value: number } | null;
+    };
     appliedCode?: string;
   }>({ status: "idle" });
 
@@ -325,6 +350,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
   const appliedPromo = promoCheck.status === "valid" ? (promoCheck.discount ?? null) : null;
   const selectedBillingInterval = selectedPlan?.interval ?? null;
+  const promoForCalc = appliedPromo
+    ? appliedPromo.mode === "split"
+      ? { mode: "split" as const, device: appliedPromo.device ?? null, monthly: appliedPromo.monthly ?? null, annual: appliedPromo.annual ?? null }
+      : { type: appliedPromo.type!, value: appliedPromo.value!, appliesTo: appliedPromo.appliesTo as any }
+    : null;
   const estimate = useMemo(
     () =>
       calculateOrderPrice({
@@ -332,11 +362,13 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         quantity,
         addons: selectedAddons.map((a) => ({ priceCents: a.priceCents })),
         recurringPriceCents: displayRecurringPriceCents,
-        promo: appliedPromo ? { type: appliedPromo.type, value: appliedPromo.value, appliesTo: appliedPromo.appliesTo as any } : null,
+        promo: promoForCalc,
         selectedInterval: selectedBillingInterval,
       }),
     [quantity, listingQty, selectedAddons, effectiveBasePriceCents, displayRecurringPriceCents, appliedPromo, selectedBillingInterval],
   );
+
+  const shippingCents = selectedShipping?.amountCents ?? 0;
 
   const primaryColor = checkoutPage.skinConfig.colors?.primary ?? "#0d1b2a";
   const accentColor = checkoutPage.skinConfig.colors?.accent ?? "#00b4d8";
@@ -762,6 +794,38 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     );
   }
 
+  // Derive the two shipping options to show: cheapest (first by price) and fastest (fewest days)
+  const shippingOptions = useMemo(() => {
+    if (shippingRates.length === 0) return [];
+    const cheapest = shippingRates[0]; // already sorted by amountCents asc
+    const fastest = shippingRates.reduce((best, r) =>
+      r.estimatedDays != null && (best.estimatedDays == null || r.estimatedDays < best.estimatedDays) ? r : best,
+      shippingRates[0],
+    );
+    // Dedupe if same rate
+    if (cheapest.objectId === fastest.objectId) return [cheapest];
+    // Cheapest first
+    return [cheapest, fastest];
+  }, [shippingRates]);
+
+  // Auto-select cheapest when rates arrive
+  if (shippingOptions.length > 0 && !selectedShipping) {
+    setSelectedShipping(shippingOptions[0]);
+  }
+
+  // Persist selection to DB whenever it changes (fire-and-forget)
+  const [lastSavedShippingId, setLastSavedShippingId] = useState<string | null>(null);
+  if (selectedShipping && orderId && selectedShipping.objectId !== lastSavedShippingId) {
+    setLastSavedShippingId(selectedShipping.objectId);
+    selectShippingRate(orderId, {
+      objectId: selectedShipping.objectId,
+      carrier: selectedShipping.carrier,
+      service: selectedShipping.service,
+      amountCents: selectedShipping.amountCents,
+      estimatedDays: selectedShipping.estimatedDays,
+    });
+  }
+
   function renderBillingCycleSubStep() {
     if (!hasPlans) {
       return null;
@@ -1083,6 +1147,64 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             </div>
           </div>
 
+          {/* Shipping options (international only) */}
+          {billingState.isInternational && (
+            <section className="space-y-2">
+              <p className="text-sm font-semibold text-zinc-700 flex items-center gap-1.5"><Truck className="h-4 w-4" /> Shipping Method</p>
+              {shippingLoading && (
+                <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600" />
+                  <span className="text-sm text-zinc-600">Calculating shipping rates...</span>
+                </div>
+              )}
+              {shippingError && (
+                <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{shippingError}</div>
+              )}
+              {!shippingLoading && shippingOptions.length > 0 && shippingOptions.map((rate) => {
+                const isSelected = selectedShipping?.objectId === rate.objectId;
+                const isCheapest = rate.objectId === shippingRates[0]?.objectId;
+                return (
+                  <button
+                    key={rate.objectId}
+                    type="button"
+                    onClick={() => setSelectedShipping(rate)}
+                    className={`flex w-full items-center gap-3 rounded-lg border-2 p-3 text-left transition-all ${
+                      isSelected
+                        ? "border-indigo-500 bg-indigo-50/40"
+                        : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"
+                    }`}
+                  >
+                    <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
+                      isSelected ? "border-indigo-500 bg-indigo-500" : "border-zinc-300"
+                    }`}>
+                      {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
+                    </div>
+                    {rate.carrierLogo && (
+                      <img src={rate.carrierLogo} alt={rate.carrier} className="h-7 w-7 shrink-0 rounded object-contain" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1">
+                        <span className="text-xs font-bold text-zinc-900 line-clamp-2">{rate.carrier} — {rate.service}</span>
+                        <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold ${isCheapest ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}`}>
+                          {isCheapest ? "Cheapest" : "Fastest"}
+                        </span>
+                      </div>
+                      {rate.estimatedDays != null && (
+                        <div className="text-[11px] text-zinc-500">Est. {rate.estimatedDays} business day{rate.estimatedDays !== 1 ? "s" : ""}</div>
+                      )}
+                    </div>
+                    <div className="shrink-0 text-xs font-bold text-zinc-900">${(rate.amountCents / 100).toFixed(2)}</div>
+                  </button>
+                );
+              })}
+              {!shippingLoading && !shippingError && shippingOptions.length === 0 && (
+                <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                  No shipping rates available. Please verify your address.
+                </div>
+              )}
+            </section>
+          )}
+
           {/* Add-ons inline */}
           {checkoutPage.addons.length > 0 && (
             <section className="space-y-2">
@@ -1282,12 +1404,18 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               );
             })() : null}
+            {shippingCents > 0 && (
+              <div className="mt-1 flex justify-between text-sm opacity-90">
+                <span>Shipping ({selectedShipping?.carrier} {selectedShipping?.service})</span>
+                <span>{formatCents(shippingCents)}</span>
+              </div>
+            )}
             <div className="mt-2 flex justify-between border-t border-white/15 pt-2 text-lg font-semibold">
               <span>Total</span>
               <span>{formatCents(
-                selectedPlan?.chargeAtCheckout
+                (selectedPlan?.chargeAtCheckout
                   ? estimate.totalCents + estimate.recurringTotalCents - estimate.recurringDiscountCents
-                  : estimate.totalCents
+                  : estimate.totalCents) + shippingCents
               )}</span>
             </div>
             {estimate.recurringTotalCents > 0 && !selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0 && (

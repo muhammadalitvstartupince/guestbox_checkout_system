@@ -56,6 +56,13 @@ enum PromoAppliesTo {
   @@map("promo_applies_to")
 }
 
+enum DiscountMode {
+  single
+  split
+
+  @@map("discount_mode")
+}
+
 enum OrderStatus {
   pending
   paid
@@ -278,6 +285,15 @@ model PromoCode {
   discountValue Int           @map("discount_value")
   appliesTo     PromoAppliesTo @default(device) @map("applies_to")
 
+  discountMode          DiscountMode   @default(single) @map("discount_mode")
+  // Split-mode fields (null when mode = single)
+  deviceDiscountType    DiscountType?  @map("device_discount_type")
+  deviceDiscountValue   Int?           @map("device_discount_value")
+  monthlyDiscountType   DiscountType?  @map("monthly_discount_type")
+  monthlyDiscountValue  Int?           @map("monthly_discount_value")
+  annualDiscountType    DiscountType?  @map("annual_discount_type")
+  annualDiscountValue   Int?           @map("annual_discount_value")
+
   appliesToCheckoutPageId String?       @map("applies_to_checkout_page_id") @db.Uuid
   appliesToCheckoutPage   CheckoutPage? @relation(fields: [appliesToCheckoutPageId], references: [id], onDelete: Cascade)
 
@@ -370,6 +386,13 @@ model Order {
   authNetMessage       String? @map("auth_net_message")
 
   status OrderStatus @default(pending)
+
+  // Shipping rate selected at checkout (international only; null = domestic/free)
+  shippingRateCents Int?    @map("shipping_rate_cents")
+  shippingCarrier   String? @map("shipping_carrier")
+  shippingService   String? @map("shipping_service")
+  shippingEstDays   Int?    @map("shipping_est_days")
+  shippoRateId      String? @map("shippo_rate_id")
 
   zohoSynced   Boolean @default(false) @map("zoho_synced")
   zohoPayload  Json?   @map("zoho_payload")
@@ -481,6 +504,51 @@ model EmailSettings {
   updatedAt                    DateTime @updatedAt @map("updated_at")
 
   @@map("email_settings")
+}
+
+model ShippingSettings {
+  id              String   @id @default(uuid()) @db.Uuid
+  warehouseName   String   @map("warehouse_name")
+  warehouseStreet String   @map("warehouse_street")
+  warehouseCity   String   @map("warehouse_city")
+  warehouseState  String   @map("warehouse_state")
+  warehouseZip    String   @map("warehouse_zip")
+  warehouseCountry String  @map("warehouse_country")
+  warehousePhone  String   @map("warehouse_phone")
+  maxDevicesPerBox Int     @default(20) @map("max_devices_per_box")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  packageTiers    ShippingPackageTier[]
+  weightEntries   ShippingWeightEntry[]
+
+  @@map("shipping_settings")
+}
+
+model ShippingPackageTier {
+  id                String   @id @default(uuid()) @db.Uuid
+  shippingSettingsId String  @map("shipping_settings_id") @db.Uuid
+  shippingSettings  ShippingSettings @relation(fields: [shippingSettingsId], references: [id], onDelete: Cascade)
+  minQty            Int      @map("min_qty")
+  maxQty            Int      @map("max_qty")
+  label             String
+  lengthIn          Decimal  @map("length_in") @db.Decimal(5, 2)
+  widthIn           Decimal  @map("width_in") @db.Decimal(5, 2)
+  heightIn          Decimal  @map("height_in") @db.Decimal(5, 2)
+  maxWeightLb       Decimal  @map("max_weight_lb") @db.Decimal(5, 2)
+  sortOrder         Int      @default(0) @map("sort_order")
+
+  @@map("shipping_package_tiers")
+}
+
+model ShippingWeightEntry {
+  id                String   @id @default(uuid()) @db.Uuid
+  shippingSettingsId String  @map("shipping_settings_id") @db.Uuid
+  shippingSettings  ShippingSettings @relation(fields: [shippingSettingsId], references: [id], onDelete: Cascade)
+  qty               Int
+  weightLb          Decimal  @map("weight_lb") @db.Decimal(5, 2)
+
+  @@unique([shippingSettingsId, qty])
+  @@map("shipping_weight_entries")
 }
 
 model AbandonedCheckoutSettings {

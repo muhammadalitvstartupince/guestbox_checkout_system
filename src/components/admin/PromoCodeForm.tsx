@@ -1,15 +1,47 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createPromoCode } from "@/app/(main)/admin/(protected)/promo-codes/actions";
 import { initialPromoCodeFormState } from "@/app/(main)/admin/(protected)/promo-codes/types";
 
 const inputClass =
   "w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100";
 const labelClass = "mb-1 block text-xs text-zinc-500 dark:text-zinc-400";
+const selectClass = `${inputClass} bg-white dark:bg-zinc-800`;
+
+function DiscountSlotRow({ prefix, label }: { prefix: string; label: string }) {
+  const [type, setType] = useState("");
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <div>
+        <label className={labelClass}>{label} Type</label>
+        <select
+          name={`${prefix}DiscountType`}
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className={selectClass}
+        >
+          <option value="">None</option>
+          <option value="percent">Percent</option>
+          <option value="fixed">Fixed (USD)</option>
+        </select>
+      </div>
+      <div>
+        <label className={labelClass}>{label} Value</label>
+        <input
+          name={`${prefix}DiscountValue`}
+          className={inputClass}
+          placeholder={type === "percent" ? "e.g. 10" : type === "fixed" ? "e.g. 20.00" : "—"}
+          disabled={!type}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; title: string }[] }) {
   const [state, formAction, pending] = useActionState(createPromoCode, initialPromoCodeFormState);
+  const [mode, setMode] = useState<"single" | "split">("single");
 
   return (
     <form
@@ -28,6 +60,8 @@ export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; 
         </div>
       )}
 
+      <input type="hidden" name="discountMode" value={mode} />
+
       <div className="grid grid-cols-4 gap-3">
         <div>
           <label className={labelClass}>Code</label>
@@ -37,34 +71,61 @@ export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; 
           )}
         </div>
         <div>
-          <label className={labelClass}>Discount Type</label>
-          <select name="discountType" defaultValue="percent" className={`${inputClass} bg-white dark:bg-zinc-800`}>
-            <option value="percent">Percent</option>
-            <option value="fixed">Fixed (USD)</option>
+          <label className={labelClass}>Discount Mode</label>
+          <select
+            value={mode}
+            onChange={(e) => setMode(e.target.value as "single" | "split")}
+            className={selectClass}
+          >
+            <option value="single">Single</option>
+            <option value="split">Split (Device / Monthly / Annual)</option>
           </select>
         </div>
-        <div>
-          <label className={labelClass}>Value</label>
-          <input name="discountValue" required className={inputClass} placeholder="10" />
-        </div>
-        <div>
-          <label className={labelClass}>Discount Target</label>
-          <select name="appliesTo" defaultValue="device" className={`${inputClass} bg-white dark:bg-zinc-800`}>
-            <option value="device">Device only</option>
-            <option value="monthly">Monthly plan only</option>
-            <option value="annual">Annual plan only</option>
-            <option value="device_monthly">Device + Monthly</option>
-            <option value="device_annual">Device + Annual</option>
-            <option value="monthly_annual">Monthly + Annual</option>
-            <option value="all">All (Device + Plan)</option>
-          </select>
-        </div>
+
+        {mode === "single" && (
+          <>
+            <div>
+              <label className={labelClass}>Discount Type</label>
+              <select name="discountType" defaultValue="percent" className={selectClass}>
+                <option value="percent">Percent</option>
+                <option value="fixed">Fixed (USD)</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelClass}>Value</label>
+              <input name="discountValue" required className={inputClass} placeholder="10" />
+            </div>
+          </>
+        )}
+
+        {mode === "split" && (
+          <div className="col-span-2 space-y-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Leave a slot blank for no discount on that component</p>
+            <DiscountSlotRow prefix="device" label="Device" />
+            <DiscountSlotRow prefix="monthly" label="Monthly Plan" />
+            <DiscountSlotRow prefix="annual" label="Annual Plan" />
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-3">
+        {mode === "single" && (
+          <div>
+            <label className={labelClass}>Discount Target</label>
+            <select name="appliesTo" defaultValue="device" className={selectClass}>
+              <option value="device">Device only</option>
+              <option value="monthly">Monthly plan only</option>
+              <option value="annual">Annual plan only</option>
+              <option value="device_monthly">Device + Monthly</option>
+              <option value="device_annual">Device + Annual</option>
+              <option value="monthly_annual">Monthly + Annual</option>
+              <option value="all">All (Device + Plan)</option>
+            </select>
+          </div>
+        )}
         <div>
           <label className={labelClass}>Checkout Page (optional)</label>
-          <select name="appliesToCheckoutPageId" defaultValue="" className={`${inputClass} bg-white dark:bg-zinc-800`}>
+          <select name="appliesToCheckoutPageId" defaultValue="" className={selectClass}>
             <option value="">All checkout pages</option>
             {checkoutPages.map((p) => (
               <option key={p.id} value={p.id}>

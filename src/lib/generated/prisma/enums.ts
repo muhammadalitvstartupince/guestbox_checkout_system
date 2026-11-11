@@ -56,6 +56,14 @@ export const PromoAppliesTo = {
 export type PromoAppliesTo = (typeof PromoAppliesTo)[keyof typeof PromoAppliesTo]
 
 
+export const DiscountMode = {
+  single: 'single',
+  split: 'split'
+} as const
+
+export type DiscountMode = (typeof DiscountMode)[keyof typeof DiscountMode]
+
+
 export const OrderStatus = {
   pending: 'pending',
   paid: 'paid',

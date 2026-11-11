@@ -67,6 +67,9 @@ export const ModelName = {
   Promotion: 'Promotion',
   PromotionCheckoutPage: 'PromotionCheckoutPage',
   EmailSettings: 'EmailSettings',
+  ShippingSettings: 'ShippingSettings',
+  ShippingPackageTier: 'ShippingPackageTier',
+  ShippingWeightEntry: 'ShippingWeightEntry',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings'
 } as const
 
@@ -217,6 +220,13 @@ export const PromoCodeScalarFieldEnum = {
   discountType: 'discountType',
   discountValue: 'discountValue',
   appliesTo: 'appliesTo',
+  discountMode: 'discountMode',
+  deviceDiscountType: 'deviceDiscountType',
+  deviceDiscountValue: 'deviceDiscountValue',
+  monthlyDiscountType: 'monthlyDiscountType',
+  monthlyDiscountValue: 'monthlyDiscountValue',
+  annualDiscountType: 'annualDiscountType',
+  annualDiscountValue: 'annualDiscountValue',
   appliesToCheckoutPageId: 'appliesToCheckoutPageId',
   maxRedemptions: 'maxRedemptions',
   timesRedeemed: 'timesRedeemed',
@@ -268,6 +278,11 @@ export const OrderScalarFieldEnum = {
   authNetTransactionId: 'authNetTransactionId',
   authNetMessage: 'authNetMessage',
   status: 'status',
+  shippingRateCents: 'shippingRateCents',
+  shippingCarrier: 'shippingCarrier',
+  shippingService: 'shippingService',
+  shippingEstDays: 'shippingEstDays',
+  shippoRateId: 'shippoRateId',
   zohoSynced: 'zohoSynced',
   zohoPayload: 'zohoPayload',
   zohoResponse: 'zohoResponse',
@@ -351,6 +366,48 @@ export const EmailSettingsScalarFieldEnum = {
 } as const
 
 export type EmailSettingsScalarFieldEnum = (typeof EmailSettingsScalarFieldEnum)[keyof typeof EmailSettingsScalarFieldEnum]
+
+
+export const ShippingSettingsScalarFieldEnum = {
+  id: 'id',
+  warehouseName: 'warehouseName',
+  warehouseStreet: 'warehouseStreet',
+  warehouseCity: 'warehouseCity',
+  warehouseState: 'warehouseState',
+  warehouseZip: 'warehouseZip',
+  warehouseCountry: 'warehouseCountry',
+  warehousePhone: 'warehousePhone',
+  maxDevicesPerBox: 'maxDevicesPerBox',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShippingSettingsScalarFieldEnum = (typeof ShippingSettingsScalarFieldEnum)[keyof typeof ShippingSettingsScalarFieldEnum]
+
+
+export const ShippingPackageTierScalarFieldEnum = {
+  id: 'id',
+  shippingSettingsId: 'shippingSettingsId',
+  minQty: 'minQty',
+  maxQty: 'maxQty',
+  label: 'label',
+  lengthIn: 'lengthIn',
+  widthIn: 'widthIn',
+  heightIn: 'heightIn',
+  maxWeightLb: 'maxWeightLb',
+  sortOrder: 'sortOrder'
+} as const
+
+export type ShippingPackageTierScalarFieldEnum = (typeof ShippingPackageTierScalarFieldEnum)[keyof typeof ShippingPackageTierScalarFieldEnum]
+
+
+export const ShippingWeightEntryScalarFieldEnum = {
+  id: 'id',
+  shippingSettingsId: 'shippingSettingsId',
+  qty: 'qty',
+  weightLb: 'weightLb'
+} as const
+
+export type ShippingWeightEntryScalarFieldEnum = (typeof ShippingWeightEntryScalarFieldEnum)[keyof typeof ShippingWeightEntryScalarFieldEnum]
 
 
 export const AbandonedCheckoutSettingsScalarFieldEnum = {

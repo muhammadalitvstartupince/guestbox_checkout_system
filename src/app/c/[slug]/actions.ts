@@ -16,13 +16,15 @@ import {
 import { postZohoInvoice } from "@/lib/zoho/post-invoice";
 import { buildZohoLineItems, buildZohoRecurringLineItems } from "@/lib/zoho/order-payload";
 import { hasUpgradeOffer, selectEffectiveProduct } from "@/lib/checkout/select-product";
-import { validatePromoCode } from "@/lib/checkout/validate-promo";
+import { validatePromoCode, type PromoInfo } from "@/lib/checkout/validate-promo";
 import { sendEmail } from "@/lib/email/send";
 import { getEmailSettings } from "@/lib/email/settings";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendOrderConfirmationEmail } from "@/lib/email/send-order-confirmation";
 import { sendOrderWebhook } from "@/lib/webhook/send";
 import { logOrderEvent } from "@/lib/orders/log-event";
+import { getShippingRates, type ShippingRate } from "@/lib/shipping/get-rates";
+import { DOMESTIC_COUNTRY } from "@/lib/shipping/config";
 
 /**
  * Step 1: contact info only. Creates the order immediately (status
@@ -125,7 +127,7 @@ export async function initiateOrder(
 export async function checkPromoCode(
   checkoutPageSlug: string,
   code: string,
-): Promise<{ valid: boolean; message: string; discount?: { type: "percent" | "fixed"; value: number; appliesTo: string } }> {
+): Promise<{ valid: boolean; message: string; discount?: PromoInfo }> {
   const checkoutPage = await prisma.checkoutPage.findUnique({
     where: { slug: checkoutPageSlug },
     include: { promotionLinks: { include: { promotion: { select: { isActive: true } } } } },
@@ -139,7 +141,7 @@ export async function checkPromoCode(
   return {
     valid: result.valid,
     message: result.message,
-    discount: result.promo ? { type: result.promo.type, value: result.promo.value, appliesTo: result.promo.appliesTo } : undefined,
+    discount: result.promo ?? undefined,
   };
 }
 
@@ -192,12 +194,66 @@ export async function saveBillingInfo(
       shippingState: data.state,
       shippingZip: data.zip,
       shippingCountry: data.country,
+      // Clear any previously selected shipping rate (address may have changed)
+      shippingRateCents: null,
+      shippingCarrier: null,
+      shippingService: null,
+      shippingEstDays: null,
+      shippoRateId: null,
     },
   });
 
   await logOrderEvent(order.id, "billing_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
 
-  return { status: "success" };
+  const isInternational = data.country.toUpperCase() !== DOMESTIC_COUNTRY;
+  return { status: "success", isInternational };
+}
+
+/**
+ * Fetch real-time shipping rates from Shippo for an international order.
+ * Called client-side after address is saved when country != US.
+ */
+export async function getShippingOptions(
+  orderId: string,
+): Promise<{ rates: ShippingRate[]; error?: string }> {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { firstName: true, lastName: true, email: true, phone: true, quantity: true, shippingAddressLine1: true, shippingCity: true, shippingState: true, shippingZip: true, shippingCountry: true },
+  });
+  if (!order || !order.shippingAddressLine1 || !order.shippingCountry) {
+    return { rates: [], error: "Shipping address not found." };
+  }
+  return getShippingRates({
+    name: `${order.firstName} ${order.lastName}`,
+    street1: order.shippingAddressLine1,
+    city: order.shippingCity ?? "",
+    state: order.shippingState ?? "",
+    zip: order.shippingZip ?? "",
+    country: order.shippingCountry,
+    phone: order.phone,
+    email: order.email,
+  }, order.quantity);
+}
+
+/**
+ * Customer selects a shipping rate from the Shippo options.
+ * Saves the selected rate to the order.
+ */
+export async function selectShippingRate(
+  orderId: string,
+  rate: { objectId: string; carrier: string; service: string; amountCents: number; estimatedDays: number | null },
+): Promise<void> {
+  await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      shippingRateCents: rate.amountCents,
+      shippingCarrier: rate.carrier,
+      shippingService: rate.service,
+      shippingEstDays: rate.estimatedDays,
+      shippoRateId: rate.objectId,
+    },
+  });
+  await logOrderEvent(orderId, "shipping_rate_selected", `${rate.carrier} ${rate.service} — $${(rate.amountCents / 100).toFixed(2)}`);
 }
 
 /**
@@ -396,7 +452,7 @@ export async function completeCheckout(
   const validAddonIds = new Set(pageAddons.map((a) => a.id));
   const selectedAddons = pageAddons.filter((a) => data.addonIds.includes(a.id) && validAddonIds.has(a.id));
 
-  let promo: { id: string; type: "percent" | "fixed"; value: number; appliesTo: string } | null = null;
+  let promo: PromoInfo | null = null;
   // Validate promo code — but during a promotion the discount is baked into the base price
   if (data.promoCode) {
     const promoResult = await validatePromoCode(checkoutPage.id, data.promoCode);
@@ -416,20 +472,29 @@ export async function completeCheckout(
     : null;
   const selectedInterval = selectedPlan?.interval ?? null;
 
+  const promoForCalc = promo
+    ? promo.mode === "split"
+      ? { mode: "split" as const, device: promo.device, monthly: promo.monthly, annual: promo.annual }
+      : { type: promo.type, value: promo.value, appliesTo: promo.appliesTo as any }
+    : null;
+
   const price = calculateOrderPrice({
     basePriceCents: product.priceCents,
     quantity: data.quantity,
     addons: selectedAddons.map((a) => ({ priceCents: a.priceCents })),
-    promo: promo ? { type: promo.type, value: promo.value, appliesTo: promo.appliesTo as any } : null,
+    promo: promoForCalc,
     recurringPriceCents: fullRecurringPriceCents,
     selectedInterval,
   });
 
   // When the billing plan is charged at checkout, include the recurring
   // amount (minus any promo discount on the plan) in the one-time charge.
-  const chargeAmountCents = chargeRecurringAtCheckout
+  // International shipping cost (selected in the shipping-rate step; null = domestic/free)
+  const shippingCents = order.shippingRateCents ?? 0;
+
+  const chargeAmountCents = (chargeRecurringAtCheckout
     ? price.totalCents + price.recurringTotalCents - price.recurringDiscountCents
-    : price.totalCents;
+    : price.totalCents) + shippingCents;
 
   await logOrderEvent(order.id, "payment_attempted", `Charging $${(chargeAmountCents / 100).toFixed(2)}`);
 
@@ -582,6 +647,7 @@ export async function completeCheckout(
       lineItems,
       recurringInvoiceItems,
       shippingAddress: zohoShippingAddress,
+      shippingCharge: shippingCents > 0 ? shippingCents / 100 : undefined,
       discountAmount: zohoDiscountDollars || undefined,
       recurringDiscount: zohoRecurringDiscount,
       fulfillmentItems: lineItems,
@@ -648,6 +714,7 @@ export async function completeCheckout(
   <tr><td style="padding:6px 0;color:#666">Plan price</td><td style="padding:6px 0;text-align:right">${planPrice}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Recurring total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Add-ons</td><td style="padding:6px 0;text-align:right">${addonsText}</td></tr>
+  ${shippingCents > 0 ? `<tr><td style="padding:6px 0;color:#666">Shipping</td><td style="padding:6px 0;text-align:right">${fmtDollars(shippingCents)} (${order.shippingCarrier ?? ""} ${order.shippingService ?? ""})</td></tr>` : ""}
   <tr><td style="padding:6px 0;color:#666">Promo code</td><td style="padding:6px 0;text-align:right">${promoText}</td></tr>
   ${(promo || activePromo) ? `<tr><td style="padding:6px 0;color:#666">Discount</td><td style="padding:6px 0;text-align:right;color:#dc2626">${discountText}</td></tr>` : ""}
   <tr><td style="padding:8px 0;font-weight:bold;border-top:2px solid #e5e7eb">Total charged</td><td style="padding:8px 0;text-align:right;font-weight:bold;border-top:2px solid #e5e7eb">${fmtDollars(chargeAmountCents)}</td></tr>
@@ -674,6 +741,7 @@ export async function completeCheckout(
         ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}`
         : "—",
       addons: addonsText,
+      shipping: shippingCents > 0 ? `${fmtDollars(shippingCents)} (${order.shippingCarrier ?? ""} ${order.shippingService ?? ""})` : "FREE",
       promoCode: promoText,
       discount: discountText,
       billingAddress: billingAddr,
@@ -739,6 +807,9 @@ export async function completeCheckout(
         unit_Price: String(resolvedBasePriceCents / 100),
         BumpOrder: upgradeApplied ? "true" : "false",
         rec_amount: String(price.recurringTotalCents / 100),
+        shipping_amount: String(shippingCents / 100),
+        shipping_carrier: order.shippingCarrier ?? "",
+        shipping_service: order.shippingService ?? "",
       });
       await logOrderEvent(order.id, webhookResult.success ? "webhook_sent" : "webhook_failed", webhookResult.success ? undefined : webhookResult.error);
       if (!webhookResult.success) {

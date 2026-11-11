@@ -13,6 +13,7 @@ const EVENT_META: Record<string, { label: string; tone: "neutral" | "success" | 
   internal_email_failed: { label: "Internal notification failed", tone: "error" },
   webhook_sent: { label: "Webhook sent", tone: "success" },
   webhook_failed: { label: "Webhook failed", tone: "error" },
+  shipping_rate_selected: { label: "Shipping rate selected", tone: "neutral" },
   abandoned_notified: { label: "Abandoned checkout alert sent", tone: "neutral" },
 };
 

@@ -122,6 +122,21 @@ export type PromotionCheckoutPage = Prisma.PromotionCheckoutPageModel
  */
 export type EmailSettings = Prisma.EmailSettingsModel
 /**
+ * Model ShippingSettings
+ * 
+ */
+export type ShippingSettings = Prisma.ShippingSettingsModel
+/**
+ * Model ShippingPackageTier
+ * 
+ */
+export type ShippingPackageTier = Prisma.ShippingPackageTierModel
+/**
+ * Model ShippingWeightEntry
+ * 
+ */
+export type ShippingWeightEntry = Prisma.ShippingWeightEntryModel
+/**
  * Model AbandonedCheckoutSettings
  * 
  */

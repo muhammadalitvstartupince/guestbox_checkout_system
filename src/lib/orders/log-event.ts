@@ -21,6 +21,7 @@ export type OrderEventType =
   | "internal_email_failed"
   | "webhook_sent"
   | "webhook_failed"
+  | "shipping_rate_selected"
   | "abandoned_notified";
 
 /**

@@ -21,6 +21,8 @@ export interface BillingInfoState {
   status: "idle" | "error" | "success";
   message?: string;
   fieldErrors?: Record<string, string[]>;
+  /** True when shipping country is international (needs Shippo rate selection). */
+  isInternational?: boolean;
 }
 
 export const initialBillingInfoState: BillingInfoState = { status: "idle" };
