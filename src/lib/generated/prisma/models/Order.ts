@@ -30,12 +30,16 @@ export type OrderAvgAggregateOutputType = {
   quantity: number | null
   amountCents: number | null
   recurringAmountCents: number | null
+  shippingRateCents: number | null
+  shippingEstDays: number | null
 }
 
 export type OrderSumAggregateOutputType = {
   quantity: number | null
   amountCents: number | null
   recurringAmountCents: number | null
+  shippingRateCents: number | null
+  shippingEstDays: number | null
 }
 
 export type OrderMinAggregateOutputType = {
@@ -77,6 +81,11 @@ export type OrderMinAggregateOutputType = {
   authNetTransactionId: string | null
   authNetMessage: string | null
   status: $Enums.OrderStatus | null
+  shippingRateCents: number | null
+  shippingCarrier: string | null
+  shippingService: string | null
+  shippingEstDays: number | null
+  shippoRateId: string | null
   zohoSynced: boolean | null
   createdAt: Date | null
   abandonedNotifiedAt: Date | null
@@ -121,6 +130,11 @@ export type OrderMaxAggregateOutputType = {
   authNetTransactionId: string | null
   authNetMessage: string | null
   status: $Enums.OrderStatus | null
+  shippingRateCents: number | null
+  shippingCarrier: string | null
+  shippingService: string | null
+  shippingEstDays: number | null
+  shippoRateId: string | null
   zohoSynced: boolean | null
   createdAt: Date | null
   abandonedNotifiedAt: Date | null
@@ -165,6 +179,11 @@ export type OrderCountAggregateOutputType = {
   authNetTransactionId: number
   authNetMessage: number
   status: number
+  shippingRateCents: number
+  shippingCarrier: number
+  shippingService: number
+  shippingEstDays: number
+  shippoRateId: number
   zohoSynced: number
   zohoPayload: number
   zohoResponse: number
@@ -178,12 +197,16 @@ export type OrderAvgAggregateInputType = {
   quantity?: true
   amountCents?: true
   recurringAmountCents?: true
+  shippingRateCents?: true
+  shippingEstDays?: true
 }
 
 export type OrderSumAggregateInputType = {
   quantity?: true
   amountCents?: true
   recurringAmountCents?: true
+  shippingRateCents?: true
+  shippingEstDays?: true
 }
 
 export type OrderMinAggregateInputType = {
@@ -225,6 +248,11 @@ export type OrderMinAggregateInputType = {
   authNetTransactionId?: true
   authNetMessage?: true
   status?: true
+  shippingRateCents?: true
+  shippingCarrier?: true
+  shippingService?: true
+  shippingEstDays?: true
+  shippoRateId?: true
   zohoSynced?: true
   createdAt?: true
   abandonedNotifiedAt?: true
@@ -269,6 +297,11 @@ export type OrderMaxAggregateInputType = {
   authNetTransactionId?: true
   authNetMessage?: true
   status?: true
+  shippingRateCents?: true
+  shippingCarrier?: true
+  shippingService?: true
+  shippingEstDays?: true
+  shippoRateId?: true
   zohoSynced?: true
   createdAt?: true
   abandonedNotifiedAt?: true
@@ -313,6 +346,11 @@ export type OrderCountAggregateInputType = {
   authNetTransactionId?: true
   authNetMessage?: true
   status?: true
+  shippingRateCents?: true
+  shippingCarrier?: true
+  shippingService?: true
+  shippingEstDays?: true
+  shippoRateId?: true
   zohoSynced?: true
   zohoPayload?: true
   zohoResponse?: true
@@ -446,6 +484,11 @@ export type OrderGroupByOutputType = {
   authNetTransactionId: string | null
   authNetMessage: string | null
   status: $Enums.OrderStatus
+  shippingRateCents: number | null
+  shippingCarrier: string | null
+  shippingService: string | null
+  shippingEstDays: number | null
+  shippoRateId: string | null
   zohoSynced: boolean
   zohoPayload: runtime.JsonValue | null
   zohoResponse: runtime.JsonValue | null
@@ -515,6 +558,11 @@ export type OrderWhereInput = {
   authNetTransactionId?: Prisma.StringNullableFilter<"Order"> | string | null
   authNetMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  shippingRateCents?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippingCarrier?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingService?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingEstDays?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippoRateId?: Prisma.StringNullableFilter<"Order"> | string | null
   zohoSynced?: Prisma.BoolFilter<"Order"> | boolean
   zohoPayload?: Prisma.JsonNullableFilter<"Order">
   zohoResponse?: Prisma.JsonNullableFilter<"Order">
@@ -567,6 +615,11 @@ export type OrderOrderByWithRelationInput = {
   authNetTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
   authNetMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingCarrier?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingService?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippoRateId?: Prisma.SortOrderInput | Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   zohoPayload?: Prisma.SortOrderInput | Prisma.SortOrder
   zohoResponse?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -622,6 +675,11 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   authNetTransactionId?: Prisma.StringNullableFilter<"Order"> | string | null
   authNetMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  shippingRateCents?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippingCarrier?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingService?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingEstDays?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippoRateId?: Prisma.StringNullableFilter<"Order"> | string | null
   zohoSynced?: Prisma.BoolFilter<"Order"> | boolean
   zohoPayload?: Prisma.JsonNullableFilter<"Order">
   zohoResponse?: Prisma.JsonNullableFilter<"Order">
@@ -674,6 +732,11 @@ export type OrderOrderByWithAggregationInput = {
   authNetTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
   authNetMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingCarrier?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingService?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippoRateId?: Prisma.SortOrderInput | Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   zohoPayload?: Prisma.SortOrderInput | Prisma.SortOrder
   zohoResponse?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -728,6 +791,11 @@ export type OrderScalarWhereWithAggregatesInput = {
   authNetTransactionId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   authNetMessage?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
+  shippingRateCents?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
+  shippingCarrier?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingService?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingEstDays?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
+  shippoRateId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   zohoSynced?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   zohoPayload?: Prisma.JsonNullableWithAggregatesFilter<"Order">
   zohoResponse?: Prisma.JsonNullableWithAggregatesFilter<"Order">
@@ -771,6 +839,11 @@ export type OrderCreateInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -823,6 +896,11 @@ export type OrderUncheckedCreateInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -869,6 +947,11 @@ export type OrderUpdateInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -921,6 +1004,11 @@ export type OrderUncheckedUpdateInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -970,6 +1058,11 @@ export type OrderCreateManyInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1013,6 +1106,11 @@ export type OrderUpdateManyMutationInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1059,6 +1157,11 @@ export type OrderUncheckedUpdateManyInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1115,6 +1218,11 @@ export type OrderCountOrderByAggregateInput = {
   authNetTransactionId?: Prisma.SortOrder
   authNetMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrder
+  shippingCarrier?: Prisma.SortOrder
+  shippingService?: Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrder
+  shippoRateId?: Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   zohoPayload?: Prisma.SortOrder
   zohoResponse?: Prisma.SortOrder
@@ -1126,6 +1234,8 @@ export type OrderAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrder
 }
 
 export type OrderMaxOrderByAggregateInput = {
@@ -1167,6 +1277,11 @@ export type OrderMaxOrderByAggregateInput = {
   authNetTransactionId?: Prisma.SortOrder
   authNetMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrder
+  shippingCarrier?: Prisma.SortOrder
+  shippingService?: Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrder
+  shippoRateId?: Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   abandonedNotifiedAt?: Prisma.SortOrder
@@ -1211,6 +1326,11 @@ export type OrderMinOrderByAggregateInput = {
   authNetTransactionId?: Prisma.SortOrder
   authNetMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrder
+  shippingCarrier?: Prisma.SortOrder
+  shippingService?: Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrder
+  shippoRateId?: Prisma.SortOrder
   zohoSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   abandonedNotifiedAt?: Prisma.SortOrder
@@ -1220,6 +1340,8 @@ export type OrderSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
+  shippingRateCents?: Prisma.SortOrder
+  shippingEstDays?: Prisma.SortOrder
 }
 
 export type OrderScalarRelationFilter = {
@@ -1435,6 +1557,11 @@ export type OrderCreateWithoutCheckoutPageInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1485,6 +1612,11 @@ export type OrderUncheckedCreateWithoutCheckoutPageInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1563,6 +1695,11 @@ export type OrderScalarWhereInput = {
   authNetTransactionId?: Prisma.StringNullableFilter<"Order"> | string | null
   authNetMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  shippingRateCents?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippingCarrier?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingService?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingEstDays?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippoRateId?: Prisma.StringNullableFilter<"Order"> | string | null
   zohoSynced?: Prisma.BoolFilter<"Order"> | boolean
   zohoPayload?: Prisma.JsonNullableFilter<"Order">
   zohoResponse?: Prisma.JsonNullableFilter<"Order">
@@ -1606,6 +1743,11 @@ export type OrderCreateWithoutPromoCodeInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1656,6 +1798,11 @@ export type OrderUncheckedCreateWithoutPromoCodeInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1728,6 +1875,11 @@ export type OrderCreateWithoutEventsInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1779,6 +1931,11 @@ export type OrderUncheckedCreateWithoutEventsInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1840,6 +1997,11 @@ export type OrderUpdateWithoutEventsInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1891,6 +2053,11 @@ export type OrderUncheckedUpdateWithoutEventsInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1936,6 +2103,11 @@ export type OrderCreateWithoutOrderAddonsInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1987,6 +2159,11 @@ export type OrderUncheckedCreateWithoutOrderAddonsInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2048,6 +2225,11 @@ export type OrderUpdateWithoutOrderAddonsInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2099,6 +2281,11 @@ export type OrderUncheckedUpdateWithoutOrderAddonsInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2144,6 +2331,11 @@ export type OrderCreateWithoutCardAccessLogsInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2195,6 +2387,11 @@ export type OrderUncheckedCreateWithoutCardAccessLogsInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2256,6 +2453,11 @@ export type OrderUpdateWithoutCardAccessLogsInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2307,6 +2509,11 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2352,6 +2559,11 @@ export type OrderCreateWithoutPromotionInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2402,6 +2614,11 @@ export type OrderUncheckedCreateWithoutPromotionInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2476,6 +2693,11 @@ export type OrderCreateManyCheckoutPageInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2519,6 +2741,11 @@ export type OrderUpdateWithoutCheckoutPageInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2569,6 +2796,11 @@ export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2617,6 +2849,11 @@ export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2662,6 +2899,11 @@ export type OrderCreateManyPromoCodeInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2705,6 +2947,11 @@ export type OrderUpdateWithoutPromoCodeInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2755,6 +3002,11 @@ export type OrderUncheckedUpdateWithoutPromoCodeInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2803,6 +3055,11 @@ export type OrderUncheckedUpdateManyWithoutPromoCodeInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2848,6 +3105,11 @@ export type OrderCreateManyPromotionInput = {
   authNetTransactionId?: string | null
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
+  shippingRateCents?: number | null
+  shippingCarrier?: string | null
+  shippingService?: string | null
+  shippingEstDays?: number | null
+  shippoRateId?: string | null
   zohoSynced?: boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2891,6 +3153,11 @@ export type OrderUpdateWithoutPromotionInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2941,6 +3208,11 @@ export type OrderUncheckedUpdateWithoutPromotionInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -2989,6 +3261,11 @@ export type OrderUncheckedUpdateManyWithoutPromotionInput = {
   authNetTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippoRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zohoSynced?: Prisma.BoolFieldUpdateOperationsInput | boolean
   zohoPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   zohoResponse?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -3084,6 +3361,11 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   authNetTransactionId?: boolean
   authNetMessage?: boolean
   status?: boolean
+  shippingRateCents?: boolean
+  shippingCarrier?: boolean
+  shippingService?: boolean
+  shippingEstDays?: boolean
+  shippoRateId?: boolean
   zohoSynced?: boolean
   zohoPayload?: boolean
   zohoResponse?: boolean
@@ -3137,6 +3419,11 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   authNetTransactionId?: boolean
   authNetMessage?: boolean
   status?: boolean
+  shippingRateCents?: boolean
+  shippingCarrier?: boolean
+  shippingService?: boolean
+  shippingEstDays?: boolean
+  shippoRateId?: boolean
   zohoSynced?: boolean
   zohoPayload?: boolean
   zohoResponse?: boolean
@@ -3186,6 +3473,11 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   authNetTransactionId?: boolean
   authNetMessage?: boolean
   status?: boolean
+  shippingRateCents?: boolean
+  shippingCarrier?: boolean
+  shippingService?: boolean
+  shippingEstDays?: boolean
+  shippoRateId?: boolean
   zohoSynced?: boolean
   zohoPayload?: boolean
   zohoResponse?: boolean
@@ -3235,6 +3527,11 @@ export type OrderSelectScalar = {
   authNetTransactionId?: boolean
   authNetMessage?: boolean
   status?: boolean
+  shippingRateCents?: boolean
+  shippingCarrier?: boolean
+  shippingService?: boolean
+  shippingEstDays?: boolean
+  shippoRateId?: boolean
   zohoSynced?: boolean
   zohoPayload?: boolean
   zohoResponse?: boolean
@@ -3242,7 +3539,7 @@ export type OrderSelectScalar = {
   abandonedNotifiedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
@@ -3312,6 +3609,11 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     authNetTransactionId: string | null
     authNetMessage: string | null
     status: $Enums.OrderStatus
+    shippingRateCents: number | null
+    shippingCarrier: string | null
+    shippingService: string | null
+    shippingEstDays: number | null
+    shippoRateId: string | null
     zohoSynced: boolean
     zohoPayload: runtime.JsonValue | null
     zohoResponse: runtime.JsonValue | null
@@ -3784,6 +4086,11 @@ export interface OrderFieldRefs {
   readonly authNetTransactionId: Prisma.FieldRef<"Order", 'String'>
   readonly authNetMessage: Prisma.FieldRef<"Order", 'String'>
   readonly status: Prisma.FieldRef<"Order", 'OrderStatus'>
+  readonly shippingRateCents: Prisma.FieldRef<"Order", 'Int'>
+  readonly shippingCarrier: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingService: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingEstDays: Prisma.FieldRef<"Order", 'Int'>
+  readonly shippoRateId: Prisma.FieldRef<"Order", 'String'>
   readonly zohoSynced: Prisma.FieldRef<"Order", 'Boolean'>
   readonly zohoPayload: Prisma.FieldRef<"Order", 'Json'>
   readonly zohoResponse: Prisma.FieldRef<"Order", 'Json'>

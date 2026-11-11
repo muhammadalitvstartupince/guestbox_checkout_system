@@ -413,6 +413,9 @@ export const ModelName = {
   Promotion: 'Promotion',
   PromotionCheckoutPage: 'PromotionCheckoutPage',
   EmailSettings: 'EmailSettings',
+  ShippingSettings: 'ShippingSettings',
+  ShippingPackageTier: 'ShippingPackageTier',
+  ShippingWeightEntry: 'ShippingWeightEntry',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings'
 } as const
 
@@ -429,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "abandonedCheckoutSettings"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1617,6 +1620,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ShippingSettings: {
+      payload: Prisma.$ShippingSettingsPayload<ExtArgs>
+      fields: Prisma.ShippingSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ShippingSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ShippingSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.ShippingSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ShippingSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.ShippingSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.ShippingSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.ShippingSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ShippingSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.ShippingSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>
+        }
+        update: {
+          args: Prisma.ShippingSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.ShippingSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ShippingSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ShippingSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.ShippingSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.ShippingSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateShippingSettings>
+        }
+        groupBy: {
+          args: Prisma.ShippingSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ShippingSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    ShippingPackageTier: {
+      payload: Prisma.$ShippingPackageTierPayload<ExtArgs>
+      fields: Prisma.ShippingPackageTierFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ShippingPackageTierFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ShippingPackageTierFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>
+        }
+        findFirst: {
+          args: Prisma.ShippingPackageTierFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ShippingPackageTierFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>
+        }
+        findMany: {
+          args: Prisma.ShippingPackageTierFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>[]
+        }
+        create: {
+          args: Prisma.ShippingPackageTierCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>
+        }
+        createMany: {
+          args: Prisma.ShippingPackageTierCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ShippingPackageTierCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>[]
+        }
+        delete: {
+          args: Prisma.ShippingPackageTierDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>
+        }
+        update: {
+          args: Prisma.ShippingPackageTierUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>
+        }
+        deleteMany: {
+          args: Prisma.ShippingPackageTierDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ShippingPackageTierUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ShippingPackageTierUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>[]
+        }
+        upsert: {
+          args: Prisma.ShippingPackageTierUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingPackageTierPayload>
+        }
+        aggregate: {
+          args: Prisma.ShippingPackageTierAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateShippingPackageTier>
+        }
+        groupBy: {
+          args: Prisma.ShippingPackageTierGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingPackageTierGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ShippingPackageTierCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingPackageTierCountAggregateOutputType> | number
+        }
+      }
+    }
+    ShippingWeightEntry: {
+      payload: Prisma.$ShippingWeightEntryPayload<ExtArgs>
+      fields: Prisma.ShippingWeightEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ShippingWeightEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ShippingWeightEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.ShippingWeightEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ShippingWeightEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>
+        }
+        findMany: {
+          args: Prisma.ShippingWeightEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>[]
+        }
+        create: {
+          args: Prisma.ShippingWeightEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>
+        }
+        createMany: {
+          args: Prisma.ShippingWeightEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ShippingWeightEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.ShippingWeightEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>
+        }
+        update: {
+          args: Prisma.ShippingWeightEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.ShippingWeightEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ShippingWeightEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ShippingWeightEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.ShippingWeightEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingWeightEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.ShippingWeightEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateShippingWeightEntry>
+        }
+        groupBy: {
+          args: Prisma.ShippingWeightEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingWeightEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ShippingWeightEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingWeightEntryCountAggregateOutputType> | number
+        }
+      }
+    }
     AbandonedCheckoutSettings: {
       payload: Prisma.$AbandonedCheckoutSettingsPayload<ExtArgs>
       fields: Prisma.AbandonedCheckoutSettingsFieldRefs
@@ -1861,6 +2086,13 @@ export const PromoCodeScalarFieldEnum = {
   discountType: 'discountType',
   discountValue: 'discountValue',
   appliesTo: 'appliesTo',
+  discountMode: 'discountMode',
+  deviceDiscountType: 'deviceDiscountType',
+  deviceDiscountValue: 'deviceDiscountValue',
+  monthlyDiscountType: 'monthlyDiscountType',
+  monthlyDiscountValue: 'monthlyDiscountValue',
+  annualDiscountType: 'annualDiscountType',
+  annualDiscountValue: 'annualDiscountValue',
   appliesToCheckoutPageId: 'appliesToCheckoutPageId',
   maxRedemptions: 'maxRedemptions',
   timesRedeemed: 'timesRedeemed',
@@ -1912,6 +2144,11 @@ export const OrderScalarFieldEnum = {
   authNetTransactionId: 'authNetTransactionId',
   authNetMessage: 'authNetMessage',
   status: 'status',
+  shippingRateCents: 'shippingRateCents',
+  shippingCarrier: 'shippingCarrier',
+  shippingService: 'shippingService',
+  shippingEstDays: 'shippingEstDays',
+  shippoRateId: 'shippoRateId',
   zohoSynced: 'zohoSynced',
   zohoPayload: 'zohoPayload',
   zohoResponse: 'zohoResponse',
@@ -1995,6 +2232,48 @@ export const EmailSettingsScalarFieldEnum = {
 } as const
 
 export type EmailSettingsScalarFieldEnum = (typeof EmailSettingsScalarFieldEnum)[keyof typeof EmailSettingsScalarFieldEnum]
+
+
+export const ShippingSettingsScalarFieldEnum = {
+  id: 'id',
+  warehouseName: 'warehouseName',
+  warehouseStreet: 'warehouseStreet',
+  warehouseCity: 'warehouseCity',
+  warehouseState: 'warehouseState',
+  warehouseZip: 'warehouseZip',
+  warehouseCountry: 'warehouseCountry',
+  warehousePhone: 'warehousePhone',
+  maxDevicesPerBox: 'maxDevicesPerBox',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShippingSettingsScalarFieldEnum = (typeof ShippingSettingsScalarFieldEnum)[keyof typeof ShippingSettingsScalarFieldEnum]
+
+
+export const ShippingPackageTierScalarFieldEnum = {
+  id: 'id',
+  shippingSettingsId: 'shippingSettingsId',
+  minQty: 'minQty',
+  maxQty: 'maxQty',
+  label: 'label',
+  lengthIn: 'lengthIn',
+  widthIn: 'widthIn',
+  heightIn: 'heightIn',
+  maxWeightLb: 'maxWeightLb',
+  sortOrder: 'sortOrder'
+} as const
+
+export type ShippingPackageTierScalarFieldEnum = (typeof ShippingPackageTierScalarFieldEnum)[keyof typeof ShippingPackageTierScalarFieldEnum]
+
+
+export const ShippingWeightEntryScalarFieldEnum = {
+  id: 'id',
+  shippingSettingsId: 'shippingSettingsId',
+  qty: 'qty',
+  weightLb: 'weightLb'
+} as const
+
+export type ShippingWeightEntryScalarFieldEnum = (typeof ShippingWeightEntryScalarFieldEnum)[keyof typeof ShippingWeightEntryScalarFieldEnum]
 
 
 export const AbandonedCheckoutSettingsScalarFieldEnum = {
@@ -2210,6 +2489,20 @@ export type ListEnumPromoAppliesToFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'DiscountMode'
+ */
+export type EnumDiscountModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscountMode'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscountMode[]'
+ */
+export type ListEnumDiscountModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscountMode[]'>
+    
+
+
+/**
  * Reference to a field of type 'OrderStatus'
  */
 export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus'>
@@ -2220,6 +2513,20 @@ export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'OrderStatus[]'
  */
 export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -2403,6 +2710,9 @@ export type GlobalOmitConfig = {
   promotion?: Prisma.PromotionOmit
   promotionCheckoutPage?: Prisma.PromotionCheckoutPageOmit
   emailSettings?: Prisma.EmailSettingsOmit
+  shippingSettings?: Prisma.ShippingSettingsOmit
+  shippingPackageTier?: Prisma.ShippingPackageTierOmit
+  shippingWeightEntry?: Prisma.ShippingWeightEntryOmit
   abandonedCheckoutSettings?: Prisma.AbandonedCheckoutSettingsOmit
 }
 

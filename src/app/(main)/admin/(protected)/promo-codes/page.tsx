@@ -7,6 +7,11 @@ function formatDiscount(type: string, value: number) {
   return type === "percent" ? `${value}%` : `$${(value / 100).toFixed(2)}`;
 }
 
+function formatSlot(type: string | null, value: number | null, label: string): string | null {
+  if (!type || value == null) return null;
+  return `${label}: ${formatDiscount(type, value)}`;
+}
+
 const targetLabels: Record<string, string> = {
   device: "Device",
   monthly: "Monthly",
@@ -54,10 +59,18 @@ export default async function AdminPromoCodesPage() {
               >
                 <td className="px-5 py-3 font-mono text-zinc-900 dark:text-zinc-100">{promo.code}</td>
                 <td className="px-5 py-3 text-zinc-900 dark:text-zinc-100">
-                  {formatDiscount(promo.discountType, promo.discountValue)}
+                  {promo.discountMode === "split" ? (
+                    <span className="space-x-2 text-xs">
+                      {[
+                        formatSlot(promo.deviceDiscountType, promo.deviceDiscountValue, "Device"),
+                        formatSlot(promo.monthlyDiscountType, promo.monthlyDiscountValue, "Monthly"),
+                        formatSlot(promo.annualDiscountType, promo.annualDiscountValue, "Annual"),
+                      ].filter(Boolean).map((s, i) => <span key={i} className="inline-block rounded bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">{s}</span>)}
+                    </span>
+                  ) : formatDiscount(promo.discountType, promo.discountValue)}
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
-                  {targetLabels[promo.appliesTo] ?? "Device"}
+                  {promo.discountMode === "split" ? "Split" : (targetLabels[promo.appliesTo] ?? "Device")}
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
                   {promo.appliesToCheckoutPage?.title ?? "All pages"}

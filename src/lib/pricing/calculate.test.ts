@@ -226,4 +226,82 @@ describe("calculateOrderPrice", () => {
     expect(result.discountCents).toBe(5000);
     expect(result.recurringDiscountCents).toBe(0);
   });
+
+  // --- split mode tests ---
+
+  it("split: device-only discount, no plan discount", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 2,
+      recurringPriceCents: 4900,
+      promo: { mode: "split", device: { type: "fixed", value: 2000 }, monthly: null, annual: null },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents).toBe(2000);
+    expect(result.recurringDiscountCents).toBe(0);
+    expect(result.totalCents).toBe(18000);
+  });
+
+  it("split: monthly discount applied when monthly selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 4900,
+      promo: { mode: "split", device: null, monthly: { type: "percent", value: 10 }, annual: null },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents).toBe(0);
+    expect(result.recurringDiscountCents).toBe(490); // 10% of 4900
+  });
+
+  it("split: annual discount applied when annual selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 24900,
+      promo: { mode: "split", device: null, monthly: { type: "fixed", value: 500 }, annual: { type: "percent", value: 20 } },
+      selectedInterval: "annually",
+    });
+    expect(result.discountCents).toBe(0);
+    expect(result.recurringDiscountCents).toBe(4980); // 20% of 24900, NOT the monthly $5
+  });
+
+  it("split: device + monthly together, independent discounts", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 2,
+      recurringPriceCents: 4900,
+      promo: {
+        mode: "split",
+        device: { type: "fixed", value: 2000 },
+        monthly: { type: "fixed", value: 1000 },
+        annual: { type: "percent", value: 50 },
+      },
+      selectedInterval: "monthly",
+    });
+    expect(result.discountCents).toBe(2000); // $20 off devices
+    expect(result.recurringDiscountCents).toBe(1000); // $10 off monthly
+    expect(result.totalCents).toBe(18000);
+  });
+
+  it("split: device discount clamped to subtotal", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 1000,
+      quantity: 1,
+      promo: { mode: "split", device: { type: "fixed", value: 99999 }, monthly: null, annual: null },
+    });
+    expect(result.discountCents).toBe(1000);
+    expect(result.totalCents).toBe(0);
+  });
+
+  it("split: no plan discount when no interval selected", () => {
+    const result = calculateOrderPrice({
+      basePriceCents: 10000,
+      quantity: 1,
+      recurringPriceCents: 4900,
+      promo: { mode: "split", device: { type: "fixed", value: 500 }, monthly: { type: "fixed", value: 500 }, annual: null },
+    });
+    expect(result.discountCents).toBe(500);
+    expect(result.recurringDiscountCents).toBe(0); // no interval selected
+  });
 });

@@ -1,9 +1,37 @@
 import { prisma } from "@/lib/db/client";
 
+interface DiscountSlot {
+  type: "percent" | "fixed";
+  value: number;
+}
+
+export interface SinglePromo {
+  id: string;
+  mode: "single";
+  type: "percent" | "fixed";
+  value: number;
+  appliesTo: string;
+}
+
+export interface SplitPromo {
+  id: string;
+  mode: "split";
+  device: DiscountSlot | null;
+  monthly: DiscountSlot | null;
+  annual: DiscountSlot | null;
+}
+
+export type PromoInfo = SinglePromo | SplitPromo;
+
 export interface PromoValidationResult {
   valid: boolean;
   message: string;
-  promo?: { id: string; type: "percent" | "fixed"; value: number; appliesTo: string };
+  promo?: PromoInfo;
+}
+
+function formatSlot(slot: DiscountSlot, label: string): string {
+  const amt = slot.type === "percent" ? `${slot.value}%` : `$${(slot.value / 100).toFixed(2)}`;
+  return `${amt} off ${label}`;
 }
 
 /** Shared by the live "Validate" button (checkPromoCode) and the actual
@@ -37,6 +65,35 @@ export async function validatePromoCode(checkoutPageId: string, rawCode: string)
     return { valid: false, message: "That promo code has already reached its redemption limit." };
   }
 
+  // --- Split mode ---
+  if (promoRow.discountMode === "split") {
+    const device: DiscountSlot | null =
+      promoRow.deviceDiscountType && promoRow.deviceDiscountValue != null
+        ? { type: promoRow.deviceDiscountType, value: promoRow.deviceDiscountValue }
+        : null;
+    const monthly: DiscountSlot | null =
+      promoRow.monthlyDiscountType && promoRow.monthlyDiscountValue != null
+        ? { type: promoRow.monthlyDiscountType, value: promoRow.monthlyDiscountValue }
+        : null;
+    const annual: DiscountSlot | null =
+      promoRow.annualDiscountType && promoRow.annualDiscountValue != null
+        ? { type: promoRow.annualDiscountType, value: promoRow.annualDiscountValue }
+        : null;
+
+    const parts: string[] = [];
+    if (device) parts.push(formatSlot(device, "devices"));
+    if (monthly) parts.push(formatSlot(monthly, "monthly"));
+    if (annual) parts.push(formatSlot(annual, "annual"));
+    const discountLabel = parts.length > 0 ? parts.join(" + ") : "No discount configured";
+
+    return {
+      valid: true,
+      message: `Valid — ${discountLabel}`,
+      promo: { id: promoRow.id, mode: "split", device, monthly, annual },
+    };
+  }
+
+  // --- Single mode (existing behavior) ---
   const targetLabels: Record<string, string> = {
     device: "",
     monthly: " (monthly plan)",
@@ -55,6 +112,6 @@ export async function validatePromoCode(checkoutPageId: string, rawCode: string)
   return {
     valid: true,
     message: `Valid — ${discountLabel}`,
-    promo: { id: promoRow.id, type: promoRow.discountType, value: promoRow.discountValue, appliesTo: promoRow.appliesTo },
+    promo: { id: promoRow.id, mode: "single", type: promoRow.discountType, value: promoRow.discountValue, appliesTo: promoRow.appliesTo },
   };
 }

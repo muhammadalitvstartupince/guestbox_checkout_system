@@ -17,13 +17,26 @@ export interface AddonSelection {
 
 export type PromoTarget = "device" | "monthly" | "annual" | "device_monthly" | "device_annual" | "monthly_annual" | "all";
 
-export interface PromoDiscount {
+interface DiscountSlot {
   type: "percent" | "fixed";
   /** percent: 1-100. fixed: cents. */
   value: number;
+}
+
+export interface SinglePromoDiscount extends DiscountSlot {
+  mode?: "single";
   /** Which components the discount covers. Defaults to "device" (backward compat). */
   appliesTo?: PromoTarget;
 }
+
+export interface SplitPromoDiscount {
+  mode: "split";
+  device: DiscountSlot | null;
+  monthly: DiscountSlot | null;
+  annual: DiscountSlot | null;
+}
+
+export type PromoDiscount = SinglePromoDiscount | SplitPromoDiscount;
 
 export interface PriceCalculationInput {
   /** unit price of the core product, in cents */
@@ -76,24 +89,36 @@ export function calculateOrderPrice(
   const subtotalCents = basePriceCents * quantity + addonsTotalCents;
   const recurringTotalCents = recurringPriceCents != null ? recurringPriceCents : 0;
 
-  const appliesTo = promo?.appliesTo ?? "device";
-  const targetsDevice = promoTargetsDevice(appliesTo);
-  const targetsRecurring = promoTargetsRecurring(appliesTo, input.selectedInterval);
-
   let discountCents = 0;
   let recurringDiscountCents = 0;
 
-  if (promo && promo.type === "fixed" && targetsDevice && targetsRecurring) {
-    // Fixed discount applied once to combined total, split proportionally
-    const combinedTotal = subtotalCents + recurringTotalCents;
-    const totalDiscount = clampDiscount(combinedTotal, computeDiscount(combinedTotal, promo));
-    if (combinedTotal > 0) {
-      discountCents = Math.round(totalDiscount * subtotalCents / combinedTotal);
-      recurringDiscountCents = totalDiscount - discountCents;
+  if (promo && promo.mode === "split") {
+    // Split mode: independent discounts for device, monthly, annual
+    if (promo.device) {
+      discountCents = clampDiscount(subtotalCents, computeSlotDiscount(subtotalCents, promo.device));
     }
-  } else {
-    discountCents = targetsDevice ? clampDiscount(subtotalCents, computeDiscount(subtotalCents, promo)) : 0;
-    recurringDiscountCents = targetsRecurring ? clampDiscount(recurringTotalCents, computeDiscount(recurringTotalCents, promo)) : 0;
+    const interval = input.selectedInterval === "annually" ? "annual" : input.selectedInterval;
+    const planSlot = interval === "monthly" ? promo.monthly : interval === "annual" ? promo.annual : null;
+    if (planSlot) {
+      recurringDiscountCents = clampDiscount(recurringTotalCents, computeSlotDiscount(recurringTotalCents, planSlot));
+    }
+  } else if (promo) {
+    // Single mode (existing behavior)
+    const appliesTo = promo.appliesTo ?? "device";
+    const targetsDevice = promoTargetsDevice(appliesTo);
+    const targetsRecurring = promoTargetsRecurring(appliesTo, input.selectedInterval);
+
+    if (promo.type === "fixed" && targetsDevice && targetsRecurring) {
+      const combinedTotal = subtotalCents + recurringTotalCents;
+      const totalDiscount = clampDiscount(combinedTotal, computeSlotDiscount(combinedTotal, promo));
+      if (combinedTotal > 0) {
+        discountCents = Math.round(totalDiscount * subtotalCents / combinedTotal);
+        recurringDiscountCents = totalDiscount - discountCents;
+      }
+    } else {
+      discountCents = targetsDevice ? clampDiscount(subtotalCents, computeSlotDiscount(subtotalCents, promo)) : 0;
+      recurringDiscountCents = targetsRecurring ? clampDiscount(recurringTotalCents, computeSlotDiscount(recurringTotalCents, promo)) : 0;
+    }
   }
 
   const totalCents = subtotalCents - discountCents;
@@ -101,24 +126,22 @@ export function calculateOrderPrice(
   return { subtotalCents, discountCents, totalCents, recurringTotalCents, recurringDiscountCents };
 }
 
-function computeDiscount(subtotalCents: number, promo?: PromoDiscount | null): number {
-  if (!promo) return 0;
-
-  if (promo.type === "fixed") {
-    if (!Number.isInteger(promo.value) || promo.value < 0) {
+function computeSlotDiscount(subtotalCents: number, slot: DiscountSlot): number {
+  if (slot.type === "fixed") {
+    if (!Number.isInteger(slot.value) || slot.value < 0) {
       throw new Error("fixed promo value must be a non-negative integer (cents)");
     }
-    return promo.value;
+    return slot.value;
   }
 
-  if (promo.type === "percent") {
-    if (promo.value < 0 || promo.value > 100) {
+  if (slot.type === "percent") {
+    if (slot.value < 0 || slot.value > 100) {
       throw new Error("percent promo value must be between 0 and 100");
     }
-    return Math.round((subtotalCents * promo.value) / 100);
+    return Math.round((subtotalCents * slot.value) / 100);
   }
 
-  throw new Error(`Unknown promo discount type: ${(promo as PromoDiscount).type}`);
+  throw new Error(`Unknown promo discount type: ${(slot as DiscountSlot).type}`);
 }
 
 function clampDiscount(subtotalCents: number, discountCents: number): number {

@@ -52,6 +52,7 @@ export interface PostZohoInvoiceInput {
   currency?: string;
   fulfillmentItems?: ZohoLineItem[];
   shippingAddress?: ZohoShippingAddress;
+  shippingCharge?: number; // dollars, not cents
   discountAmount?: number; // dollars, not cents
   recurringDiscount?: {
     plan: string;
@@ -103,6 +104,9 @@ export async function postZohoInvoice(
   }
   if (input.shippingAddress) {
     payload.shipping_address = input.shippingAddress;
+  }
+  if (input.shippingCharge && input.shippingCharge > 0) {
+    payload.shipping_charge = input.shippingCharge;
   }
   if (input.discountAmount && input.discountAmount > 0) {
     payload.discount = input.discountAmount;

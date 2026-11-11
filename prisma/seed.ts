@@ -164,6 +164,60 @@ async function main() {
     await prisma.emailSettings.create({ data: DEFAULT_EMAIL_SETTINGS });
     console.log("Seeded default email settings row.");
   }
+
+  // Shipping settings singleton — warehouse address, package tiers, weight table
+  const existingShipping = await prisma.shippingSettings.findFirst();
+  if (!existingShipping) {
+    const ss = await prisma.shippingSettings.create({
+      data: {
+        warehouseName: "GuestBox Fulfillment",
+        warehouseStreet: "10045 County Road 254",
+        warehouseCity: "Clyde",
+        warehouseState: "TX",
+        warehouseZip: "79510-6003",
+        warehouseCountry: "US",
+        warehousePhone: "+13259990000",
+        maxDevicesPerBox: 20,
+      },
+    });
+
+    await prisma.shippingPackageTier.createMany({
+      data: [
+        { shippingSettingsId: ss.id, minQty: 1,  maxQty: 1,  label: "Small bubble mailer",     lengthIn: 12,   widthIn: 8.5,  heightIn: 2, maxWeightLb: 2,  sortOrder: 0 },
+        { shippingSettingsId: ss.id, minQty: 2,  maxQty: 2,  label: "Small bubble mailer",     lengthIn: 12,   widthIn: 8.5,  heightIn: 4, maxWeightLb: 2,  sortOrder: 1 },
+        { shippingSettingsId: ss.id, minQty: 3,  maxQty: 6,  label: "Large bubble mailer",     lengthIn: 20,   widthIn: 14.5, heightIn: 4, maxWeightLb: 5,  sortOrder: 2 },
+        { shippingSettingsId: ss.id, minQty: 7,  maxQty: 14, label: "Box",                     lengthIn: 12,   widthIn: 12,   heightIn: 12, maxWeightLb: 12, sortOrder: 3 },
+        { shippingSettingsId: ss.id, minQty: 15, maxQty: 20, label: "GuestBox Original Box",   lengthIn: 19,   widthIn: 9,    heightIn: 8, maxWeightLb: 15, sortOrder: 4 },
+      ],
+    });
+
+    await prisma.shippingWeightEntry.createMany({
+      data: [
+        { shippingSettingsId: ss.id, qty: 1,  weightLb: 0.7 },
+        { shippingSettingsId: ss.id, qty: 2,  weightLb: 1.5 },
+        { shippingSettingsId: ss.id, qty: 3,  weightLb: 2.4 },
+        { shippingSettingsId: ss.id, qty: 4,  weightLb: 3.1 },
+        { shippingSettingsId: ss.id, qty: 5,  weightLb: 3.8 },
+        { shippingSettingsId: ss.id, qty: 6,  weightLb: 4.5 },
+        { shippingSettingsId: ss.id, qty: 7,  weightLb: 6.0 },
+        { shippingSettingsId: ss.id, qty: 8,  weightLb: 6.7 },
+        { shippingSettingsId: ss.id, qty: 9,  weightLb: 7.4 },
+        { shippingSettingsId: ss.id, qty: 10, weightLb: 8.1 },
+        { shippingSettingsId: ss.id, qty: 11, weightLb: 8.8 },
+        { shippingSettingsId: ss.id, qty: 12, weightLb: 9.5 },
+        { shippingSettingsId: ss.id, qty: 13, weightLb: 10.3 },
+        { shippingSettingsId: ss.id, qty: 14, weightLb: 11.0 },
+        { shippingSettingsId: ss.id, qty: 15, weightLb: 11.5 },
+        { shippingSettingsId: ss.id, qty: 16, weightLb: 12.2 },
+        { shippingSettingsId: ss.id, qty: 17, weightLb: 12.9 },
+        { shippingSettingsId: ss.id, qty: 18, weightLb: 13.6 },
+        { shippingSettingsId: ss.id, qty: 19, weightLb: 14.3 },
+        { shippingSettingsId: ss.id, qty: 20, weightLb: 15.0 },
+      ],
+    });
+
+    console.log("Seeded default shipping settings with package tiers and weight table.");
+  }
 }
 
 main()
