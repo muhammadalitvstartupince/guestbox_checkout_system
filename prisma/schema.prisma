@@ -179,11 +179,14 @@ model CheckoutPage {
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
 
+  tieredPlansEnabled Boolean @default(false) @map("tiered_plans_enabled")
+
   addonLinks      CheckoutPageAddon[]
   promoCodes      PromoCode[]
   orders          Order[]
   priceTiers      PriceTier[]
   billingPlans    BillingPlan[]
+  planTiers       PlanTier[]
   logs            CheckoutPageLog[]
   promotionLinks  PromotionCheckoutPage[]
 
@@ -224,6 +227,40 @@ model BillingPlan {
   sortOrder        Int             @default(0) @map("sort_order")
 
   @@map("billing_plans")
+}
+
+// Named plan tiers per checkout page — e.g. GOLD, PLATINUM, DIAMOND.
+// Each tier has qty-based monthly pricing; annual = monthly × 12 minus
+// annualDiscountPercent. Only active when CheckoutPage.tieredPlansEnabled.
+model PlanTier {
+  id                    String       @id @default(uuid()) @db.Uuid
+  checkoutPageId        String       @map("checkout_page_id") @db.Uuid
+  checkoutPage          CheckoutPage @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+  name                  String
+  annualDiscountPercent Int          @default(0) @map("annual_discount_percent")
+  zohoMonthlyItemId     String?      @map("zoho_monthly_item_id")
+  zohoAnnualItemId      String?      @map("zoho_annual_item_id")
+  chargeAtCheckout      Boolean      @default(false) @map("charge_at_checkout")
+  isDefault             Boolean      @default(false) @map("is_default")
+  sortOrder             Int          @default(0) @map("sort_order")
+
+  prices PlanTierPrice[]
+  orders Order[]
+
+  @@map("plan_tiers")
+}
+
+// Qty-based monthly price rows for a plan tier.
+model PlanTierPrice {
+  id                String   @id @default(uuid()) @db.Uuid
+  planTierId        String   @map("plan_tier_id") @db.Uuid
+  planTier          PlanTier @relation(fields: [planTierId], references: [id], onDelete: Cascade)
+  minQty            Int      @map("min_qty")
+  maxQty            Int?     @map("max_qty")
+  monthlyPriceCents Int      @map("monthly_price_cents")
+  sortOrder         Int      @default(0) @map("sort_order")
+
+  @@map("plan_tier_prices")
 }
 
 // Audit log for checkout page changes — who did what and when.
@@ -294,6 +331,8 @@ model PromoCode {
   annualDiscountType    DiscountType?  @map("annual_discount_type")
   annualDiscountValue   Int?           @map("annual_discount_value")
 
+  perDevice             Boolean        @default(false) @map("per_device")
+
   appliesToCheckoutPageId String?       @map("applies_to_checkout_page_id") @db.Uuid
   appliesToCheckoutPage   CheckoutPage? @relation(fields: [appliesToCheckoutPageId], references: [id], onDelete: Cascade)
 
@@ -355,6 +394,10 @@ model Order {
 
   // Which billing plan the customer selected (monthly/annual).
   selectedBillingPlanId String? @map("selected_billing_plan_id") @db.Uuid
+
+  // Which plan tier (GOLD/PLATINUM/DIAMOND) the customer selected (tiered plans mode).
+  selectedPlanTierId String?   @map("selected_plan_tier_id") @db.Uuid
+  selectedPlanTier   PlanTier? @relation(fields: [selectedPlanTierId], references: [id])
 
   cardLast4  String? @map("card_last4")
   cardBrand  String? @map("card_brand")
@@ -508,6 +551,7 @@ model EmailSettings {
 
 model ShippingSettings {
   id              String   @id @default(uuid()) @db.Uuid
+  enabled         Boolean  @default(false)
   warehouseName   String   @map("warehouse_name")
   warehouseStreet String   @map("warehouse_street")
   warehouseCity   String   @map("warehouse_city")

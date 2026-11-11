@@ -67,6 +67,16 @@ export type PriceTier = Prisma.PriceTierModel
  */
 export type BillingPlan = Prisma.BillingPlanModel
 /**
+ * Model PlanTier
+ * 
+ */
+export type PlanTier = Prisma.PlanTierModel
+/**
+ * Model PlanTierPrice
+ * 
+ */
+export type PlanTierPrice = Prisma.PlanTierPriceModel
+/**
  * Model CheckoutPageLog
  * 
  */

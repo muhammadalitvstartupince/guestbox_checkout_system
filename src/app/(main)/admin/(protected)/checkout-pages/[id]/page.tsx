@@ -23,6 +23,7 @@ export default async function EditCheckoutPagePage({ params }: { params: Promise
         skin: true,
         priceTiers: { orderBy: { sortOrder: "asc" } },
         billingPlans: { orderBy: { sortOrder: "asc" } },
+        planTiers: { orderBy: { sortOrder: "asc" }, include: { prices: { orderBy: { sortOrder: "asc" } } } },
       },
     }),
     prisma.skin.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
@@ -79,6 +80,20 @@ export default async function EditCheckoutPagePage({ params }: { params: Promise
       zohoItemId: p.zohoItemId ?? "",
       chargeAtCheckout: p.chargeAtCheckout,
       isDefault: p.isDefault,
+    })),
+    tieredPlansEnabled: page.tieredPlansEnabled,
+    planTiers: page.planTiers.map((t) => ({
+      name: t.name,
+      annualDiscountPercent: String(t.annualDiscountPercent),
+      zohoMonthlyItemId: t.zohoMonthlyItemId ?? "",
+      zohoAnnualItemId: t.zohoAnnualItemId ?? "",
+      chargeAtCheckout: t.chargeAtCheckout,
+      isDefault: t.isDefault,
+      prices: t.prices.map((p) => ({
+        minQty: String(p.minQty),
+        maxQty: p.maxQty != null ? String(p.maxQty) : "",
+        monthlyPriceCents: centsToDollarsStr(p.monthlyPriceCents),
+      })),
     })),
   };
 

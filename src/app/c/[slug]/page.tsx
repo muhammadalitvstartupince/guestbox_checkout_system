@@ -26,6 +26,7 @@ const getCheckoutPageBySlug = cache(async (slug: string) => {
       },
       priceTiers: { orderBy: { sortOrder: "asc" } },
       billingPlans: { orderBy: { sortOrder: "asc" } },
+      planTiers: { orderBy: { sortOrder: "asc" }, include: { prices: { orderBy: { sortOrder: "asc" } } } },
     },
   });
 });
@@ -177,6 +178,19 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
           priceCents: p.priceCents,
           chargeAtCheckout: p.chargeAtCheckout,
           isDefault: p.isDefault,
+        })),
+        tieredPlansEnabled: checkoutPage.tieredPlansEnabled,
+        planTiers: checkoutPage.planTiers.map((t) => ({
+          id: t.id,
+          name: t.name,
+          annualDiscountPercent: t.annualDiscountPercent,
+          chargeAtCheckout: t.chargeAtCheckout,
+          isDefault: t.isDefault,
+          prices: t.prices.map((p) => ({
+            minQty: p.minQty,
+            maxQty: p.maxQty,
+            monthlyPriceCents: p.monthlyPriceCents,
+          })),
         })),
       }}
     />
