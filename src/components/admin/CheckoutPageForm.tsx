@@ -21,6 +21,22 @@ export interface BillingPlanDefault {
   isDefault: boolean;
 }
 
+export interface PlanTierPriceDefault {
+  minQty: string;
+  maxQty: string;
+  monthlyPriceCents: string;
+}
+
+export interface PlanTierDefault {
+  name: string;
+  annualDiscountPercent: string;
+  zohoMonthlyItemId: string;
+  zohoAnnualItemId: string;
+  chargeAtCheckout: boolean;
+  isDefault: boolean;
+  prices: PlanTierPriceDefault[];
+}
+
 export interface CheckoutPageFormDefaults {
   slug: string;
   type: "normal" | "sales";
@@ -48,6 +64,8 @@ export interface CheckoutPageFormDefaults {
   upgradeZohoRecurringItemId: string;
   priceTiers: PriceTierDefault[];
   billingPlans: BillingPlanDefault[];
+  tieredPlansEnabled: boolean;
+  planTiers: PlanTierDefault[];
 }
 
 export const emptyCheckoutPageDefaults: CheckoutPageFormDefaults = {
@@ -77,6 +95,8 @@ export const emptyCheckoutPageDefaults: CheckoutPageFormDefaults = {
   upgradeZohoRecurringItemId: "",
   priceTiers: [],
   billingPlans: [],
+  tieredPlansEnabled: false,
+  planTiers: [],
 };
 
 type BoundAction = (state: CheckoutPageFormState, formData: FormData) => Promise<CheckoutPageFormState>;
@@ -114,6 +134,8 @@ export function CheckoutPageForm({
 
   const [priceTiers, setPriceTiers] = useState<PriceTierDefault[]>(defaults.priceTiers ?? []);
   const [billingPlans, setBillingPlans] = useState<BillingPlanDefault[]>(defaults.billingPlans ?? []);
+  const [tieredPlansEnabled, setTieredPlansEnabled] = useState(defaults.tieredPlansEnabled ?? false);
+  const [planTiers, setPlanTiers] = useState<PlanTierDefault[]>(defaults.planTiers ?? []);
 
   const isNew = !defaults.slug;
   const [slug, setSlug] = useState(defaults.slug ?? "");
@@ -349,8 +371,8 @@ export function CheckoutPageForm({
         </button>
       </fieldset>
 
-      {/* Billing Plans */}
-      <fieldset className="space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
+      {/* Billing Plans — hidden when tiered plans is enabled */}
+      <fieldset className={`space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700${tieredPlansEnabled ? " hidden" : ""}`}>
         <legend className="px-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
           Billing Plans (optional)
         </legend>
@@ -461,6 +483,202 @@ export function CheckoutPageForm({
         >
           + Add Plan
         </button>
+      </fieldset>
+
+      {/* Tiered Plans */}
+      <fieldset className="space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
+        <legend className="px-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          Tiered Plans (optional)
+        </legend>
+        <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <input
+            type="checkbox"
+            name="tieredPlansEnabled"
+            checked={tieredPlansEnabled}
+            onChange={(e) => setTieredPlansEnabled(e.target.checked)}
+          />
+          Enable tiered plans (GOLD / PLATINUM / DIAMOND style)
+        </label>
+        <p className="-mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+          When enabled, customers choose a plan tier at checkout. Each tier has qty-based monthly pricing. Annual = monthly × 12 minus the discount %. Overrides the simple billing plans above.
+        </p>
+
+        {tieredPlansEnabled && (
+          <div className="space-y-6">
+            {planTiers.map((tier, ti) => (
+              <div key={ti} className="rounded-lg border border-zinc-300 p-3 dark:border-zinc-600">
+                <div className="mb-3 grid grid-cols-6 items-end gap-2">
+                  <div>
+                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Tier Name</label>
+                    <input
+                      value={tier.name}
+                      onChange={(e) => {
+                        const next = [...planTiers];
+                        next[ti] = { ...next[ti], name: e.target.value };
+                        setPlanTiers(next);
+                      }}
+                      placeholder="GOLD"
+                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Annual Discount %</label>
+                    <input
+                      value={tier.annualDiscountPercent}
+                      onChange={(e) => {
+                        const next = [...planTiers];
+                        next[ti] = { ...next[ti], annualDiscountPercent: e.target.value };
+                        setPlanTiers(next);
+                      }}
+                      placeholder="0"
+                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Zoho Monthly ID</label>
+                    <input
+                      value={tier.zohoMonthlyItemId}
+                      onChange={(e) => {
+                        const next = [...planTiers];
+                        next[ti] = { ...next[ti], zohoMonthlyItemId: e.target.value };
+                        setPlanTiers(next);
+                      }}
+                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Zoho Annual ID</label>
+                    <input
+                      value={tier.zohoAnnualItemId}
+                      onChange={(e) => {
+                        const next = [...planTiers];
+                        next[ti] = { ...next[ti], zohoAnnualItemId: e.target.value };
+                        setPlanTiers(next);
+                      }}
+                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <label className="flex items-center gap-1.5 py-2 text-xs text-zinc-700 dark:text-zinc-300">
+                      <input
+                        type="checkbox"
+                        checked={tier.isDefault}
+                        onChange={(e) => {
+                          const next = planTiers.map((t, j) => ({ ...t, isDefault: j === ti ? e.target.checked : false }));
+                          setPlanTiers(next);
+                        }}
+                      />
+                      Default
+                    </label>
+                    <label className="flex items-center gap-1.5 py-2 text-xs text-zinc-700 dark:text-zinc-300">
+                      <input
+                        type="checkbox"
+                        checked={tier.chargeAtCheckout}
+                        onChange={(e) => {
+                          const next = [...planTiers];
+                          next[ti] = { ...next[ti], chargeAtCheckout: e.target.checked };
+                          setPlanTiers(next);
+                        }}
+                      />
+                      Charge&nbsp;now
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setPlanTiers((t) => t.filter((_, j) => j !== ti))}
+                    className="rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
+                  >
+                    Remove Tier
+                  </button>
+                </div>
+
+                {/* Qty-based price rows */}
+                <div className="ml-2 space-y-2 border-l-2 border-zinc-200 pl-3 dark:border-zinc-700">
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Qty-based monthly prices</p>
+                  {tier.prices.map((row, ri) => (
+                    <div key={ri} className="grid grid-cols-4 items-end gap-2">
+                      <div>
+                        <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Min Qty</label>
+                        <input
+                          value={row.minQty}
+                          onChange={(e) => {
+                            const next = [...planTiers];
+                            const prices = [...next[ti].prices];
+                            prices[ri] = { ...prices[ri], minQty: e.target.value };
+                            next[ti] = { ...next[ti], prices };
+                            setPlanTiers(next);
+                          }}
+                          placeholder="1"
+                          className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Max Qty</label>
+                        <input
+                          value={row.maxQty}
+                          onChange={(e) => {
+                            const next = [...planTiers];
+                            const prices = [...next[ti].prices];
+                            prices[ri] = { ...prices[ri], maxQty: e.target.value };
+                            next[ti] = { ...next[ti], prices };
+                            setPlanTiers(next);
+                          }}
+                          placeholder="∞"
+                          className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Monthly (USD)</label>
+                        <input
+                          value={row.monthlyPriceCents}
+                          onChange={(e) => {
+                            const next = [...planTiers];
+                            const prices = [...next[ti].prices];
+                            prices[ri] = { ...prices[ri], monthlyPriceCents: e.target.value };
+                            next[ti] = { ...next[ti], prices };
+                            setPlanTiers(next);
+                          }}
+                          placeholder="20.00"
+                          className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = [...planTiers];
+                          next[ti] = { ...next[ti], prices: next[ti].prices.filter((_, j) => j !== ri) };
+                          setPlanTiers(next);
+                        }}
+                        className="rounded-lg border border-red-300 px-2 py-1.5 text-xs text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = [...planTiers];
+                      next[ti] = { ...next[ti], prices: [...next[ti].prices, { minQty: "", maxQty: "", monthlyPriceCents: "" }] };
+                      setPlanTiers(next);
+                    }}
+                    className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                  >
+                    + Add Price Row
+                  </button>
+                </div>
+              </div>
+            ))}
+            <input type="hidden" name="planTiersJson" value={JSON.stringify(planTiers)} />
+            <button
+              type="button"
+              onClick={() => setPlanTiers((t) => [...t, { name: "", annualDiscountPercent: "0", zohoMonthlyItemId: "", zohoAnnualItemId: "", chargeAtCheckout: false, isDefault: t.length === 0, prices: [{ minQty: "1", maxQty: "", monthlyPriceCents: "" }] }])}
+              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              + Add Tier
+            </button>
+          </div>
+        )}
       </fieldset>
 
       {/* Upgrade offer hidden fields — preserved for backward compat */}

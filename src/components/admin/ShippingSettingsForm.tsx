@@ -24,6 +24,7 @@ interface WeightEntry {
 }
 
 interface Props {
+  enabled: boolean;
   warehouse: {
     warehouseName: string;
     warehouseStreet: string;
@@ -211,12 +212,42 @@ function WeightTableCard({ entries: initialEntries }: { entries: WeightEntry[] }
   );
 }
 
-export function ShippingSettingsForm({ warehouse, packageTiers, weightEntries }: Props) {
+export function ShippingSettingsForm({ enabled: initialEnabled, warehouse, packageTiers, weightEntries }: Props) {
+  const [enabled, setEnabled] = useState(initialEnabled);
+  const [toggling, setToggling] = useState(false);
+
   return (
     <div className="space-y-6">
-      <WarehouseCard warehouse={warehouse} />
-      <PackageTiersCard tiers={packageTiers} />
-      <WeightTableCard entries={weightEntries} />
+      <div className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div>
+          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Shipping</h2>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            {enabled ? "International orders will see live shipping rates at checkout." : "Shipping is off — no shipping step or charges at checkout."}
+          </p>
+        </div>
+        <button
+          type="button"
+          disabled={toggling}
+          onClick={async () => {
+            setToggling(true);
+            const { toggleShippingEnabled } = await import("@/app/(main)/admin/(protected)/settings/shipping/actions");
+            await toggleShippingEnabled(!enabled);
+            setEnabled(!enabled);
+            setToggling(false);
+          }}
+          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${enabled ? "bg-indigo-600" : "bg-zinc-300 dark:bg-zinc-600"} disabled:opacity-60`}
+        >
+          <span className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transition-transform duration-200 ${enabled ? "translate-x-5" : "translate-x-0"}`} />
+        </button>
+      </div>
+
+      {enabled && (
+        <>
+          <WarehouseCard warehouse={warehouse} />
+          <PackageTiersCard tiers={packageTiers} />
+          <WeightTableCard entries={weightEntries} />
+        </>
+      )}
     </div>
   );
 }

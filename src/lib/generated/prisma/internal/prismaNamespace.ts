@@ -402,6 +402,8 @@ export const ModelName = {
   CheckoutPage: 'CheckoutPage',
   PriceTier: 'PriceTier',
   BillingPlan: 'BillingPlan',
+  PlanTier: 'PlanTier',
+  PlanTierPrice: 'PlanTierPrice',
   CheckoutPageLog: 'CheckoutPageLog',
   Addon: 'Addon',
   CheckoutPageAddon: 'CheckoutPageAddon',
@@ -432,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -803,6 +805,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BillingPlanCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BillingPlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    PlanTier: {
+      payload: Prisma.$PlanTierPayload<ExtArgs>
+      fields: Prisma.PlanTierFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlanTierFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlanTierFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>
+        }
+        findFirst: {
+          args: Prisma.PlanTierFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlanTierFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>
+        }
+        findMany: {
+          args: Prisma.PlanTierFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>[]
+        }
+        create: {
+          args: Prisma.PlanTierCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>
+        }
+        createMany: {
+          args: Prisma.PlanTierCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlanTierCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>[]
+        }
+        delete: {
+          args: Prisma.PlanTierDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>
+        }
+        update: {
+          args: Prisma.PlanTierUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlanTierDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlanTierUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlanTierUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlanTierUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPayload>
+        }
+        aggregate: {
+          args: Prisma.PlanTierAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlanTier>
+        }
+        groupBy: {
+          args: Prisma.PlanTierGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanTierGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlanTierCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanTierCountAggregateOutputType> | number
+        }
+      }
+    }
+    PlanTierPrice: {
+      payload: Prisma.$PlanTierPricePayload<ExtArgs>
+      fields: Prisma.PlanTierPriceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlanTierPriceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlanTierPriceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>
+        }
+        findFirst: {
+          args: Prisma.PlanTierPriceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlanTierPriceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>
+        }
+        findMany: {
+          args: Prisma.PlanTierPriceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>[]
+        }
+        create: {
+          args: Prisma.PlanTierPriceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>
+        }
+        createMany: {
+          args: Prisma.PlanTierPriceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlanTierPriceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>[]
+        }
+        delete: {
+          args: Prisma.PlanTierPriceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>
+        }
+        update: {
+          args: Prisma.PlanTierPriceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>
+        }
+        deleteMany: {
+          args: Prisma.PlanTierPriceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlanTierPriceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlanTierPriceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>[]
+        }
+        upsert: {
+          args: Prisma.PlanTierPriceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanTierPricePayload>
+        }
+        aggregate: {
+          args: Prisma.PlanTierPriceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlanTierPrice>
+        }
+        groupBy: {
+          args: Prisma.PlanTierPriceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanTierPriceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlanTierPriceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanTierPriceCountAggregateOutputType> | number
         }
       }
     }
@@ -2008,7 +2158,8 @@ export const CheckoutPageScalarFieldEnum = {
   status: 'status',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  tieredPlansEnabled: 'tieredPlansEnabled'
 } as const
 
 export type CheckoutPageScalarFieldEnum = (typeof CheckoutPageScalarFieldEnum)[keyof typeof CheckoutPageScalarFieldEnum]
@@ -2041,6 +2192,33 @@ export const BillingPlanScalarFieldEnum = {
 } as const
 
 export type BillingPlanScalarFieldEnum = (typeof BillingPlanScalarFieldEnum)[keyof typeof BillingPlanScalarFieldEnum]
+
+
+export const PlanTierScalarFieldEnum = {
+  id: 'id',
+  checkoutPageId: 'checkoutPageId',
+  name: 'name',
+  annualDiscountPercent: 'annualDiscountPercent',
+  zohoMonthlyItemId: 'zohoMonthlyItemId',
+  zohoAnnualItemId: 'zohoAnnualItemId',
+  chargeAtCheckout: 'chargeAtCheckout',
+  isDefault: 'isDefault',
+  sortOrder: 'sortOrder'
+} as const
+
+export type PlanTierScalarFieldEnum = (typeof PlanTierScalarFieldEnum)[keyof typeof PlanTierScalarFieldEnum]
+
+
+export const PlanTierPriceScalarFieldEnum = {
+  id: 'id',
+  planTierId: 'planTierId',
+  minQty: 'minQty',
+  maxQty: 'maxQty',
+  monthlyPriceCents: 'monthlyPriceCents',
+  sortOrder: 'sortOrder'
+} as const
+
+export type PlanTierPriceScalarFieldEnum = (typeof PlanTierPriceScalarFieldEnum)[keyof typeof PlanTierPriceScalarFieldEnum]
 
 
 export const CheckoutPageLogScalarFieldEnum = {
@@ -2093,6 +2271,7 @@ export const PromoCodeScalarFieldEnum = {
   monthlyDiscountValue: 'monthlyDiscountValue',
   annualDiscountType: 'annualDiscountType',
   annualDiscountValue: 'annualDiscountValue',
+  perDevice: 'perDevice',
   appliesToCheckoutPageId: 'appliesToCheckoutPageId',
   maxRedemptions: 'maxRedemptions',
   timesRedeemed: 'timesRedeemed',
@@ -2129,6 +2308,7 @@ export const OrderScalarFieldEnum = {
   shippingZip: 'shippingZip',
   shippingCountry: 'shippingCountry',
   selectedBillingPlanId: 'selectedBillingPlanId',
+  selectedPlanTierId: 'selectedPlanTierId',
   cardLast4: 'cardLast4',
   cardBrand: 'cardBrand',
   cardNumberEncrypted: 'cardNumberEncrypted',
@@ -2236,6 +2416,7 @@ export type EmailSettingsScalarFieldEnum = (typeof EmailSettingsScalarFieldEnum)
 
 export const ShippingSettingsScalarFieldEnum = {
   id: 'id',
+  enabled: 'enabled',
   warehouseName: 'warehouseName',
   warehouseStreet: 'warehouseStreet',
   warehouseCity: 'warehouseCity',
@@ -2699,6 +2880,8 @@ export type GlobalOmitConfig = {
   checkoutPage?: Prisma.CheckoutPageOmit
   priceTier?: Prisma.PriceTierOmit
   billingPlan?: Prisma.BillingPlanOmit
+  planTier?: Prisma.PlanTierOmit
+  planTierPrice?: Prisma.PlanTierPriceOmit
   checkoutPageLog?: Prisma.CheckoutPageLogOmit
   addon?: Prisma.AddonOmit
   checkoutPageAddon?: Prisma.CheckoutPageAddonOmit

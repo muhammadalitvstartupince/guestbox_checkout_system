@@ -56,6 +56,8 @@ export const ModelName = {
   CheckoutPage: 'CheckoutPage',
   PriceTier: 'PriceTier',
   BillingPlan: 'BillingPlan',
+  PlanTier: 'PlanTier',
+  PlanTierPrice: 'PlanTierPrice',
   CheckoutPageLog: 'CheckoutPageLog',
   Addon: 'Addon',
   CheckoutPageAddon: 'CheckoutPageAddon',
@@ -142,7 +144,8 @@ export const CheckoutPageScalarFieldEnum = {
   status: 'status',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  tieredPlansEnabled: 'tieredPlansEnabled'
 } as const
 
 export type CheckoutPageScalarFieldEnum = (typeof CheckoutPageScalarFieldEnum)[keyof typeof CheckoutPageScalarFieldEnum]
@@ -175,6 +178,33 @@ export const BillingPlanScalarFieldEnum = {
 } as const
 
 export type BillingPlanScalarFieldEnum = (typeof BillingPlanScalarFieldEnum)[keyof typeof BillingPlanScalarFieldEnum]
+
+
+export const PlanTierScalarFieldEnum = {
+  id: 'id',
+  checkoutPageId: 'checkoutPageId',
+  name: 'name',
+  annualDiscountPercent: 'annualDiscountPercent',
+  zohoMonthlyItemId: 'zohoMonthlyItemId',
+  zohoAnnualItemId: 'zohoAnnualItemId',
+  chargeAtCheckout: 'chargeAtCheckout',
+  isDefault: 'isDefault',
+  sortOrder: 'sortOrder'
+} as const
+
+export type PlanTierScalarFieldEnum = (typeof PlanTierScalarFieldEnum)[keyof typeof PlanTierScalarFieldEnum]
+
+
+export const PlanTierPriceScalarFieldEnum = {
+  id: 'id',
+  planTierId: 'planTierId',
+  minQty: 'minQty',
+  maxQty: 'maxQty',
+  monthlyPriceCents: 'monthlyPriceCents',
+  sortOrder: 'sortOrder'
+} as const
+
+export type PlanTierPriceScalarFieldEnum = (typeof PlanTierPriceScalarFieldEnum)[keyof typeof PlanTierPriceScalarFieldEnum]
 
 
 export const CheckoutPageLogScalarFieldEnum = {
@@ -227,6 +257,7 @@ export const PromoCodeScalarFieldEnum = {
   monthlyDiscountValue: 'monthlyDiscountValue',
   annualDiscountType: 'annualDiscountType',
   annualDiscountValue: 'annualDiscountValue',
+  perDevice: 'perDevice',
   appliesToCheckoutPageId: 'appliesToCheckoutPageId',
   maxRedemptions: 'maxRedemptions',
   timesRedeemed: 'timesRedeemed',
@@ -263,6 +294,7 @@ export const OrderScalarFieldEnum = {
   shippingZip: 'shippingZip',
   shippingCountry: 'shippingCountry',
   selectedBillingPlanId: 'selectedBillingPlanId',
+  selectedPlanTierId: 'selectedPlanTierId',
   cardLast4: 'cardLast4',
   cardBrand: 'cardBrand',
   cardNumberEncrypted: 'cardNumberEncrypted',
@@ -370,6 +402,7 @@ export type EmailSettingsScalarFieldEnum = (typeof EmailSettingsScalarFieldEnum)
 
 export const ShippingSettingsScalarFieldEnum = {
   id: 'id',
+  enabled: 'enabled',
   warehouseName: 'warehouseName',
   warehouseStreet: 'warehouseStreet',
   warehouseCity: 'warehouseCity',

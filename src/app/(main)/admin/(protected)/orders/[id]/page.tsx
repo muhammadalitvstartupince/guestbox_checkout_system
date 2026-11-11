@@ -20,7 +20,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     where: { id },
     include: {
       checkoutPage: { select: { title: true, type: true, upgradeTitle: true, webhookUrl: true, basePriceCents: true, priceTiers: { orderBy: { sortOrder: "asc" as const } } } },
-      promoCode: { select: { code: true, discountMode: true, discountType: true, discountValue: true, appliesTo: true, deviceDiscountType: true, deviceDiscountValue: true, monthlyDiscountType: true, monthlyDiscountValue: true, annualDiscountType: true, annualDiscountValue: true } },
+      promoCode: { select: { code: true, discountMode: true, discountType: true, discountValue: true, appliesTo: true, perDevice: true, deviceDiscountType: true, deviceDiscountValue: true, monthlyDiscountType: true, monthlyDiscountValue: true, annualDiscountType: true, annualDiscountValue: true } },
       orderAddons: { include: { addon: { select: { name: true } } } },
       cardAccessLogs: {
         orderBy: { viewedAt: "desc" },
@@ -85,8 +85,9 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           device: p.deviceDiscountType && p.deviceDiscountValue != null ? { type: p.deviceDiscountType, value: p.deviceDiscountValue } : null,
           monthly: p.monthlyDiscountType && p.monthlyDiscountValue != null ? { type: p.monthlyDiscountType, value: p.monthlyDiscountValue } : null,
           annual: p.annualDiscountType && p.annualDiscountValue != null ? { type: p.annualDiscountType, value: p.annualDiscountValue } : null,
+          perDevice: p.perDevice,
         }
-      : { type: p.discountType, value: p.discountValue, appliesTo: p.appliesTo as any };
+      : { type: p.discountType, value: p.discountValue, appliesTo: p.appliesTo as any, perDevice: p.perDevice };
     const promoPrice = calculateOrderPrice({
       basePriceCents: unitPriceCents,
       quantity: order.quantity,
@@ -212,7 +213,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 <Row label="Plan price" value={`${formatCents(billingPlan.priceCents)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"}`} />
               );
             })()}
-            <Row label="Recurring total" value={
+            <Row label={billingPlan?.interval === "annually" ? "Annual total" : "Monthly total"} value={
               promoRecurringDiscountCents > 0 && order.recurringAmountCents
                 ? `${formatCents(order.recurringAmountCents - promoRecurringDiscountCents)} (was ${formatCents(order.recurringAmountCents)})`
                 : formatCents(order.recurringAmountCents)

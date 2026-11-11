@@ -17,6 +17,28 @@ const warehouseSchema = z.object({
   maxDevicesPerBox: z.coerce.number().int().min(1).max(100),
 });
 
+export async function toggleShippingEnabled(enabled: boolean): Promise<void> {
+  await verifyAdminSession();
+  const existing = await prisma.shippingSettings.findFirst();
+  if (existing) {
+    await prisma.shippingSettings.update({ where: { id: existing.id }, data: { enabled } });
+  } else {
+    await prisma.shippingSettings.create({
+      data: {
+        enabled,
+        warehouseName: "",
+        warehouseStreet: "",
+        warehouseCity: "",
+        warehouseState: "",
+        warehouseZip: "",
+        warehouseCountry: "US",
+        warehousePhone: "",
+      },
+    });
+  }
+  revalidatePath("/admin/settings/shipping");
+}
+
 export async function updateShippingSettings(
   _prevState: ShippingSettingsFormState,
   formData: FormData,

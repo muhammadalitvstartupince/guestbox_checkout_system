@@ -205,7 +205,8 @@ export async function saveBillingInfo(
 
   await logOrderEvent(order.id, "billing_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
 
-  const isInternational = data.country.toUpperCase() !== DOMESTIC_COUNTRY;
+  const shippingConfig = await prisma.shippingSettings.findFirst({ select: { enabled: true } });
+  const isInternational = shippingConfig?.enabled === true && data.country.toUpperCase() !== DOMESTIC_COUNTRY;
   return { status: "success", isInternational };
 }
 
@@ -216,6 +217,9 @@ export async function saveBillingInfo(
 export async function getShippingOptions(
   orderId: string,
 ): Promise<{ rates: ShippingRate[]; error?: string }> {
+  const shippingConfig = await prisma.shippingSettings.findFirst({ select: { enabled: true } });
+  if (!shippingConfig?.enabled) return { rates: [], error: "Shipping is not enabled." };
+
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     select: { firstName: true, lastName: true, email: true, phone: true, quantity: true, shippingAddressLine1: true, shippingCity: true, shippingState: true, shippingZip: true, shippingCountry: true },
@@ -474,8 +478,8 @@ export async function completeCheckout(
 
   const promoForCalc = promo
     ? promo.mode === "split"
-      ? { mode: "split" as const, device: promo.device, monthly: promo.monthly, annual: promo.annual }
-      : { type: promo.type, value: promo.value, appliesTo: promo.appliesTo as any }
+      ? { mode: "split" as const, device: promo.device, monthly: promo.monthly, annual: promo.annual, perDevice: promo.perDevice }
+      : { type: promo.type, value: promo.value, appliesTo: promo.appliesTo as any, perDevice: promo.perDevice }
     : null;
 
   const price = calculateOrderPrice({
@@ -485,6 +489,7 @@ export async function completeCheckout(
     promo: promoForCalc,
     recurringPriceCents: fullRecurringPriceCents,
     selectedInterval,
+    recurringQuantity: listingQty,
   });
 
   // When the billing plan is charged at checkout, include the recurring
@@ -712,7 +717,7 @@ export async function completeCheckout(
   <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}${activePromo ? ` (was ${fmtDollars(activePromo.priceTier.priceCents)}/ea — promo)` : ""}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Billing type</td><td style="padding:6px 0;text-align:right">${planLabel}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Plan price</td><td style="padding:6px 0;text-align:right">${planPrice}</td></tr>
-  <tr><td style="padding:6px 0;color:#666">Recurring total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>
+  <tr><td style="padding:6px 0;color:#666">${selectedBillingPlan?.interval === "annually" ? "Annual" : "Monthly"} total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Add-ons</td><td style="padding:6px 0;text-align:right">${addonsText}</td></tr>
   ${shippingCents > 0 ? `<tr><td style="padding:6px 0;color:#666">Shipping</td><td style="padding:6px 0;text-align:right">${fmtDollars(shippingCents)} (${order.shippingCarrier ?? ""} ${order.shippingService ?? ""})</td></tr>` : ""}
   <tr><td style="padding:6px 0;color:#666">Promo code</td><td style="padding:6px 0;text-align:right">${promoText}</td></tr>

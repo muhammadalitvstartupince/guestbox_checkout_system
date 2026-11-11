@@ -30,6 +30,22 @@ interface RawBillingPlan {
   isDefault: boolean;
 }
 
+interface RawPlanTierPrice {
+  minQty: string;
+  maxQty: string;
+  monthlyPriceCents: string;
+}
+
+interface RawPlanTier {
+  name: string;
+  annualDiscountPercent: string;
+  zohoMonthlyItemId: string;
+  zohoAnnualItemId: string;
+  chargeAtCheckout: boolean;
+  isDefault: boolean;
+  prices: RawPlanTierPrice[];
+}
+
 function parseTiersAndPlans(formData: FormData) {
   let priceTiers: { minQty: number; maxQty: number | null; priceCents: number; zohoItemId: string | null; isBase: boolean }[] = [];
   let billingPlans: { interval: "monthly" | "annually"; label: string; priceCents: number; zohoItemId: string | null; chargeAtCheckout: boolean; isDefault: boolean }[] = [];
@@ -71,7 +87,35 @@ function parseTiersAndPlans(formData: FormData) {
     }
   } catch { /* ignore malformed JSON */ }
 
-  return { priceTiers, billingPlans };
+  let planTiers: { name: string; annualDiscountPercent: number; zohoMonthlyItemId: string | null; zohoAnnualItemId: string | null; chargeAtCheckout: boolean; isDefault: boolean; prices: { minQty: number; maxQty: number | null; monthlyPriceCents: number }[] }[] = [];
+
+  try {
+    const planTiersJson = formData.get("planTiersJson")?.toString();
+    if (planTiersJson) {
+      const raw: RawPlanTier[] = JSON.parse(planTiersJson);
+      planTiers = raw
+        .filter((t) => t.name)
+        .map((t) => ({
+          name: t.name,
+          annualDiscountPercent: parseInt(t.annualDiscountPercent, 10) || 0,
+          zohoMonthlyItemId: t.zohoMonthlyItemId || null,
+          zohoAnnualItemId: t.zohoAnnualItemId || null,
+          chargeAtCheckout: t.chargeAtCheckout ?? false,
+          isDefault: !!t.isDefault,
+          prices: (t.prices || [])
+            .filter((p) => p.minQty && p.monthlyPriceCents)
+            .map((p) => ({
+              minQty: parseInt(p.minQty, 10),
+              maxQty: p.maxQty ? parseInt(p.maxQty, 10) : null,
+              monthlyPriceCents: dollarsToCents(p.monthlyPriceCents),
+            })),
+        }));
+    }
+  } catch { /* ignore malformed JSON */ }
+
+  const tieredPlansEnabled = formData.get("tieredPlansEnabled") === "on";
+
+  return { priceTiers, billingPlans, planTiers, tieredPlansEnabled };
 }
 
 const checkoutPageSchema = z.object({
@@ -187,7 +231,7 @@ export async function createCheckoutPage(
   }
 
   const selectedAddonIds = formData.getAll("addonIds").map((v) => v.toString());
-  const { priceTiers, billingPlans } = parseTiersAndPlans(formData);
+  const { priceTiers, billingPlans, planTiers, tieredPlansEnabled } = parseTiersAndPlans(formData);
 
   const page = await prisma.checkoutPage.create({
     data: {
@@ -204,6 +248,7 @@ export async function createCheckoutPage(
       basePriceCents: data.basePriceCents,
       recurringPriceCents: data.recurringPriceCents,
       billingInterval: data.billingInterval,
+      tieredPlansEnabled,
       showPromoCode: data.showPromoCode,
       successRedirectUrl: data.successRedirectUrl,
       failRedirectUrl: data.failRedirectUrl,
@@ -224,6 +269,18 @@ export async function createCheckoutPage(
       },
       billingPlans: {
         create: billingPlans.map((p, i) => ({ ...p, sortOrder: i })),
+      },
+      planTiers: {
+        create: planTiers.map((tier, i) => ({
+          name: tier.name,
+          annualDiscountPercent: tier.annualDiscountPercent,
+          zohoMonthlyItemId: tier.zohoMonthlyItemId,
+          zohoAnnualItemId: tier.zohoAnnualItemId,
+          chargeAtCheckout: tier.chargeAtCheckout,
+          isDefault: tier.isDefault,
+          sortOrder: i,
+          prices: { create: tier.prices.map((p, j) => ({ ...p, sortOrder: j })) },
+        })),
       },
     },
   });
@@ -256,7 +313,7 @@ export async function updateCheckoutPage(
     return { status: "error", message: "That slug is already in use.", fieldErrors: { slug: ["Already in use"] } };
   }
 
-  const { priceTiers, billingPlans } = parseTiersAndPlans(formData);
+  const { priceTiers, billingPlans, planTiers, tieredPlansEnabled } = parseTiersAndPlans(formData);
 
   // Find tiers that have promotions linked — these can't be deleted (FK constraint).
   // Match them to incoming tiers by sortOrder position and update in place.
@@ -298,6 +355,7 @@ export async function updateCheckoutPage(
         basePriceCents: data.basePriceCents,
         recurringPriceCents: data.recurringPriceCents,
         billingInterval: data.billingInterval,
+        tieredPlansEnabled,
         showPromoCode: data.showPromoCode,
         successRedirectUrl: data.successRedirectUrl,
         failRedirectUrl: data.failRedirectUrl,
@@ -319,7 +377,30 @@ export async function updateCheckoutPage(
     ...billingPlans.map((p, i) =>
       prisma.billingPlan.create({ data: { checkoutPageId, ...p, sortOrder: i } }),
     ),
+    // Plan tiers: delete child prices first (cascade), then tiers, then re-create
+    prisma.planTierPrice.deleteMany({ where: { planTier: { checkoutPageId } } }),
+    prisma.planTier.deleteMany({ where: { checkoutPageId } }),
   ]);
+
+  // Create plan tiers outside the flat transaction because nested creates aren't supported in $transaction arrays
+  if (tieredPlansEnabled && planTiers.length > 0) {
+    for (let i = 0; i < planTiers.length; i++) {
+      const tier = planTiers[i];
+      await prisma.planTier.create({
+        data: {
+          checkoutPageId,
+          name: tier.name,
+          annualDiscountPercent: tier.annualDiscountPercent,
+          zohoMonthlyItemId: tier.zohoMonthlyItemId,
+          zohoAnnualItemId: tier.zohoAnnualItemId,
+          chargeAtCheckout: tier.chargeAtCheckout,
+          isDefault: tier.isDefault,
+          sortOrder: i,
+          prices: { create: tier.prices.map((p, j) => ({ ...p, sortOrder: j })) },
+        },
+      });
+    }
+  }
 
   await logCheckoutPageEvent(checkoutPageId, session.adminUserId as string, "updated", `Updated settings for "${data.title}"`);
 
@@ -342,7 +423,7 @@ export async function duplicateCheckoutPage(checkoutPageId: string): Promise<voi
 
   const source = await prisma.checkoutPage.findUnique({
     where: { id: checkoutPageId },
-    include: { addonLinks: true, priceTiers: { orderBy: { sortOrder: "asc" } }, billingPlans: { orderBy: { sortOrder: "asc" } } },
+    include: { addonLinks: true, priceTiers: { orderBy: { sortOrder: "asc" } }, billingPlans: { orderBy: { sortOrder: "asc" } }, planTiers: { orderBy: { sortOrder: "asc" }, include: { prices: { orderBy: { sortOrder: "asc" } } } } },
   });
   if (!source) return;
 
@@ -360,6 +441,7 @@ export async function duplicateCheckoutPage(checkoutPageId: string): Promise<voi
       basePriceCents: source.basePriceCents,
       recurringPriceCents: source.recurringPriceCents,
       billingInterval: source.billingInterval,
+      tieredPlansEnabled: source.tieredPlansEnabled,
       headline: source.headline,
       originalPriceCents: source.originalPriceCents,
       mockupImageUrl: source.mockupImageUrl,
@@ -387,6 +469,12 @@ export async function duplicateCheckoutPage(checkoutPageId: string): Promise<voi
       },
       billingPlans: {
         create: source.billingPlans.map((p) => ({ interval: p.interval, label: p.label, priceCents: p.priceCents, zohoItemId: p.zohoItemId, chargeAtCheckout: p.chargeAtCheckout, isDefault: p.isDefault, sortOrder: p.sortOrder })),
+      },
+      planTiers: {
+        create: source.planTiers.map((t) => ({
+          name: t.name, annualDiscountPercent: t.annualDiscountPercent, zohoMonthlyItemId: t.zohoMonthlyItemId, zohoAnnualItemId: t.zohoAnnualItemId, chargeAtCheckout: t.chargeAtCheckout, isDefault: t.isDefault, sortOrder: t.sortOrder,
+          prices: { create: t.prices.map((p) => ({ minQty: p.minQty, maxQty: p.maxQty, monthlyPriceCents: p.monthlyPriceCents, sortOrder: p.sortOrder })) },
+        })),
       },
     },
   });

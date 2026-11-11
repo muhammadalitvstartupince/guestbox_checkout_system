@@ -70,6 +70,21 @@ interface BillingPlanView {
   isDefault: boolean;
 }
 
+interface PlanTierPriceView {
+  minQty: number;
+  maxQty: number | null;
+  monthlyPriceCents: number;
+}
+
+interface PlanTierView {
+  id: string;
+  name: string;
+  annualDiscountPercent: number;
+  chargeAtCheckout: boolean;
+  isDefault: boolean;
+  prices: PlanTierPriceView[];
+}
+
 interface SkinConfig {
   colors?: { primary?: string; accent?: string };
   font?: string;
@@ -106,6 +121,8 @@ export interface CheckoutPageView {
   upgrade: UpgradeView | null;
   priceTiers: PriceTierView[];
   billingPlans: BillingPlanView[];
+  tieredPlansEnabled: boolean;
+  planTiers: PlanTierView[];
 }
 
 function formatCents(cents: number) {
@@ -205,6 +222,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         setShippingError(null);
         getShippingOptions(orderId).then((result) => {
           setShippingRates(result.rates);
+          if (result.rates.length > 0) {
+            const cheapest = result.rates.reduce((a, b) => a.amountCents <= b.amountCents ? a : b);
+            setSelectedShipping({ objectId: cheapest.objectId, carrier: cheapest.carrier, service: cheapest.service, amountCents: cheapest.amountCents, estimatedDays: cheapest.estimatedDays });
+            if (orderId) selectShippingRate(orderId, { objectId: cheapest.objectId, carrier: cheapest.carrier, service: cheapest.service, amountCents: cheapest.amountCents, estimatedDays: cheapest.estimatedDays });
+          }
           if (result.error) setShippingError(result.error);
           setShippingLoading(false);
         });
@@ -296,6 +318,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
       type?: "percent" | "fixed";
       value?: number;
       appliesTo?: string;
+      perDevice?: boolean;
       device?: { type: "percent" | "fixed"; value: number } | null;
       monthly?: { type: "percent" | "fixed"; value: number } | null;
       annual?: { type: "percent" | "fixed"; value: number } | null;
@@ -352,8 +375,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const selectedBillingInterval = selectedPlan?.interval ?? null;
   const promoForCalc = appliedPromo
     ? appliedPromo.mode === "split"
-      ? { mode: "split" as const, device: appliedPromo.device ?? null, monthly: appliedPromo.monthly ?? null, annual: appliedPromo.annual ?? null }
-      : { type: appliedPromo.type!, value: appliedPromo.value!, appliesTo: appliedPromo.appliesTo as any }
+      ? { mode: "split" as const, device: appliedPromo.device ?? null, monthly: appliedPromo.monthly ?? null, annual: appliedPromo.annual ?? null, perDevice: appliedPromo.perDevice }
+      : { type: appliedPromo.type!, value: appliedPromo.value!, appliesTo: appliedPromo.appliesTo as any, perDevice: appliedPromo.perDevice }
     : null;
   const estimate = useMemo(
     () =>
@@ -364,9 +387,38 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         recurringPriceCents: displayRecurringPriceCents,
         promo: promoForCalc,
         selectedInterval: selectedBillingInterval,
+        recurringQuantity: planListingMultiplier,
       }),
     [quantity, listingQty, selectedAddons, effectiveBasePriceCents, displayRecurringPriceCents, appliedPromo, selectedBillingInterval],
   );
+
+  const promoDisplayMessage = useMemo(() => {
+    if (!appliedPromo) return promoCheck.message ?? "";
+    const perDev = !!appliedPromo.perDevice;
+    const fmt = (type: string, value: number) =>
+      type === "percent" ? `${value}%` : `$${(value / 100).toFixed(2)}${perDev ? "/each" : ""}`;
+    const interval = selectedBillingInterval === "annually" ? "annual" : selectedBillingInterval;
+
+    if (appliedPromo.mode === "split") {
+      const parts: string[] = [];
+      if (appliedPromo.device) parts.push(`${fmt(appliedPromo.device.type, appliedPromo.device.value)} off devices`);
+      if (interval === "monthly" && appliedPromo.monthly) parts.push(`${fmt(appliedPromo.monthly.type, appliedPromo.monthly.value)} off monthly`);
+      if (interval === "annual" && appliedPromo.annual) parts.push(`${fmt(appliedPromo.annual.type, appliedPromo.annual.value)} off annual`);
+      return parts.length > 0 ? `Valid — ${parts.join(" + ")}` : "Valid";
+    }
+
+    // Single mode — build dynamic label based on selected interval
+    const appliesTo = appliedPromo.appliesTo ?? "device";
+    const targetsDevice = ["device", "device_monthly", "device_annual", "all"].includes(appliesTo);
+    const targetsMonthly = ["monthly", "device_monthly", "monthly_annual", "all"].includes(appliesTo) && interval === "monthly";
+    const targetsAnnual = ["annual", "device_annual", "monthly_annual", "all"].includes(appliesTo) && interval === "annual";
+    const label = fmt(appliedPromo.type!, appliedPromo.value!);
+    const targets: string[] = [];
+    if (targetsDevice) targets.push("devices");
+    if (targetsMonthly) targets.push("monthly");
+    if (targetsAnnual) targets.push("annual");
+    return targets.length > 0 ? `Valid — ${label} off ${targets.join(" + ")}` : "Valid";
+  }, [appliedPromo, selectedBillingInterval, promoCheck.message]);
 
   const shippingCents = selectedShipping?.amountCents ?? 0;
 
@@ -1277,29 +1329,37 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
               {/* Extra promo code input (or regular promo when no promotion) */}
               {promoCheck.status === "valid" ? (
-                <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-300 bg-gradient-to-r from-emerald-50 to-white px-4 py-3">
+                <div className="rounded-lg border border-emerald-300 bg-gradient-to-r from-emerald-50 to-white px-4 py-3">
                   <input type="hidden" name="promoCode" value={promoCheck.appliedCode ?? ""} />
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                      <Ticket className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="truncate font-mono text-sm font-bold tracking-wide text-emerald-800">
-                          {promoCheck.appliedCode}
-                        </span>
-                        <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                        <Ticket className="h-5 w-5" />
                       </div>
-                      <div className="text-xs font-medium text-emerald-700">{promoCheck.message} applied</div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="truncate font-mono text-sm font-bold tracking-wide text-emerald-800">
+                            {promoCheck.appliedCode}
+                          </span>
+                          <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+                        </div>
+                        <div className="text-xs font-medium text-emerald-700">{promoDisplayMessage} applied</div>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={handleEditPromo}
+                      className="flex shrink-0 items-center gap-1 rounded px-2 py-1.5 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
+                    >
+                      <PencilLine className="h-3.5 w-3.5" /> Change
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleEditPromo}
-                    className="flex shrink-0 items-center gap-1 rounded px-2 py-1.5 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
-                  >
-                    <PencilLine className="h-3.5 w-3.5" /> Change
-                  </button>
+                  {estimate.recurringTotalCents > 0 && estimate.recurringDiscountCents > 0 && (
+                    <div className="mt-2 flex items-center justify-between border-t border-emerald-200 pt-2 text-sm">
+                      <span className="text-emerald-700">{selectedPlan?.interval === "annually" ? "Annual" : "Monthly"} plan <span className="text-emerald-500 line-through">{formatCents(estimate.recurringTotalCents)}/{recurringLabel}</span></span>
+                      <span className="font-semibold text-emerald-700">{formatCents(estimate.recurringTotalCents - estimate.recurringDiscountCents)}/{recurringLabel}</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>
@@ -1418,18 +1478,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   : estimate.totalCents) + shippingCents
               )}</span>
             </div>
-            {estimate.recurringTotalCents > 0 && !selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0 && (
-              <div className="mt-2 rounded-lg border border-white/15 px-3 py-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="opacity-80">Recurring plan</span>
-                  <span className="text-white/50 line-through">{formatCents(estimate.recurringTotalCents)}/{recurringLabel}</span>
-                </div>
-                <div className="flex justify-between font-semibold">
-                  <span className="text-emerald-400">Discounted rate</span>
-                  <span className="text-emerald-400">{formatCents(estimate.recurringTotalCents - estimate.recurringDiscountCents)}/{recurringLabel}</span>
-                </div>
-              </div>
-            )}
           </div>
 
           <div>

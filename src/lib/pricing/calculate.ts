@@ -27,6 +27,8 @@ export interface SinglePromoDiscount extends DiscountSlot {
   mode?: "single";
   /** Which components the discount covers. Defaults to "device" (backward compat). */
   appliesTo?: PromoTarget;
+  /** When true, fixed discount is multiplied by quantity (per-device instead of per-order). */
+  perDevice?: boolean;
 }
 
 export interface SplitPromoDiscount {
@@ -34,6 +36,7 @@ export interface SplitPromoDiscount {
   device: DiscountSlot | null;
   monthly: DiscountSlot | null;
   annual: DiscountSlot | null;
+  perDevice?: boolean;
 }
 
 export type PromoDiscount = SinglePromoDiscount | SplitPromoDiscount;
@@ -48,6 +51,8 @@ export interface PriceCalculationInput {
   recurringPriceCents?: number | null;
   /** selected billing interval — needed to match promo target against plan */
   selectedInterval?: string | null;
+  /** number of plan listings (may differ from device quantity for annual plans) */
+  recurringQuantity?: number | null;
 }
 
 export interface PriceCalculationResult {
@@ -88,6 +93,7 @@ export function calculateOrderPrice(
   const addonsTotalCents = addons.reduce((sum, a) => sum + a.priceCents, 0);
   const subtotalCents = basePriceCents * quantity + addonsTotalCents;
   const recurringTotalCents = recurringPriceCents != null ? recurringPriceCents : 0;
+  const planQty = input.recurringQuantity ?? quantity;
 
   let discountCents = 0;
   let recurringDiscountCents = 0;
@@ -95,12 +101,16 @@ export function calculateOrderPrice(
   if (promo && promo.mode === "split") {
     // Split mode: independent discounts for device, monthly, annual
     if (promo.device) {
-      discountCents = clampDiscount(subtotalCents, computeSlotDiscount(subtotalCents, promo.device));
+      let deviceDisc = computeSlotDiscount(subtotalCents, promo.device);
+      if (promo.perDevice && promo.device.type === "fixed") deviceDisc *= quantity;
+      discountCents = clampDiscount(subtotalCents, deviceDisc);
     }
     const interval = input.selectedInterval === "annually" ? "annual" : input.selectedInterval;
     const planSlot = interval === "monthly" ? promo.monthly : interval === "annual" ? promo.annual : null;
     if (planSlot) {
-      recurringDiscountCents = clampDiscount(recurringTotalCents, computeSlotDiscount(recurringTotalCents, planSlot));
+      let planDisc = computeSlotDiscount(recurringTotalCents, planSlot);
+      if (promo.perDevice && planSlot.type === "fixed") planDisc *= planQty;
+      recurringDiscountCents = clampDiscount(recurringTotalCents, planDisc);
     }
   } else if (promo) {
     // Single mode (existing behavior)
@@ -108,16 +118,19 @@ export function calculateOrderPrice(
     const targetsDevice = promoTargetsDevice(appliesTo);
     const targetsRecurring = promoTargetsRecurring(appliesTo, input.selectedInterval);
 
+    const isPerDevice = promo.perDevice && promo.type === "fixed";
+    const deviceMult = isPerDevice ? quantity : 1;
+    const planMult = isPerDevice ? planQty : 1;
+
     if (promo.type === "fixed" && targetsDevice && targetsRecurring) {
-      const combinedTotal = subtotalCents + recurringTotalCents;
-      const totalDiscount = clampDiscount(combinedTotal, computeSlotDiscount(combinedTotal, promo));
-      if (combinedTotal > 0) {
-        discountCents = Math.round(totalDiscount * subtotalCents / combinedTotal);
-        recurringDiscountCents = totalDiscount - discountCents;
-      }
+      // Separate multipliers for device vs plan
+      const rawDevice = computeSlotDiscount(subtotalCents, promo) * deviceMult;
+      const rawPlan = computeSlotDiscount(recurringTotalCents, promo) * planMult;
+      discountCents = clampDiscount(subtotalCents, rawDevice);
+      recurringDiscountCents = clampDiscount(recurringTotalCents, rawPlan);
     } else {
-      discountCents = targetsDevice ? clampDiscount(subtotalCents, computeSlotDiscount(subtotalCents, promo)) : 0;
-      recurringDiscountCents = targetsRecurring ? clampDiscount(recurringTotalCents, computeSlotDiscount(recurringTotalCents, promo)) : 0;
+      discountCents = targetsDevice ? clampDiscount(subtotalCents, computeSlotDiscount(subtotalCents, promo) * deviceMult) : 0;
+      recurringDiscountCents = targetsRecurring ? clampDiscount(recurringTotalCents, computeSlotDiscount(recurringTotalCents, promo) * planMult) : 0;
     }
   }
 

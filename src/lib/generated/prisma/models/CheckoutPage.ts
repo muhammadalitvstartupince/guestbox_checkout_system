@@ -73,6 +73,7 @@ export type CheckoutPageMinAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  tieredPlansEnabled: boolean | null
 }
 
 export type CheckoutPageMaxAggregateOutputType = {
@@ -106,6 +107,7 @@ export type CheckoutPageMaxAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  tieredPlansEnabled: boolean | null
 }
 
 export type CheckoutPageCountAggregateOutputType = {
@@ -139,6 +141,7 @@ export type CheckoutPageCountAggregateOutputType = {
   createdById: number
   createdAt: number
   updatedAt: number
+  tieredPlansEnabled: number
   _all: number
 }
 
@@ -190,6 +193,7 @@ export type CheckoutPageMinAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  tieredPlansEnabled?: true
 }
 
 export type CheckoutPageMaxAggregateInputType = {
@@ -223,6 +227,7 @@ export type CheckoutPageMaxAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  tieredPlansEnabled?: true
 }
 
 export type CheckoutPageCountAggregateInputType = {
@@ -256,6 +261,7 @@ export type CheckoutPageCountAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  tieredPlansEnabled?: true
   _all?: true
 }
 
@@ -376,6 +382,7 @@ export type CheckoutPageGroupByOutputType = {
   createdById: string | null
   createdAt: Date
   updatedAt: Date
+  tieredPlansEnabled: boolean
   _count: CheckoutPageCountAggregateOutputType | null
   _avg: CheckoutPageAvgAggregateOutputType | null
   _sum: CheckoutPageSumAggregateOutputType | null
@@ -432,6 +439,7 @@ export type CheckoutPageWhereInput = {
   createdById?: Prisma.UuidNullableFilter<"CheckoutPage"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
+  tieredPlansEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
   skin?: Prisma.XOR<Prisma.SkinScalarRelationFilter, Prisma.SkinWhereInput>
   createdBy?: Prisma.XOR<Prisma.AdminUserNullableScalarRelationFilter, Prisma.AdminUserWhereInput> | null
   addonLinks?: Prisma.CheckoutPageAddonListRelationFilter
@@ -439,6 +447,7 @@ export type CheckoutPageWhereInput = {
   orders?: Prisma.OrderListRelationFilter
   priceTiers?: Prisma.PriceTierListRelationFilter
   billingPlans?: Prisma.BillingPlanListRelationFilter
+  planTiers?: Prisma.PlanTierListRelationFilter
   logs?: Prisma.CheckoutPageLogListRelationFilter
   promotionLinks?: Prisma.PromotionCheckoutPageListRelationFilter
 }
@@ -474,6 +483,7 @@ export type CheckoutPageOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tieredPlansEnabled?: Prisma.SortOrder
   skin?: Prisma.SkinOrderByWithRelationInput
   createdBy?: Prisma.AdminUserOrderByWithRelationInput
   addonLinks?: Prisma.CheckoutPageAddonOrderByRelationAggregateInput
@@ -481,6 +491,7 @@ export type CheckoutPageOrderByWithRelationInput = {
   orders?: Prisma.OrderOrderByRelationAggregateInput
   priceTiers?: Prisma.PriceTierOrderByRelationAggregateInput
   billingPlans?: Prisma.BillingPlanOrderByRelationAggregateInput
+  planTiers?: Prisma.PlanTierOrderByRelationAggregateInput
   logs?: Prisma.CheckoutPageLogOrderByRelationAggregateInput
   promotionLinks?: Prisma.PromotionCheckoutPageOrderByRelationAggregateInput
 }
@@ -519,6 +530,7 @@ export type CheckoutPageWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.UuidNullableFilter<"CheckoutPage"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
+  tieredPlansEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
   skin?: Prisma.XOR<Prisma.SkinScalarRelationFilter, Prisma.SkinWhereInput>
   createdBy?: Prisma.XOR<Prisma.AdminUserNullableScalarRelationFilter, Prisma.AdminUserWhereInput> | null
   addonLinks?: Prisma.CheckoutPageAddonListRelationFilter
@@ -526,6 +538,7 @@ export type CheckoutPageWhereUniqueInput = Prisma.AtLeast<{
   orders?: Prisma.OrderListRelationFilter
   priceTiers?: Prisma.PriceTierListRelationFilter
   billingPlans?: Prisma.BillingPlanListRelationFilter
+  planTiers?: Prisma.PlanTierListRelationFilter
   logs?: Prisma.CheckoutPageLogListRelationFilter
   promotionLinks?: Prisma.PromotionCheckoutPageListRelationFilter
 }, "id" | "slug">
@@ -561,6 +574,7 @@ export type CheckoutPageOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tieredPlansEnabled?: Prisma.SortOrder
   _count?: Prisma.CheckoutPageCountOrderByAggregateInput
   _avg?: Prisma.CheckoutPageAvgOrderByAggregateInput
   _max?: Prisma.CheckoutPageMaxOrderByAggregateInput
@@ -602,6 +616,7 @@ export type CheckoutPageScalarWhereWithAggregatesInput = {
   createdById?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutPage"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutPage"> | Date | string
+  tieredPlansEnabled?: Prisma.BoolWithAggregatesFilter<"CheckoutPage"> | boolean
 }
 
 export type CheckoutPageCreateInput = {
@@ -633,6 +648,7 @@ export type CheckoutPageCreateInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
@@ -640,6 +656,7 @@ export type CheckoutPageCreateInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -675,11 +692,13 @@ export type CheckoutPageUncheckedCreateInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -713,6 +732,7 @@ export type CheckoutPageUpdateInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
@@ -720,6 +740,7 @@ export type CheckoutPageUpdateInput = {
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -755,11 +776,13 @@ export type CheckoutPageUncheckedUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -795,6 +818,7 @@ export type CheckoutPageCreateManyInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
 }
 
 export type CheckoutPageUpdateManyMutationInput = {
@@ -826,6 +850,7 @@ export type CheckoutPageUpdateManyMutationInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CheckoutPageUncheckedUpdateManyInput = {
@@ -859,6 +884,7 @@ export type CheckoutPageUncheckedUpdateManyInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CheckoutPageListRelationFilter = {
@@ -902,6 +928,7 @@ export type CheckoutPageCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tieredPlansEnabled?: Prisma.SortOrder
 }
 
 export type CheckoutPageAvgOrderByAggregateInput = {
@@ -943,6 +970,7 @@ export type CheckoutPageMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tieredPlansEnabled?: Prisma.SortOrder
 }
 
 export type CheckoutPageMinOrderByAggregateInput = {
@@ -976,6 +1004,7 @@ export type CheckoutPageMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tieredPlansEnabled?: Prisma.SortOrder
 }
 
 export type CheckoutPageSumOrderByAggregateInput = {
@@ -1144,6 +1173,20 @@ export type CheckoutPageUpdateOneRequiredWithoutBillingPlansNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CheckoutPageUpdateToOneWithWhereWithoutBillingPlansInput, Prisma.CheckoutPageUpdateWithoutBillingPlansInput>, Prisma.CheckoutPageUncheckedUpdateWithoutBillingPlansInput>
 }
 
+export type CheckoutPageCreateNestedOneWithoutPlanTiersInput = {
+  create?: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPlanTiersInput, Prisma.CheckoutPageUncheckedCreateWithoutPlanTiersInput>
+  connectOrCreate?: Prisma.CheckoutPageCreateOrConnectWithoutPlanTiersInput
+  connect?: Prisma.CheckoutPageWhereUniqueInput
+}
+
+export type CheckoutPageUpdateOneRequiredWithoutPlanTiersNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPlanTiersInput, Prisma.CheckoutPageUncheckedCreateWithoutPlanTiersInput>
+  connectOrCreate?: Prisma.CheckoutPageCreateOrConnectWithoutPlanTiersInput
+  upsert?: Prisma.CheckoutPageUpsertWithoutPlanTiersInput
+  connect?: Prisma.CheckoutPageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CheckoutPageUpdateToOneWithWhereWithoutPlanTiersInput, Prisma.CheckoutPageUpdateWithoutPlanTiersInput>, Prisma.CheckoutPageUncheckedUpdateWithoutPlanTiersInput>
+}
+
 export type CheckoutPageCreateNestedOneWithoutLogsInput = {
   create?: Prisma.XOR<Prisma.CheckoutPageCreateWithoutLogsInput, Prisma.CheckoutPageUncheckedCreateWithoutLogsInput>
   connectOrCreate?: Prisma.CheckoutPageCreateOrConnectWithoutLogsInput
@@ -1245,12 +1288,14 @@ export type CheckoutPageCreateWithoutCreatedByInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1285,11 +1330,13 @@ export type CheckoutPageUncheckedCreateWithoutCreatedByInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1354,6 +1401,7 @@ export type CheckoutPageScalarWhereInput = {
   createdById?: Prisma.UuidNullableFilter<"CheckoutPage"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
+  tieredPlansEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
 }
 
 export type CheckoutPageCreateWithoutSkinInput = {
@@ -1385,12 +1433,14 @@ export type CheckoutPageCreateWithoutSkinInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1425,11 +1475,13 @@ export type CheckoutPageUncheckedCreateWithoutSkinInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1489,12 +1541,14 @@ export type CheckoutPageCreateWithoutPriceTiersInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1530,10 +1584,12 @@ export type CheckoutPageUncheckedCreateWithoutPriceTiersInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1583,12 +1639,14 @@ export type CheckoutPageUpdateWithoutPriceTiersInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -1624,10 +1682,12 @@ export type CheckoutPageUncheckedUpdateWithoutPriceTiersInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -1661,12 +1721,14 @@ export type CheckoutPageCreateWithoutBillingPlansInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1702,10 +1764,12 @@ export type CheckoutPageUncheckedCreateWithoutBillingPlansInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -1755,12 +1819,14 @@ export type CheckoutPageUpdateWithoutBillingPlansInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -1796,10 +1862,192 @@ export type CheckoutPageUncheckedUpdateWithoutBillingPlansInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
+}
+
+export type CheckoutPageCreateWithoutPlanTiersInput = {
+  id?: string
+  slug: string
+  type?: $Enums.CheckoutPageType
+  title: string
+  productName?: string | null
+  zohoItemId?: string | null
+  zohoRecurringItemId?: string | null
+  basePriceCents: number
+  recurringPriceCents?: number | null
+  billingInterval?: $Enums.BillingInterval
+  headline?: string | null
+  originalPriceCents?: number | null
+  mockupImageUrl?: string | null
+  heroHtml?: string | null
+  heroHtmlMobile?: string | null
+  upgradeTitle?: string | null
+  upgradeDescription?: string | null
+  upgradePriceCents?: number | null
+  upgradeRecurringPriceCents?: number | null
+  upgradeZohoItemId?: string | null
+  upgradeZohoRecurringItemId?: string | null
+  showPromoCode?: boolean
+  successRedirectUrl: string
+  failRedirectUrl: string
+  webhookUrl?: string | null
+  status?: $Enums.CheckoutPageStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
+  skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
+  createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
+  addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
+  promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
+  priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
+  billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
+}
+
+export type CheckoutPageUncheckedCreateWithoutPlanTiersInput = {
+  id?: string
+  slug: string
+  type?: $Enums.CheckoutPageType
+  title: string
+  productName?: string | null
+  skinId: string
+  zohoItemId?: string | null
+  zohoRecurringItemId?: string | null
+  basePriceCents: number
+  recurringPriceCents?: number | null
+  billingInterval?: $Enums.BillingInterval
+  headline?: string | null
+  originalPriceCents?: number | null
+  mockupImageUrl?: string | null
+  heroHtml?: string | null
+  heroHtmlMobile?: string | null
+  upgradeTitle?: string | null
+  upgradeDescription?: string | null
+  upgradePriceCents?: number | null
+  upgradeRecurringPriceCents?: number | null
+  upgradeZohoItemId?: string | null
+  upgradeZohoRecurringItemId?: string | null
+  showPromoCode?: boolean
+  successRedirectUrl: string
+  failRedirectUrl: string
+  webhookUrl?: string | null
+  status?: $Enums.CheckoutPageStatus
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
+  addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
+  priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
+  billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
+}
+
+export type CheckoutPageCreateOrConnectWithoutPlanTiersInput = {
+  where: Prisma.CheckoutPageWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPlanTiersInput, Prisma.CheckoutPageUncheckedCreateWithoutPlanTiersInput>
+}
+
+export type CheckoutPageUpsertWithoutPlanTiersInput = {
+  update: Prisma.XOR<Prisma.CheckoutPageUpdateWithoutPlanTiersInput, Prisma.CheckoutPageUncheckedUpdateWithoutPlanTiersInput>
+  create: Prisma.XOR<Prisma.CheckoutPageCreateWithoutPlanTiersInput, Prisma.CheckoutPageUncheckedCreateWithoutPlanTiersInput>
+  where?: Prisma.CheckoutPageWhereInput
+}
+
+export type CheckoutPageUpdateToOneWithWhereWithoutPlanTiersInput = {
+  where?: Prisma.CheckoutPageWhereInput
+  data: Prisma.XOR<Prisma.CheckoutPageUpdateWithoutPlanTiersInput, Prisma.CheckoutPageUncheckedUpdateWithoutPlanTiersInput>
+}
+
+export type CheckoutPageUpdateWithoutPlanTiersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumCheckoutPageTypeFieldUpdateOperationsInput | $Enums.CheckoutPageType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  recurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  billingInterval?: Prisma.EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mockupImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtmlMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradePriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeRecurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeZohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeZohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showPromoCode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  successRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  failRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
+  createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
+  addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
+  promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
+  priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
+  billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
+  promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
+}
+
+export type CheckoutPageUncheckedUpdateWithoutPlanTiersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumCheckoutPageTypeFieldUpdateOperationsInput | $Enums.CheckoutPageType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  productName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skinId?: Prisma.StringFieldUpdateOperationsInput | string
+  zohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  recurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  billingInterval?: Prisma.EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mockupImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroHtmlMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradePriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeRecurringPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  upgradeZohoItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upgradeZohoRecurringItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showPromoCode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  successRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  failRedirectUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -1833,6 +2081,7 @@ export type CheckoutPageCreateWithoutLogsInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
@@ -1840,6 +2089,7 @@ export type CheckoutPageCreateWithoutLogsInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
 
@@ -1874,11 +2124,13 @@ export type CheckoutPageUncheckedCreateWithoutLogsInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
@@ -1927,6 +2179,7 @@ export type CheckoutPageUpdateWithoutLogsInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
@@ -1934,6 +2187,7 @@ export type CheckoutPageUpdateWithoutLogsInput = {
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
 
@@ -1968,11 +2222,13 @@ export type CheckoutPageUncheckedUpdateWithoutLogsInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
@@ -2005,12 +2261,14 @@ export type CheckoutPageCreateWithoutAddonLinksInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -2046,10 +2304,12 @@ export type CheckoutPageUncheckedCreateWithoutAddonLinksInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -2099,12 +2359,14 @@ export type CheckoutPageUpdateWithoutAddonLinksInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2140,10 +2402,12 @@ export type CheckoutPageUncheckedUpdateWithoutAddonLinksInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2177,12 +2441,14 @@ export type CheckoutPageCreateWithoutPromoCodesInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -2218,10 +2484,12 @@ export type CheckoutPageUncheckedCreateWithoutPromoCodesInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -2271,12 +2539,14 @@ export type CheckoutPageUpdateWithoutPromoCodesInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2312,10 +2582,12 @@ export type CheckoutPageUncheckedUpdateWithoutPromoCodesInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2349,12 +2621,14 @@ export type CheckoutPageCreateWithoutOrdersInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeCreateNestedManyWithoutAppliesToCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageCreateNestedManyWithoutCheckoutPageInput
 }
@@ -2390,10 +2664,12 @@ export type CheckoutPageUncheckedCreateWithoutOrdersInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
@@ -2443,12 +2719,14 @@ export type CheckoutPageUpdateWithoutOrdersInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2484,10 +2762,12 @@ export type CheckoutPageUncheckedUpdateWithoutOrdersInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2521,6 +2801,7 @@ export type CheckoutPageCreateWithoutPromotionLinksInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
   addonLinks?: Prisma.CheckoutPageAddonCreateNestedManyWithoutCheckoutPageInput
@@ -2528,6 +2809,7 @@ export type CheckoutPageCreateWithoutPromotionLinksInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogCreateNestedManyWithoutCheckoutPageInput
 }
 
@@ -2562,11 +2844,13 @@ export type CheckoutPageUncheckedCreateWithoutPromotionLinksInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCheckoutPageInput
   priceTiers?: Prisma.PriceTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   billingPlans?: Prisma.BillingPlanUncheckedCreateNestedManyWithoutCheckoutPageInput
+  planTiers?: Prisma.PlanTierUncheckedCreateNestedManyWithoutCheckoutPageInput
   logs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutCheckoutPageInput
 }
 
@@ -2615,6 +2899,7 @@ export type CheckoutPageUpdateWithoutPromotionLinksInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
@@ -2622,6 +2907,7 @@ export type CheckoutPageUpdateWithoutPromotionLinksInput = {
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
 }
 
@@ -2656,11 +2942,13 @@ export type CheckoutPageUncheckedUpdateWithoutPromotionLinksInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
 
@@ -2694,6 +2982,7 @@ export type CheckoutPageCreateManyCreatedByInput = {
   status?: $Enums.CheckoutPageStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
 }
 
 export type CheckoutPageUpdateWithoutCreatedByInput = {
@@ -2725,12 +3014,14 @@ export type CheckoutPageUpdateWithoutCreatedByInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2765,11 +3056,13 @@ export type CheckoutPageUncheckedUpdateWithoutCreatedByInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2804,6 +3097,7 @@ export type CheckoutPageUncheckedUpdateManyWithoutCreatedByInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CheckoutPageCreateManySkinInput = {
@@ -2836,6 +3130,7 @@ export type CheckoutPageCreateManySkinInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tieredPlansEnabled?: boolean
 }
 
 export type CheckoutPageUpdateWithoutSkinInput = {
@@ -2867,12 +3162,14 @@ export type CheckoutPageUpdateWithoutSkinInput = {
   status?: Prisma.EnumCheckoutPageStatusFieldUpdateOperationsInput | $Enums.CheckoutPageStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
   addonLinks?: Prisma.CheckoutPageAddonUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2907,11 +3204,13 @@ export type CheckoutPageUncheckedUpdateWithoutSkinInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCheckoutPageNestedInput
   priceTiers?: Prisma.PriceTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   billingPlans?: Prisma.BillingPlanUncheckedUpdateManyWithoutCheckoutPageNestedInput
+  planTiers?: Prisma.PlanTierUncheckedUpdateManyWithoutCheckoutPageNestedInput
   logs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutCheckoutPageNestedInput
   promotionLinks?: Prisma.PromotionCheckoutPageUncheckedUpdateManyWithoutCheckoutPageNestedInput
 }
@@ -2946,6 +3245,7 @@ export type CheckoutPageUncheckedUpdateManyWithoutSkinInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -2959,6 +3259,7 @@ export type CheckoutPageCountOutputType = {
   orders: number
   priceTiers: number
   billingPlans: number
+  planTiers: number
   logs: number
   promotionLinks: number
 }
@@ -2969,6 +3270,7 @@ export type CheckoutPageCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   orders?: boolean | CheckoutPageCountOutputTypeCountOrdersArgs
   priceTiers?: boolean | CheckoutPageCountOutputTypeCountPriceTiersArgs
   billingPlans?: boolean | CheckoutPageCountOutputTypeCountBillingPlansArgs
+  planTiers?: boolean | CheckoutPageCountOutputTypeCountPlanTiersArgs
   logs?: boolean | CheckoutPageCountOutputTypeCountLogsArgs
   promotionLinks?: boolean | CheckoutPageCountOutputTypeCountPromotionLinksArgs
 }
@@ -3021,6 +3323,13 @@ export type CheckoutPageCountOutputTypeCountBillingPlansArgs<ExtArgs extends run
 /**
  * CheckoutPageCountOutputType without action
  */
+export type CheckoutPageCountOutputTypeCountPlanTiersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlanTierWhereInput
+}
+
+/**
+ * CheckoutPageCountOutputType without action
+ */
 export type CheckoutPageCountOutputTypeCountLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CheckoutPageLogWhereInput
 }
@@ -3064,6 +3373,7 @@ export type CheckoutPageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tieredPlansEnabled?: boolean
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.CheckoutPage$createdByArgs<ExtArgs>
   addonLinks?: boolean | Prisma.CheckoutPage$addonLinksArgs<ExtArgs>
@@ -3071,6 +3381,7 @@ export type CheckoutPageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   orders?: boolean | Prisma.CheckoutPage$ordersArgs<ExtArgs>
   priceTiers?: boolean | Prisma.CheckoutPage$priceTiersArgs<ExtArgs>
   billingPlans?: boolean | Prisma.CheckoutPage$billingPlansArgs<ExtArgs>
+  planTiers?: boolean | Prisma.CheckoutPage$planTiersArgs<ExtArgs>
   logs?: boolean | Prisma.CheckoutPage$logsArgs<ExtArgs>
   promotionLinks?: boolean | Prisma.CheckoutPage$promotionLinksArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutPageCountOutputTypeDefaultArgs<ExtArgs>
@@ -3107,6 +3418,7 @@ export type CheckoutPageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tieredPlansEnabled?: boolean
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.CheckoutPage$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutPage"]>
@@ -3142,6 +3454,7 @@ export type CheckoutPageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tieredPlansEnabled?: boolean
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.CheckoutPage$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutPage"]>
@@ -3177,9 +3490,10 @@ export type CheckoutPageSelectScalar = {
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tieredPlansEnabled?: boolean
 }
 
-export type CheckoutPageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "type" | "title" | "productName" | "skinId" | "zohoItemId" | "zohoRecurringItemId" | "basePriceCents" | "recurringPriceCents" | "billingInterval" | "headline" | "originalPriceCents" | "mockupImageUrl" | "heroHtml" | "heroHtmlMobile" | "upgradeTitle" | "upgradeDescription" | "upgradePriceCents" | "upgradeRecurringPriceCents" | "upgradeZohoItemId" | "upgradeZohoRecurringItemId" | "showPromoCode" | "successRedirectUrl" | "failRedirectUrl" | "webhookUrl" | "status" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutPage"]>
+export type CheckoutPageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "type" | "title" | "productName" | "skinId" | "zohoItemId" | "zohoRecurringItemId" | "basePriceCents" | "recurringPriceCents" | "billingInterval" | "headline" | "originalPriceCents" | "mockupImageUrl" | "heroHtml" | "heroHtmlMobile" | "upgradeTitle" | "upgradeDescription" | "upgradePriceCents" | "upgradeRecurringPriceCents" | "upgradeZohoItemId" | "upgradeZohoRecurringItemId" | "showPromoCode" | "successRedirectUrl" | "failRedirectUrl" | "webhookUrl" | "status" | "createdById" | "createdAt" | "updatedAt" | "tieredPlansEnabled", ExtArgs["result"]["checkoutPage"]>
 export type CheckoutPageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.CheckoutPage$createdByArgs<ExtArgs>
@@ -3188,6 +3502,7 @@ export type CheckoutPageInclude<ExtArgs extends runtime.Types.Extensions.Interna
   orders?: boolean | Prisma.CheckoutPage$ordersArgs<ExtArgs>
   priceTiers?: boolean | Prisma.CheckoutPage$priceTiersArgs<ExtArgs>
   billingPlans?: boolean | Prisma.CheckoutPage$billingPlansArgs<ExtArgs>
+  planTiers?: boolean | Prisma.CheckoutPage$planTiersArgs<ExtArgs>
   logs?: boolean | Prisma.CheckoutPage$logsArgs<ExtArgs>
   promotionLinks?: boolean | Prisma.CheckoutPage$promotionLinksArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutPageCountOutputTypeDefaultArgs<ExtArgs>
@@ -3211,6 +3526,7 @@ export type $CheckoutPagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     orders: Prisma.$OrderPayload<ExtArgs>[]
     priceTiers: Prisma.$PriceTierPayload<ExtArgs>[]
     billingPlans: Prisma.$BillingPlanPayload<ExtArgs>[]
+    planTiers: Prisma.$PlanTierPayload<ExtArgs>[]
     logs: Prisma.$CheckoutPageLogPayload<ExtArgs>[]
     promotionLinks: Prisma.$PromotionCheckoutPagePayload<ExtArgs>[]
   }
@@ -3245,6 +3561,7 @@ export type $CheckoutPagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     createdById: string | null
     createdAt: Date
     updatedAt: Date
+    tieredPlansEnabled: boolean
   }, ExtArgs["result"]["checkoutPage"]>
   composites: {}
 }
@@ -3646,6 +3963,7 @@ export interface Prisma__CheckoutPageClient<T, Null = never, ExtArgs extends run
   orders<T extends Prisma.CheckoutPage$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   priceTiers<T extends Prisma.CheckoutPage$priceTiersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$priceTiersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PriceTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   billingPlans<T extends Prisma.CheckoutPage$billingPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$billingPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  planTiers<T extends Prisma.CheckoutPage$planTiersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$planTiersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logs<T extends Prisma.CheckoutPage$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutPageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   promotionLinks<T extends Prisma.CheckoutPage$promotionLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutPage$promotionLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PromotionCheckoutPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3707,6 +4025,7 @@ export interface CheckoutPageFieldRefs {
   readonly createdById: Prisma.FieldRef<"CheckoutPage", 'String'>
   readonly createdAt: Prisma.FieldRef<"CheckoutPage", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CheckoutPage", 'DateTime'>
+  readonly tieredPlansEnabled: Prisma.FieldRef<"CheckoutPage", 'Boolean'>
 }
     
 
@@ -4244,6 +4563,30 @@ export type CheckoutPage$billingPlansArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.BillingPlanScalarFieldEnum | Prisma.BillingPlanScalarFieldEnum[]
+}
+
+/**
+ * CheckoutPage.planTiers
+ */
+export type CheckoutPage$planTiersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlanTier
+   */
+  select?: Prisma.PlanTierSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlanTier
+   */
+  omit?: Prisma.PlanTierOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanTierInclude<ExtArgs> | null
+  where?: Prisma.PlanTierWhereInput
+  orderBy?: Prisma.PlanTierOrderByWithRelationInput | Prisma.PlanTierOrderByWithRelationInput[]
+  cursor?: Prisma.PlanTierWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlanTierScalarFieldEnum | Prisma.PlanTierScalarFieldEnum[]
 }
 
 /**
