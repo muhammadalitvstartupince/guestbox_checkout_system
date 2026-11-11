@@ -71,6 +71,7 @@ export default async function AdminPromoCodesPage() {
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
                   {promo.discountMode === "split" ? "Split" : (targetLabels[promo.appliesTo] ?? "Device")}
+                  {promo.perDevice && <span className="ml-1 rounded bg-amber-100 px-1 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">per device</span>}
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
                   {promo.appliesToCheckoutPage?.title ?? "All pages"}

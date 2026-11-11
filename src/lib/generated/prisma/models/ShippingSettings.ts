@@ -36,6 +36,7 @@ export type ShippingSettingsSumAggregateOutputType = {
 
 export type ShippingSettingsMinAggregateOutputType = {
   id: string | null
+  enabled: boolean | null
   warehouseName: string | null
   warehouseStreet: string | null
   warehouseCity: string | null
@@ -49,6 +50,7 @@ export type ShippingSettingsMinAggregateOutputType = {
 
 export type ShippingSettingsMaxAggregateOutputType = {
   id: string | null
+  enabled: boolean | null
   warehouseName: string | null
   warehouseStreet: string | null
   warehouseCity: string | null
@@ -62,6 +64,7 @@ export type ShippingSettingsMaxAggregateOutputType = {
 
 export type ShippingSettingsCountAggregateOutputType = {
   id: number
+  enabled: number
   warehouseName: number
   warehouseStreet: number
   warehouseCity: number
@@ -85,6 +88,7 @@ export type ShippingSettingsSumAggregateInputType = {
 
 export type ShippingSettingsMinAggregateInputType = {
   id?: true
+  enabled?: true
   warehouseName?: true
   warehouseStreet?: true
   warehouseCity?: true
@@ -98,6 +102,7 @@ export type ShippingSettingsMinAggregateInputType = {
 
 export type ShippingSettingsMaxAggregateInputType = {
   id?: true
+  enabled?: true
   warehouseName?: true
   warehouseStreet?: true
   warehouseCity?: true
@@ -111,6 +116,7 @@ export type ShippingSettingsMaxAggregateInputType = {
 
 export type ShippingSettingsCountAggregateInputType = {
   id?: true
+  enabled?: true
   warehouseName?: true
   warehouseStreet?: true
   warehouseCity?: true
@@ -211,6 +217,7 @@ export type ShippingSettingsGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type ShippingSettingsGroupByOutputType = {
   id: string
+  enabled: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -247,6 +254,7 @@ export type ShippingSettingsWhereInput = {
   OR?: Prisma.ShippingSettingsWhereInput[]
   NOT?: Prisma.ShippingSettingsWhereInput | Prisma.ShippingSettingsWhereInput[]
   id?: Prisma.UuidFilter<"ShippingSettings"> | string
+  enabled?: Prisma.BoolFilter<"ShippingSettings"> | boolean
   warehouseName?: Prisma.StringFilter<"ShippingSettings"> | string
   warehouseStreet?: Prisma.StringFilter<"ShippingSettings"> | string
   warehouseCity?: Prisma.StringFilter<"ShippingSettings"> | string
@@ -262,6 +270,7 @@ export type ShippingSettingsWhereInput = {
 
 export type ShippingSettingsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   warehouseName?: Prisma.SortOrder
   warehouseStreet?: Prisma.SortOrder
   warehouseCity?: Prisma.SortOrder
@@ -280,6 +289,7 @@ export type ShippingSettingsWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ShippingSettingsWhereInput | Prisma.ShippingSettingsWhereInput[]
   OR?: Prisma.ShippingSettingsWhereInput[]
   NOT?: Prisma.ShippingSettingsWhereInput | Prisma.ShippingSettingsWhereInput[]
+  enabled?: Prisma.BoolFilter<"ShippingSettings"> | boolean
   warehouseName?: Prisma.StringFilter<"ShippingSettings"> | string
   warehouseStreet?: Prisma.StringFilter<"ShippingSettings"> | string
   warehouseCity?: Prisma.StringFilter<"ShippingSettings"> | string
@@ -295,6 +305,7 @@ export type ShippingSettingsWhereUniqueInput = Prisma.AtLeast<{
 
 export type ShippingSettingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   warehouseName?: Prisma.SortOrder
   warehouseStreet?: Prisma.SortOrder
   warehouseCity?: Prisma.SortOrder
@@ -316,6 +327,7 @@ export type ShippingSettingsScalarWhereWithAggregatesInput = {
   OR?: Prisma.ShippingSettingsScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ShippingSettingsScalarWhereWithAggregatesInput | Prisma.ShippingSettingsScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"ShippingSettings"> | string
+  enabled?: Prisma.BoolWithAggregatesFilter<"ShippingSettings"> | boolean
   warehouseName?: Prisma.StringWithAggregatesFilter<"ShippingSettings"> | string
   warehouseStreet?: Prisma.StringWithAggregatesFilter<"ShippingSettings"> | string
   warehouseCity?: Prisma.StringWithAggregatesFilter<"ShippingSettings"> | string
@@ -329,6 +341,7 @@ export type ShippingSettingsScalarWhereWithAggregatesInput = {
 
 export type ShippingSettingsCreateInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -344,6 +357,7 @@ export type ShippingSettingsCreateInput = {
 
 export type ShippingSettingsUncheckedCreateInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -359,6 +373,7 @@ export type ShippingSettingsUncheckedCreateInput = {
 
 export type ShippingSettingsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -374,6 +389,7 @@ export type ShippingSettingsUpdateInput = {
 
 export type ShippingSettingsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -389,6 +405,7 @@ export type ShippingSettingsUncheckedUpdateInput = {
 
 export type ShippingSettingsCreateManyInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -402,6 +419,7 @@ export type ShippingSettingsCreateManyInput = {
 
 export type ShippingSettingsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -415,6 +433,7 @@ export type ShippingSettingsUpdateManyMutationInput = {
 
 export type ShippingSettingsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -428,6 +447,7 @@ export type ShippingSettingsUncheckedUpdateManyInput = {
 
 export type ShippingSettingsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   warehouseName?: Prisma.SortOrder
   warehouseStreet?: Prisma.SortOrder
   warehouseCity?: Prisma.SortOrder
@@ -445,6 +465,7 @@ export type ShippingSettingsAvgOrderByAggregateInput = {
 
 export type ShippingSettingsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   warehouseName?: Prisma.SortOrder
   warehouseStreet?: Prisma.SortOrder
   warehouseCity?: Prisma.SortOrder
@@ -458,6 +479,7 @@ export type ShippingSettingsMaxOrderByAggregateInput = {
 
 export type ShippingSettingsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   warehouseName?: Prisma.SortOrder
   warehouseStreet?: Prisma.SortOrder
   warehouseCity?: Prisma.SortOrder
@@ -508,6 +530,7 @@ export type ShippingSettingsUpdateOneRequiredWithoutWeightEntriesNestedInput = {
 
 export type ShippingSettingsCreateWithoutPackageTiersInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -522,6 +545,7 @@ export type ShippingSettingsCreateWithoutPackageTiersInput = {
 
 export type ShippingSettingsUncheckedCreateWithoutPackageTiersInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -552,6 +576,7 @@ export type ShippingSettingsUpdateToOneWithWhereWithoutPackageTiersInput = {
 
 export type ShippingSettingsUpdateWithoutPackageTiersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -566,6 +591,7 @@ export type ShippingSettingsUpdateWithoutPackageTiersInput = {
 
 export type ShippingSettingsUncheckedUpdateWithoutPackageTiersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -580,6 +606,7 @@ export type ShippingSettingsUncheckedUpdateWithoutPackageTiersInput = {
 
 export type ShippingSettingsCreateWithoutWeightEntriesInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -594,6 +621,7 @@ export type ShippingSettingsCreateWithoutWeightEntriesInput = {
 
 export type ShippingSettingsUncheckedCreateWithoutWeightEntriesInput = {
   id?: string
+  enabled?: boolean
   warehouseName: string
   warehouseStreet: string
   warehouseCity: string
@@ -624,6 +652,7 @@ export type ShippingSettingsUpdateToOneWithWhereWithoutWeightEntriesInput = {
 
 export type ShippingSettingsUpdateWithoutWeightEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -638,6 +667,7 @@ export type ShippingSettingsUpdateWithoutWeightEntriesInput = {
 
 export type ShippingSettingsUncheckedUpdateWithoutWeightEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   warehouseName?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseStreet?: Prisma.StringFieldUpdateOperationsInput | string
   warehouseCity?: Prisma.StringFieldUpdateOperationsInput | string
@@ -692,6 +722,7 @@ export type ShippingSettingsCountOutputTypeCountWeightEntriesArgs<ExtArgs extend
 
 export type ShippingSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  enabled?: boolean
   warehouseName?: boolean
   warehouseStreet?: boolean
   warehouseCity?: boolean
@@ -708,6 +739,7 @@ export type ShippingSettingsSelect<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type ShippingSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  enabled?: boolean
   warehouseName?: boolean
   warehouseStreet?: boolean
   warehouseCity?: boolean
@@ -721,6 +753,7 @@ export type ShippingSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type ShippingSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  enabled?: boolean
   warehouseName?: boolean
   warehouseStreet?: boolean
   warehouseCity?: boolean
@@ -734,6 +767,7 @@ export type ShippingSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type ShippingSettingsSelectScalar = {
   id?: boolean
+  enabled?: boolean
   warehouseName?: boolean
   warehouseStreet?: boolean
   warehouseCity?: boolean
@@ -745,7 +779,7 @@ export type ShippingSettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ShippingSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "warehouseName" | "warehouseStreet" | "warehouseCity" | "warehouseState" | "warehouseZip" | "warehouseCountry" | "warehousePhone" | "maxDevicesPerBox" | "updatedAt", ExtArgs["result"]["shippingSettings"]>
+export type ShippingSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "enabled" | "warehouseName" | "warehouseStreet" | "warehouseCity" | "warehouseState" | "warehouseZip" | "warehouseCountry" | "warehousePhone" | "maxDevicesPerBox" | "updatedAt", ExtArgs["result"]["shippingSettings"]>
 export type ShippingSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   packageTiers?: boolean | Prisma.ShippingSettings$packageTiersArgs<ExtArgs>
   weightEntries?: boolean | Prisma.ShippingSettings$weightEntriesArgs<ExtArgs>
@@ -762,6 +796,7 @@ export type $ShippingSettingsPayload<ExtArgs extends runtime.Types.Extensions.In
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    enabled: boolean
     warehouseName: string
     warehouseStreet: string
     warehouseCity: string
@@ -1197,6 +1232,7 @@ export interface Prisma__ShippingSettingsClient<T, Null = never, ExtArgs extends
  */
 export interface ShippingSettingsFieldRefs {
   readonly id: Prisma.FieldRef<"ShippingSettings", 'String'>
+  readonly enabled: Prisma.FieldRef<"ShippingSettings", 'Boolean'>
   readonly warehouseName: Prisma.FieldRef<"ShippingSettings", 'String'>
   readonly warehouseStreet: Prisma.FieldRef<"ShippingSettings", 'String'>
   readonly warehouseCity: Prisma.FieldRef<"ShippingSettings", 'String'>

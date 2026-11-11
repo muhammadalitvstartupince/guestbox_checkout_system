@@ -11,6 +11,7 @@ export interface SinglePromo {
   type: "percent" | "fixed";
   value: number;
   appliesTo: string;
+  perDevice: boolean;
 }
 
 export interface SplitPromo {
@@ -19,6 +20,7 @@ export interface SplitPromo {
   device: DiscountSlot | null;
   monthly: DiscountSlot | null;
   annual: DiscountSlot | null;
+  perDevice: boolean;
 }
 
 export type PromoInfo = SinglePromo | SplitPromo;
@@ -81,7 +83,7 @@ export async function validatePromoCode(checkoutPageId: string, rawCode: string)
         : null;
 
     const parts: string[] = [];
-    if (device) parts.push(formatSlot(device, "devices"));
+    if (device) parts.push(formatSlot(device, "devices") + (promoRow.perDevice && device.type === "fixed" ? "/each" : ""));
     if (monthly) parts.push(formatSlot(monthly, "monthly"));
     if (annual) parts.push(formatSlot(annual, "annual"));
     const discountLabel = parts.length > 0 ? parts.join(" + ") : "No discount configured";
@@ -89,7 +91,7 @@ export async function validatePromoCode(checkoutPageId: string, rawCode: string)
     return {
       valid: true,
       message: `Valid — ${discountLabel}`,
-      promo: { id: promoRow.id, mode: "split", device, monthly, annual },
+      promo: { id: promoRow.id, mode: "split", device, monthly, annual, perDevice: promoRow.perDevice },
     };
   }
 
@@ -104,14 +106,15 @@ export async function validatePromoCode(checkoutPageId: string, rawCode: string)
     all: " (device + plan)",
   };
   const targetLabel = targetLabels[promoRow.appliesTo] ?? "";
+  const perDeviceSuffix = promoRow.perDevice && promoRow.discountType === "fixed" ? " per device" : "";
   const discountLabel =
     promoRow.discountType === "percent"
       ? `${promoRow.discountValue}% off${targetLabel}`
-      : `$${(promoRow.discountValue / 100).toFixed(2)} off${targetLabel}`;
+      : `$${(promoRow.discountValue / 100).toFixed(2)} off${targetLabel}${perDeviceSuffix}`;
 
   return {
     valid: true,
     message: `Valid — ${discountLabel}`,
-    promo: { id: promoRow.id, mode: "single", type: promoRow.discountType, value: promoRow.discountValue, appliesTo: promoRow.appliesTo },
+    promo: { id: promoRow.id, mode: "single", type: promoRow.discountType, value: promoRow.discountValue, appliesTo: promoRow.appliesTo, perDevice: promoRow.perDevice },
   };
 }

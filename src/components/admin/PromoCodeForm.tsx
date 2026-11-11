@@ -104,6 +104,11 @@ export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; 
             <DiscountSlotRow prefix="device" label="Device" />
             <DiscountSlotRow prefix="monthly" label="Monthly Plan" />
             <DiscountSlotRow prefix="annual" label="Annual Plan" />
+            <label className="flex items-center gap-2 pt-1 text-sm text-zinc-700 dark:text-zinc-300">
+              <input type="checkbox" name="perDevice" value="true" className="rounded border-zinc-300 dark:border-zinc-600" />
+              Per device / Per plan
+              <span className="text-xs text-zinc-400 dark:text-zinc-500">— fixed discount × quantity instead of flat total</span>
+            </label>
           </div>
         )}
       </div>
@@ -121,6 +126,15 @@ export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; 
               <option value="monthly_annual">Monthly + Annual</option>
               <option value="all">All (Device + Plan)</option>
             </select>
+          </div>
+        )}
+        {mode === "single" && (
+          <div className="flex items-end pb-1">
+            <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+              <input type="checkbox" name="perDevice" value="true" className="rounded border-zinc-300 dark:border-zinc-600" />
+              Per device / Per plan
+              <span className="text-xs text-zinc-400 dark:text-zinc-500">— fixed × qty</span>
+            </label>
           </div>
         )}
         <div>

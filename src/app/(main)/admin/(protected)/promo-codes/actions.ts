@@ -49,6 +49,7 @@ export async function createPromoCode(
   await verifyAdminSession();
 
   const discountMode = formData.get("discountMode")?.toString() || "single";
+  const perDevice = formData.get("perDevice") === "true";
 
   const baseParsed = baseFields.safeParse({
     code: formData.get("code"),
@@ -89,6 +90,7 @@ export async function createPromoCode(
         discountType: "fixed", // placeholder for required column
         discountValue: 0,
         appliesTo: "device",
+        perDevice,
         deviceDiscountType: deviceSlot?.type ?? null,
         deviceDiscountValue: deviceSlot?.value ?? null,
         monthlyDiscountType: monthlySlot?.type ?? null,
@@ -128,6 +130,7 @@ export async function createPromoCode(
       discountType: single.discountType,
       discountValue: single.discountValue,
       appliesTo: single.appliesTo,
+      perDevice,
       appliesToCheckoutPageId: base.appliesToCheckoutPageId || null,
       maxRedemptions: base.maxRedemptions,
       expiresAt: base.expiresAt ? new Date(base.expiresAt) : null,

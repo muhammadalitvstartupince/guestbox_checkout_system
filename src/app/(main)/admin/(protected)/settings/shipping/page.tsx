@@ -15,6 +15,7 @@ export default async function ShippingSettingsPage() {
   return (
     <div className="max-w-4xl space-y-6">
       <ShippingSettingsForm
+        enabled={settings?.enabled ?? false}
         warehouse={{
           warehouseName: settings?.warehouseName ?? "",
           warehouseStreet: settings?.warehouseStreet ?? "",
