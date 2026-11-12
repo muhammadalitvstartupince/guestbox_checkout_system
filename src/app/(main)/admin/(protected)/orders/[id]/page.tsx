@@ -271,7 +271,9 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               value={
                 order.shippingRateCents
                   ? `${formatCents(order.shippingRateCents)} — ${order.shippingCarrier ?? ""} ${order.shippingService ?? ""}${order.shippingEstDays ? ` (~${order.shippingEstDays} days)` : ""}`
-                  : "FREE (domestic)"
+                  : order.shippingCarrier
+                    ? `FREE (domestic) — ${order.shippingCarrier} ${order.shippingService ?? ""}${order.shippingEstDays ? ` (~${order.shippingEstDays} days)` : ""}${order.shippingQuotedCents ? ` (quoted ${formatCents(order.shippingQuotedCents)})` : ""}`
+                    : "FREE (domestic)"
               }
             />
           </dl>

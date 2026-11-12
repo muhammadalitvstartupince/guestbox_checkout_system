@@ -23,6 +23,8 @@ export interface BillingInfoState {
   fieldErrors?: Record<string, string[]>;
   /** True when shipping country is international (needs Shippo rate selection). */
   isInternational?: boolean;
+  /** True when shipping settings are enabled (rates will be fetched for all addresses). */
+  shippingEnabled?: boolean;
 }
 
 export const initialBillingInfoState: BillingInfoState = { status: "idle" };
