@@ -607,7 +607,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
           {hasTieredPlans
             ? " | First Month FREE"
-            : selectedPlan ? (selectedPlan.interval === "monthly" ? ` | First Month FREE, then ${formatWholeDollars(selectedPlan.priceCents)}/month` : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing`) : ""}
+            : selectedPlan ? (selectedPlan.interval === "monthly" ? " | First Month FREE" : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing`) : ""}
         </p>
         <div className="-mt-1 flex items-center justify-evenly rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 px-2 py-2 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
           <span className="flex flex-col items-center gap-0.5">
@@ -1102,9 +1102,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
               {selectedTierInterval === "annually"
                 ? "✓ Annual plans are billed upfront to secure the discounted rates."
-                : selectedTier?.chargeAtCheckout
-                  ? `✓ Monthly billing starts at ${formatWholeDollars(tierMonthlyPriceCents)}/device/month.`
-                  : `✓ First month is free, then ${formatWholeDollars(tierMonthlyPriceCents)}/device/month.`}
+                : "✓ Your first month is FREE!"}
             </span>
           </div>
 
@@ -1332,7 +1330,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
           {selectedPlan?.interval === "annually"
             ? "✓ Annual plans are billed upfront to secure the discounted rates."
-            : `✓ First month is free, then ${formatWholeDollars(selectedPlan?.priceCents ?? 0)}/month.`}
+            : "✓ Your first month is FREE!"}
         </span>
         </div>
 
