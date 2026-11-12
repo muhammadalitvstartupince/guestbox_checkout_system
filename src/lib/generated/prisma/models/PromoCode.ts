@@ -63,6 +63,7 @@ export type PromoCodeMinAggregateOutputType = {
   timesRedeemed: number | null
   startsAt: Date | null
   expiresAt: Date | null
+  timezone: string | null
   isActive: boolean | null
   createdAt: Date | null
 }
@@ -86,6 +87,7 @@ export type PromoCodeMaxAggregateOutputType = {
   timesRedeemed: number | null
   startsAt: Date | null
   expiresAt: Date | null
+  timezone: string | null
   isActive: boolean | null
   createdAt: Date | null
 }
@@ -109,6 +111,7 @@ export type PromoCodeCountAggregateOutputType = {
   timesRedeemed: number
   startsAt: number
   expiresAt: number
+  timezone: number
   isActive: number
   createdAt: number
   _all: number
@@ -152,6 +155,7 @@ export type PromoCodeMinAggregateInputType = {
   timesRedeemed?: true
   startsAt?: true
   expiresAt?: true
+  timezone?: true
   isActive?: true
   createdAt?: true
 }
@@ -175,6 +179,7 @@ export type PromoCodeMaxAggregateInputType = {
   timesRedeemed?: true
   startsAt?: true
   expiresAt?: true
+  timezone?: true
   isActive?: true
   createdAt?: true
 }
@@ -198,6 +203,7 @@ export type PromoCodeCountAggregateInputType = {
   timesRedeemed?: true
   startsAt?: true
   expiresAt?: true
+  timezone?: true
   isActive?: true
   createdAt?: true
   _all?: true
@@ -308,6 +314,7 @@ export type PromoCodeGroupByOutputType = {
   timesRedeemed: number
   startsAt: Date | null
   expiresAt: Date | null
+  timezone: string
   isActive: boolean
   createdAt: Date
   _count: PromoCodeCountAggregateOutputType | null
@@ -354,6 +361,7 @@ export type PromoCodeWhereInput = {
   timesRedeemed?: Prisma.IntFilter<"PromoCode"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"PromoCode"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"PromoCode"> | Date | string | null
+  timezone?: Prisma.StringFilter<"PromoCode"> | string
   isActive?: Prisma.BoolFilter<"PromoCode"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PromoCode"> | Date | string
   appliesToCheckoutPage?: Prisma.XOR<Prisma.CheckoutPageNullableScalarRelationFilter, Prisma.CheckoutPageWhereInput> | null
@@ -380,6 +388,7 @@ export type PromoCodeOrderByWithRelationInput = {
   timesRedeemed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   appliesToCheckoutPage?: Prisma.CheckoutPageOrderByWithRelationInput
@@ -409,6 +418,7 @@ export type PromoCodeWhereUniqueInput = Prisma.AtLeast<{
   timesRedeemed?: Prisma.IntFilter<"PromoCode"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"PromoCode"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"PromoCode"> | Date | string | null
+  timezone?: Prisma.StringFilter<"PromoCode"> | string
   isActive?: Prisma.BoolFilter<"PromoCode"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PromoCode"> | Date | string
   appliesToCheckoutPage?: Prisma.XOR<Prisma.CheckoutPageNullableScalarRelationFilter, Prisma.CheckoutPageWhereInput> | null
@@ -435,6 +445,7 @@ export type PromoCodeOrderByWithAggregationInput = {
   timesRedeemed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PromoCodeCountOrderByAggregateInput
@@ -466,6 +477,7 @@ export type PromoCodeScalarWhereWithAggregatesInput = {
   timesRedeemed?: Prisma.IntWithAggregatesFilter<"PromoCode"> | number
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PromoCode"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PromoCode"> | Date | string | null
+  timezone?: Prisma.StringWithAggregatesFilter<"PromoCode"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"PromoCode"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PromoCode"> | Date | string
 }
@@ -488,6 +500,7 @@ export type PromoCodeCreateInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   appliesToCheckoutPage?: Prisma.CheckoutPageCreateNestedOneWithoutPromoCodesInput
@@ -514,6 +527,7 @@ export type PromoCodeUncheckedCreateInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromoCodeInput
@@ -538,6 +552,7 @@ export type PromoCodeUpdateInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appliesToCheckoutPage?: Prisma.CheckoutPageUpdateOneWithoutPromoCodesNestedInput
@@ -564,6 +579,7 @@ export type PromoCodeUncheckedUpdateInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPromoCodeNestedInput
@@ -589,6 +605,7 @@ export type PromoCodeCreateManyInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -611,6 +628,7 @@ export type PromoCodeUpdateManyMutationInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -634,6 +652,7 @@ export type PromoCodeUncheckedUpdateManyInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -667,6 +686,7 @@ export type PromoCodeCountOrderByAggregateInput = {
   timesRedeemed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -699,6 +719,7 @@ export type PromoCodeMaxOrderByAggregateInput = {
   timesRedeemed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -722,6 +743,7 @@ export type PromoCodeMinOrderByAggregateInput = {
   timesRedeemed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -855,6 +877,7 @@ export type PromoCodeCreateWithoutAppliesToCheckoutPageInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   orders?: Prisma.OrderCreateNestedManyWithoutPromoCodeInput
@@ -879,6 +902,7 @@ export type PromoCodeUncheckedCreateWithoutAppliesToCheckoutPageInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromoCodeInput
@@ -933,6 +957,7 @@ export type PromoCodeScalarWhereInput = {
   timesRedeemed?: Prisma.IntFilter<"PromoCode"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"PromoCode"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"PromoCode"> | Date | string | null
+  timezone?: Prisma.StringFilter<"PromoCode"> | string
   isActive?: Prisma.BoolFilter<"PromoCode"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PromoCode"> | Date | string
 }
@@ -955,6 +980,7 @@ export type PromoCodeCreateWithoutOrdersInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   appliesToCheckoutPage?: Prisma.CheckoutPageCreateNestedOneWithoutPromoCodesInput
@@ -980,6 +1006,7 @@ export type PromoCodeUncheckedCreateWithoutOrdersInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutPromoCodeInput
@@ -1019,6 +1046,7 @@ export type PromoCodeUpdateWithoutOrdersInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appliesToCheckoutPage?: Prisma.CheckoutPageUpdateOneWithoutPromoCodesNestedInput
@@ -1044,6 +1072,7 @@ export type PromoCodeUncheckedUpdateWithoutOrdersInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   promotions?: Prisma.PromotionUncheckedUpdateManyWithoutPromoCodeNestedInput
@@ -1067,6 +1096,7 @@ export type PromoCodeCreateWithoutPromotionsInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   appliesToCheckoutPage?: Prisma.CheckoutPageCreateNestedOneWithoutPromoCodesInput
@@ -1092,6 +1122,7 @@ export type PromoCodeUncheckedCreateWithoutPromotionsInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPromoCodeInput
@@ -1131,6 +1162,7 @@ export type PromoCodeUpdateWithoutPromotionsInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appliesToCheckoutPage?: Prisma.CheckoutPageUpdateOneWithoutPromoCodesNestedInput
@@ -1156,6 +1188,7 @@ export type PromoCodeUncheckedUpdateWithoutPromotionsInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPromoCodeNestedInput
@@ -1179,6 +1212,7 @@ export type PromoCodeCreateManyAppliesToCheckoutPageInput = {
   timesRedeemed?: number
   startsAt?: Date | string | null
   expiresAt?: Date | string | null
+  timezone?: string
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -1201,6 +1235,7 @@ export type PromoCodeUpdateWithoutAppliesToCheckoutPageInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUpdateManyWithoutPromoCodeNestedInput
@@ -1225,6 +1260,7 @@ export type PromoCodeUncheckedUpdateWithoutAppliesToCheckoutPageInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPromoCodeNestedInput
@@ -1249,6 +1285,7 @@ export type PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageInput = {
   timesRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1312,6 +1349,7 @@ export type PromoCodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   timesRedeemed?: boolean
   startsAt?: boolean
   expiresAt?: boolean
+  timezone?: boolean
   isActive?: boolean
   createdAt?: boolean
   appliesToCheckoutPage?: boolean | Prisma.PromoCode$appliesToCheckoutPageArgs<ExtArgs>
@@ -1339,6 +1377,7 @@ export type PromoCodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   timesRedeemed?: boolean
   startsAt?: boolean
   expiresAt?: boolean
+  timezone?: boolean
   isActive?: boolean
   createdAt?: boolean
   appliesToCheckoutPage?: boolean | Prisma.PromoCode$appliesToCheckoutPageArgs<ExtArgs>
@@ -1363,6 +1402,7 @@ export type PromoCodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   timesRedeemed?: boolean
   startsAt?: boolean
   expiresAt?: boolean
+  timezone?: boolean
   isActive?: boolean
   createdAt?: boolean
   appliesToCheckoutPage?: boolean | Prisma.PromoCode$appliesToCheckoutPageArgs<ExtArgs>
@@ -1387,11 +1427,12 @@ export type PromoCodeSelectScalar = {
   timesRedeemed?: boolean
   startsAt?: boolean
   expiresAt?: boolean
+  timezone?: boolean
   isActive?: boolean
   createdAt?: boolean
 }
 
-export type PromoCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "discountType" | "discountValue" | "appliesTo" | "discountMode" | "deviceDiscountType" | "deviceDiscountValue" | "monthlyDiscountType" | "monthlyDiscountValue" | "annualDiscountType" | "annualDiscountValue" | "perDevice" | "appliesToCheckoutPageId" | "maxRedemptions" | "timesRedeemed" | "startsAt" | "expiresAt" | "isActive" | "createdAt", ExtArgs["result"]["promoCode"]>
+export type PromoCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "discountType" | "discountValue" | "appliesTo" | "discountMode" | "deviceDiscountType" | "deviceDiscountValue" | "monthlyDiscountType" | "monthlyDiscountValue" | "annualDiscountType" | "annualDiscountValue" | "perDevice" | "appliesToCheckoutPageId" | "maxRedemptions" | "timesRedeemed" | "startsAt" | "expiresAt" | "timezone" | "isActive" | "createdAt", ExtArgs["result"]["promoCode"]>
 export type PromoCodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appliesToCheckoutPage?: boolean | Prisma.PromoCode$appliesToCheckoutPageArgs<ExtArgs>
   orders?: boolean | Prisma.PromoCode$ordersArgs<ExtArgs>
@@ -1431,6 +1472,7 @@ export type $PromoCodePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     timesRedeemed: number
     startsAt: Date | null
     expiresAt: Date | null
+    timezone: string
     isActive: boolean
     createdAt: Date
   }, ExtArgs["result"]["promoCode"]>
@@ -1877,6 +1919,7 @@ export interface PromoCodeFieldRefs {
   readonly timesRedeemed: Prisma.FieldRef<"PromoCode", 'Int'>
   readonly startsAt: Prisma.FieldRef<"PromoCode", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"PromoCode", 'DateTime'>
+  readonly timezone: Prisma.FieldRef<"PromoCode", 'String'>
   readonly isActive: Prisma.FieldRef<"PromoCode", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PromoCode", 'DateTime'>
 }

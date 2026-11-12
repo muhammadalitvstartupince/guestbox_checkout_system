@@ -14,7 +14,31 @@ const baseFields = z.object({
   appliesToCheckoutPageId: z.string().optional(),
   maxRedemptions: z.number().int().min(1).nullable(),
   expiresAt: z.string().optional(),
+  timezone: z.string().min(1).default("UTC"),
 });
+
+/** Convert a naive local datetime string + IANA timezone to a UTC Date. */
+function localToUtc(naiveDatetime: string, timezone: string): Date {
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const asUtc = new Date(`${naiveDatetime}:00Z`);
+  const parts = Object.fromEntries(
+    fmt.formatToParts(asUtc).map((p) => [p.type, p.value]),
+  );
+  const inTz = new Date(
+    `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}Z`,
+  );
+  const offsetMs = inTz.getTime() - asUtc.getTime();
+  return new Date(asUtc.getTime() - offsetMs);
+}
 
 const singleFields = z.object({
   discountType: discountTypeEnum,
@@ -57,6 +81,7 @@ export async function createPromoCode(
     appliesToCheckoutPageId: formData.get("appliesToCheckoutPageId") || undefined,
     maxRedemptions: (() => { const v = formData.get("maxRedemptions")?.toString().trim(); return v ? Number(v) : null; })(),
     expiresAt: formData.get("expiresAt")?.toString().trim() || undefined,
+    timezone: formData.get("timezone")?.toString().trim() || "UTC",
   });
 
   if (!baseParsed.success) {
@@ -99,7 +124,8 @@ export async function createPromoCode(
         annualDiscountValue: annualSlot?.value ?? null,
         appliesToCheckoutPageId: base.appliesToCheckoutPageId || null,
         maxRedemptions: base.maxRedemptions,
-        expiresAt: base.expiresAt ? new Date(base.expiresAt) : null,
+        expiresAt: base.expiresAt ? localToUtc(base.expiresAt, base.timezone) : null,
+        timezone: base.timezone,
         isActive: true,
       },
     });
@@ -133,7 +159,8 @@ export async function createPromoCode(
       perDevice,
       appliesToCheckoutPageId: base.appliesToCheckoutPageId || null,
       maxRedemptions: base.maxRedemptions,
-      expiresAt: base.expiresAt ? new Date(base.expiresAt) : null,
+      expiresAt: base.expiresAt ? localToUtc(base.expiresAt, base.timezone) : null,
+      timezone: base.timezone,
       isActive: true,
     },
   });

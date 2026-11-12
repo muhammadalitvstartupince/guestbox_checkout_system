@@ -169,6 +169,14 @@ function savingsPercent(tierPrice: number, basePrice: number): number {
   return Math.round(((basePrice - tierPrice) / basePrice) * 100);
 }
 
+/** Given a plan tier and quantity, return the monthly price in cents. */
+function getTierMonthlyPrice(tier: PlanTierView, qty: number): number {
+  for (const p of tier.prices) {
+    if (qty >= p.minQty && (p.maxQty == null || qty <= p.maxQty)) return p.monthlyPriceCents;
+  }
+  return tier.prices[0]?.monthlyPriceCents ?? 0;
+}
+
 export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null }) {
   const boundInitiate = initiateOrder.bind(null, checkoutPage.slug);
   const [initState, initFormAction, initPending] = useActionState(boundInitiate, initialInitiateOrderState);
@@ -187,7 +195,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     initialCheckoutFormState,
   );
 
-  const hasPlans = checkoutPage.billingPlans.length > 0;
+  const hasTieredPlans = checkoutPage.tieredPlansEnabled && checkoutPage.planTiers.length > 0;
+  const hasPlans = checkoutPage.billingPlans.length > 0 || hasTieredPlans;
 
   // --- New 3-step wizard: QTY → DETAILS → PAYMENT ---
   // DETAILS has sub-pages: personal info, address, billing cycle
@@ -275,6 +284,12 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const [selectedPlanId, setSelectedPlanId] = useState(defaultPlan?.id ?? "");
   const selectedPlan = checkoutPage.billingPlans.find((p) => p.id === selectedPlanId) ?? defaultPlan;
 
+  // Tiered plan state
+  const defaultTier = hasTieredPlans ? (checkoutPage.planTiers.find((t) => t.isDefault) ?? checkoutPage.planTiers[0]) : null;
+  const [selectedTierId, setSelectedTierId] = useState(defaultTier?.id ?? "");
+  const [selectedTierInterval, setSelectedTierInterval] = useState<"monthly" | "annually">("monthly");
+  const selectedTier = hasTieredPlans ? (checkoutPage.planTiers.find((t) => t.id === selectedTierId) ?? defaultTier) : null;
+
   const [profileForm, setProfileForm] = useState({
     firstName: "",
     lastName: "",
@@ -351,20 +366,32 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const effectiveBasePriceCents = isPromoActive
     ? activePromotion.promoPriceCents
     : upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
-  // Only charge the plan price at checkout if chargeAtCheckout is true.
-  // Otherwise it's recurring-only (starts at device activation).
-  const planListingMultiplier = hasPlans && selectedPlan
-    ? (selectedPlan.interval === "annually" ? listingQty : quantity)
-    : 1;
-  const effectiveRecurringPriceCents = hasPlans && selectedPlan
-    ? (selectedPlan.chargeAtCheckout ? selectedPlan.priceCents * planListingMultiplier : 0)
-    : upgradeSelected && checkoutPage.upgrade
-      ? checkoutPage.upgrade.recurringPriceCents
-      : checkoutPage.recurringPriceCents;
-  // The plan price for display (always shown, regardless of chargeAtCheckout)
-  const displayRecurringPriceCents = hasPlans && selectedPlan
-    ? selectedPlan.priceCents * planListingMultiplier
-    : effectiveRecurringPriceCents;
+  // Tiered plan pricing
+  const tierMonthlyPriceCents = hasTieredPlans && selectedTier ? getTierMonthlyPrice(selectedTier, quantity) : 0;
+  const tierAnnualPerListing = hasTieredPlans && selectedTier
+    ? Math.round(tierMonthlyPriceCents * 12 * (1 - selectedTier.annualDiscountPercent / 100))
+    : 0;
+
+  // Unified: whether recurring is charged at checkout
+  // Tiered plans: only annual is charged upfront, monthly is never charged at checkout
+  const chargeRecurringNow = hasTieredPlans
+    ? selectedTierInterval === "annually"
+    : (selectedPlan?.chargeAtCheckout ?? false);
+
+  const planListingMultiplier = hasTieredPlans
+    ? (selectedTierInterval === "annually" ? listingQty : quantity)
+    : hasPlans && selectedPlan
+      ? (selectedPlan.interval === "annually" ? listingQty : quantity)
+      : 1;
+
+  // The plan price for display / promo calc (always the full recurring amount)
+  const displayRecurringPriceCents = hasTieredPlans
+    ? (selectedTierInterval === "annually" ? tierAnnualPerListing * listingQty : tierMonthlyPriceCents * quantity)
+    : hasPlans && selectedPlan
+      ? selectedPlan.priceCents * planListingMultiplier
+      : upgradeSelected && checkoutPage.upgrade
+        ? checkoutPage.upgrade.recurringPriceCents
+        : checkoutPage.recurringPriceCents;
 
   const selectedAddons = useMemo(
     () => checkoutPage.addons.filter((a) => selectedAddonIds.includes(a.id)),
@@ -372,7 +399,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   );
 
   const appliedPromo = promoCheck.status === "valid" ? (promoCheck.discount ?? null) : null;
-  const selectedBillingInterval = selectedPlan?.interval ?? null;
+  const selectedBillingInterval = hasTieredPlans ? selectedTierInterval : (selectedPlan?.interval ?? null);
   const promoForCalc = appliedPromo
     ? appliedPromo.mode === "split"
       ? { mode: "split" as const, device: appliedPromo.device ?? null, monthly: appliedPromo.monthly ?? null, annual: appliedPromo.annual ?? null, perDevice: appliedPromo.perDevice }
@@ -401,7 +428,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
     if (appliedPromo.mode === "split") {
       const parts: string[] = [];
-      if (appliedPromo.device) parts.push(`${fmt(appliedPromo.device.type, appliedPromo.device.value)} off devices`);
+      if (appliedPromo.device) parts.push(`${fmt(appliedPromo.device.type, appliedPromo.device.value)} off device`);
       if (interval === "monthly" && appliedPromo.monthly) parts.push(`${fmt(appliedPromo.monthly.type, appliedPromo.monthly.value)} off monthly`);
       if (interval === "annual" && appliedPromo.annual) parts.push(`${fmt(appliedPromo.annual.type, appliedPromo.annual.value)} off annual`);
       return parts.length > 0 ? `Valid — ${parts.join(" + ")}` : "Valid";
@@ -414,7 +441,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     const targetsAnnual = ["annual", "device_annual", "monthly_annual", "all"].includes(appliesTo) && interval === "annual";
     const label = fmt(appliedPromo.type!, appliedPromo.value!);
     const targets: string[] = [];
-    if (targetsDevice) targets.push("devices");
+    if (targetsDevice) targets.push("device");
     if (targetsMonthly) targets.push("monthly");
     if (targetsAnnual) targets.push("annual");
     return targets.length > 0 ? `Valid — ${label} off ${targets.join(" + ")}` : "Valid";
@@ -432,7 +459,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     });
   }
 
-  const recurringLabel = selectedPlan?.interval === "annually" ? "yr" : "mo";
+  const recurringLabel = (hasTieredPlans ? selectedTierInterval : selectedPlan?.interval) === "annually" ? "yr" : "mo";
 
   // =====================================================================
   // STEP 1: QTY
@@ -578,7 +605,9 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         <p className="-mt-4 text-center text-sm text-zinc-500">
           {formatWholeDollars(promoUnitPrice)} per device
           {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
-          {selectedPlan ? (selectedPlan.interval === "monthly" ? ` | First Month FREE, then ${formatWholeDollars(selectedPlan.priceCents)}/month` : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing`) : ""}
+          {hasTieredPlans
+            ? " | First Month FREE"
+            : selectedPlan ? (selectedPlan.interval === "monthly" ? ` | First Month FREE, then ${formatWholeDollars(selectedPlan.priceCents)}/month` : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing`) : ""}
         </p>
         <div className="-mt-1 flex items-center justify-evenly rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 px-2 py-2 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
           <span className="flex flex-col items-center gap-0.5">
@@ -883,6 +912,223 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
       return null;
     }
 
+    // --- Tiered plans flow ---
+    if (hasTieredPlans) {
+      return (
+        <div className="space-y-5">
+          <div>
+            <p className="text-lg font-bold text-zinc-900">Choose Your Plan</p>
+          </div>
+
+          {/* Tier selector — single row */}
+          <div className="overflow-hidden rounded-xl sm:rounded-2xl border-2 border-zinc-200 shadow-sm">
+            <div className="flex">
+              {checkoutPage.planTiers.map((tier, idx) => {
+                const isSelected = selectedTierId === tier.id;
+                const monthlyPrice = getTierMonthlyPrice(tier, quantity);
+                return (
+                  <button
+                    key={tier.id}
+                    type="button"
+                    onClick={() => setSelectedTierId(tier.id)}
+                    className={`relative flex flex-1 cursor-pointer flex-col items-center gap-0.5 sm:gap-1 pb-2.5 pt-3 sm:pb-4 sm:pt-5 transition-all duration-200 ${
+                      idx > 0 ? "border-l border-zinc-200" : ""
+                    } ${isSelected ? "bg-white" : "bg-white hover:bg-zinc-50"}`}
+                  >
+                    {/* Active top accent bar */}
+                    <div
+                      className={`absolute inset-x-0 top-0 transition-all duration-200 ${isSelected ? "h-1 opacity-100" : "h-0 opacity-0"}`}
+                      style={{ backgroundColor: accentColor }}
+                    />
+                    <span className={`mb-0.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full border-2 transition-all ${
+                      isSelected ? "border-blue-500 bg-blue-500" : "border-zinc-300"
+                    }`}>
+                      {isSelected && <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-white" />}
+                    </span>
+                    <span className={`text-[10px] sm:text-xs font-extrabold uppercase tracking-wider sm:tracking-widest transition-colors ${
+                      isSelected ? "text-zinc-900" : "text-zinc-500"
+                    }`}>{tier.name}</span>
+                    <div className="flex items-baseline">
+                      <span className={`text-lg sm:text-2xl font-black transition-colors ${
+                        isSelected ? "text-zinc-900" : "text-zinc-700"
+                      }`}>{formatWholeDollars(monthlyPrice)}</span>
+                      <span className="text-[10px] sm:text-xs font-medium text-zinc-400">/mo</span>
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-medium text-zinc-400">(per property/unit)</span>
+                    <input type="radio" name="planTier" checked={isSelected} onChange={() => setSelectedTierId(tier.id)} className="sr-only" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Monthly / Annual toggle */}
+          {selectedTier && (() => {
+            const moTotal = tierMonthlyPriceCents * quantity;
+            const yrPerListing = tierAnnualPerListing;
+            const yrFullPerListing = tierMonthlyPriceCents * 12;
+            const savePct = selectedTier.annualDiscountPercent;
+            return (
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-zinc-700">Billing Cycle</p>
+
+                {/* Monthly option */}
+                <label
+                  className={`relative block cursor-pointer rounded-2xl border-2 p-3 sm:p-5 transition-all ${
+                    selectedTierInterval === "monthly"
+                      ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
+                      : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
+                  }`}
+                  onClick={() => setSelectedTierInterval("monthly")}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                      selectedTierInterval === "monthly" ? "border-blue-500 bg-blue-500" : "border-zinc-300"
+                    }`}>
+                      {selectedTierInterval === "monthly" && <Check className="h-3 w-3 text-white" />}
+                    </span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-base font-bold text-zinc-900">Monthly</span>
+                        <div className="text-right">
+                          <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(moTotal)}</span>
+                          <span className="text-sm text-zinc-400">/mo</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {quantity > 1 && (
+                    <div className="mt-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-500">
+                      {formatWholeDollars(tierMonthlyPriceCents)}/mo × {quantity} devices = {formatWholeDollars(moTotal)}/mo
+                    </div>
+                  )}
+                  <div className="mt-1.5 space-y-0.5">
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                      <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                      <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple devices per listing
+                    </div>
+                  </div>
+                </label>
+
+                {/* Annual option (only if discount > 0) */}
+                {savePct > 0 && (
+                  <div className="relative">
+                    <label
+                      className={`relative block cursor-pointer rounded-2xl border-2 p-3 sm:p-5 transition-all ${
+                        selectedTierInterval === "annually"
+                          ? "border-blue-500 bg-blue-50/40 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20"
+                          : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-sm"
+                      }`}
+                      onClick={() => setSelectedTierInterval("annually")}
+                    >
+                      <div className="mb-3 flex flex-col gap-1.5 rounded-xl border border-dashed border-emerald-300 bg-emerald-50/50 px-2 py-1.5 sm:flex-row sm:items-center sm:gap-2 sm:px-2.5">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="h-5 w-5 shrink-0 text-emerald-600" />
+                          <span className="text-sm font-bold text-zinc-900">Limited Time Offer</span>
+                        </div>
+                        <span
+                          className="inline-block whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs leading-snug font-extrabold tracking-wide text-white uppercase shadow-lg sm:rounded-full sm:text-[11px] sm:px-3.5 sm:py-1"
+                          style={{ backgroundColor: accentColor }}
+                        >
+                          OPTIONAL — <span className="text-yellow-300">SAVE {savePct}%</span> ANNUALLY!
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                          selectedTierInterval === "annually" ? "border-blue-500 bg-blue-500" : "border-zinc-300"
+                        }`}>
+                          {selectedTierInterval === "annually" && <Check className="h-3 w-3 text-white" />}
+                        </span>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-base font-bold text-zinc-900">Annual</span>
+                            <div className="translate-y-2.5 text-right">
+                              <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(yrPerListing)}</span>
+                              <span className="text-sm text-zinc-400">/year</span>
+                              <div className="text-xs text-zinc-400 line-through">{formatWholeDollars(yrFullPerListing)}/year</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-500">
+                        {formatWholeDollars(tierMonthlyPriceCents)}/mo × 12 − {savePct}% = {formatWholeDollars(yrPerListing)}/yr per listing
+                      </div>
+                      <div className="-mt-0.5 space-y-0.5">
+                        <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Priority support
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Save {formatWholeDollars(yrFullPerListing - yrPerListing)}/year
+                          <span className="ml-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-extrabold text-emerald-600">
+                            {formatWholeDollars(yrFullPerListing - yrPerListing)} OFF
+                          </span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Listing qty selector for annual */}
+          {selectedTierInterval === "annually" && quantity > 1 && selectedTier && (() => {
+            const perListing = tierAnnualPerListing;
+            const listingTotal = perListing * listingQty;
+            return (
+              <div className="rounded-2xl border-2 border-zinc-200 bg-gradient-to-b from-white to-zinc-50/80 p-5">
+                <p className="text-center text-base font-bold text-zinc-900">How many listings do you want to manage?</p>
+                <p className="mt-1 text-center text-xs text-zinc-500">Each listing is billed at {formatWholeDollars(perListing)}/year</p>
+                <div className="mt-4 flex items-center justify-center gap-0">
+                  <button type="button" disabled={listingQty <= 1} onClick={() => setListingQty((q) => Math.max(1, q - 1))} className="flex h-12 w-14 items-center justify-center rounded-l-full bg-red-200 text-red-700 transition-colors hover:bg-red-300 disabled:opacity-40">
+                    <Minus className="h-5 w-5" />
+                  </button>
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" value={listingQty} onChange={(e) => { const v = parseInt(e.target.value, 10); if (!isNaN(v) && v >= 1) setListingQty(Math.min(v, quantity)); }} className="h-12 w-20 border-y border-zinc-300 bg-white text-center text-lg font-bold text-zinc-900 focus:outline-none" />
+                  <button type="button" disabled={listingQty >= quantity} onClick={() => setListingQty((q) => Math.min(q + 1, quantity))} className="flex h-12 w-14 items-center justify-center rounded-r-full bg-emerald-400 text-white transition-colors hover:bg-emerald-500 disabled:opacity-40">
+                    <Plus className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="mt-4 flex items-center justify-between rounded-xl bg-zinc-100 px-4 py-2.5">
+                  <span className="text-sm text-zinc-600">{listingQty} {listingQty === 1 ? "listing" : "listings"} × {formatWholeDollars(perListing)}/yr</span>
+                  <span className="text-base font-bold text-zinc-900">{formatWholeDollars(listingTotal)}/yr</span>
+                </div>
+              </div>
+            );
+          })()}
+
+          <div className="text-center">
+            <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
+              {selectedTierInterval === "annually"
+                ? "✓ Annual plans are billed upfront to secure the discounted rates."
+                : selectedTier?.chargeAtCheckout
+                  ? `✓ Monthly billing starts at ${formatWholeDollars(tierMonthlyPriceCents)}/device/month.`
+                  : `✓ First month is free, then ${formatWholeDollars(tierMonthlyPriceCents)}/device/month.`}
+            </span>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={() => setDetailsSubStep("address")} className="flex-1 rounded-full bg-zinc-200 py-3 font-bold text-zinc-700 transition-colors hover:bg-zinc-300">
+              Previous
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                if (orderId) await saveBillingPlan(orderId, null, selectedTierInterval === "annually" ? listingQty : quantity, selectedTierId, selectedTierInterval);
+                setWizardStep(3);
+              }}
+              className="flex-1 rounded-full py-3 font-bold text-white transition hover:brightness-110"
+              style={{ backgroundColor: accentColor }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // --- Standard billing plans flow ---
     // Annual plan for showing strikethrough savings
     const annualPlan = checkoutPage.billingPlans.find((p) => p.interval === "annually");
     const monthlyPlan = checkoutPage.billingPlans.find((p) => p.interval === "monthly");
@@ -1126,8 +1372,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           ))}
           {upgradeSelected && <input type="hidden" name="upgradeSelected" value="on" />}
           <input type="hidden" name="quantity" value={quantity} />
-          <input type="hidden" name="listingQty" value={selectedPlan?.interval === "annually" ? listingQty : quantity} />
-          {selectedPlanId && <input type="hidden" name="billingPlanId" value={selectedPlanId} />}
+          <input type="hidden" name="listingQty" value={selectedBillingInterval === "annually" ? listingQty : quantity} />
+          {hasTieredPlans && selectedTierId && <input type="hidden" name="planTierId" value={selectedTierId} />}
+          {hasTieredPlans && <input type="hidden" name="tierInterval" value={selectedTierInterval} />}
+          {!hasTieredPlans && selectedPlanId && <input type="hidden" name="billingPlanId" value={selectedPlanId} />}
 
           <section className="space-y-3">
             <Field
@@ -1356,7 +1604,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   </div>
                   {estimate.recurringTotalCents > 0 && estimate.recurringDiscountCents > 0 && (
                     <div className="mt-2 flex items-center justify-between border-t border-emerald-200 pt-2 text-sm">
-                      <span className="text-emerald-700">{selectedPlan?.interval === "annually" ? "Annual" : "Monthly"} plan <span className="text-emerald-500 line-through">{formatCents(estimate.recurringTotalCents)}/{recurringLabel}</span></span>
+                      <span className="text-emerald-700">{selectedBillingInterval === "annually" ? "Annual" : "Monthly"} plan <span className="text-emerald-500 line-through">{formatCents(estimate.recurringTotalCents)}/{recurringLabel}</span></span>
                       <span className="font-semibold text-emerald-700">{formatCents(estimate.recurringTotalCents - estimate.recurringDiscountCents)}/{recurringLabel}</span>
                     </div>
                   )}
@@ -1412,12 +1660,20 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               )}
               {/* Billing plan / listing line */}
-              {selectedPlan?.chargeAtCheckout && (
-                <div className="flex justify-between">
-                  <span>+ {selectedPlan.label} ({planListingMultiplier} {planListingMultiplier === 1 ? "listing" : "listings"} × {formatWholeDollars(selectedPlan.priceCents)}/{recurringLabel})</span>
-                  <span className="font-medium">{formatCents(selectedPlan.priceCents * planListingMultiplier)}</span>
-                </div>
-              )}
+              {chargeRecurringNow && (() => {
+                const rUnitPrice = hasTieredPlans
+                  ? (selectedTierInterval === "annually" ? tierAnnualPerListing : tierMonthlyPriceCents)
+                  : (selectedPlan?.priceCents ?? 0);
+                const rLabel = hasTieredPlans
+                  ? `${selectedTier?.name ?? "Plan"} ${selectedTierInterval === "annually" ? "Annual" : "Monthly"}`
+                  : (selectedPlan?.label ?? "");
+                return (
+                  <div className="flex justify-between">
+                    <span>+ {rLabel} ({planListingMultiplier} {planListingMultiplier === 1 ? "listing" : "listings"} × {formatWholeDollars(rUnitPrice)}/{recurringLabel})</span>
+                    <span className="font-medium">{formatWholeDollars(rUnitPrice * planListingMultiplier)}</span>
+                  </div>
+                );
+              })()}
               {/* Add-ons */}
               {selectedAddons.map((a) => (
                 <div key={a.id} className="flex justify-between">
@@ -1426,16 +1682,16 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               ))}
             </div>
-            {(isPromoActive || estimate.discountCents > 0 || (selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0)) ? (() => {
+            {(isPromoActive || estimate.discountCents > 0 || (chargeRecurringNow && estimate.recurringDiscountCents > 0)) ? (() => {
               const promoSavingsCents = isPromoActive
                 ? (activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity
                 : 0;
-              const displaySubtotal = selectedPlan?.chargeAtCheckout
+              const displaySubtotal = chargeRecurringNow
                 ? estimate.subtotalCents + estimate.recurringTotalCents
                 : estimate.subtotalCents;
               return (
                 <div className="mt-2 space-y-0.5 border-t border-white/15 pt-2 text-sm">
-                  {(isPromoActive || estimate.discountCents > 0 || (selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0)) && (
+                  {(isPromoActive || estimate.discountCents > 0 || (chargeRecurringNow && estimate.recurringDiscountCents > 0)) && (
                     <div className="flex justify-between opacity-80">
                       <span>Subtotal</span>
                       <span>{formatCents(displaySubtotal)}</span>
@@ -1449,13 +1705,13 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                       <span className="font-semibold">-{formatCents(promoSavingsCents)}</span>
                     </div>
                   )}
-                  {(estimate.discountCents > 0 || (selectedPlan?.chargeAtCheckout && estimate.recurringDiscountCents > 0)) && (
+                  {(estimate.discountCents > 0 || (chargeRecurringNow && estimate.recurringDiscountCents > 0)) && (
                     <div className="flex justify-between">
                       <span className="flex items-center gap-1 opacity-90">
                         <Ticket className="h-3.5 w-3.5" /> Promo ({promoCheck.appliedCode})
                       </span>
                       <span className="font-semibold text-emerald-400">-{formatCents(
-                        selectedPlan?.chargeAtCheckout
+                        chargeRecurringNow
                           ? estimate.discountCents + estimate.recurringDiscountCents
                           : estimate.discountCents
                       )}</span>
@@ -1473,7 +1729,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             <div className="mt-2 flex justify-between border-t border-white/15 pt-2 text-lg font-semibold">
               <span>Total</span>
               <span>{formatCents(
-                (selectedPlan?.chargeAtCheckout
+                (chargeRecurringNow
                   ? estimate.totalCents + estimate.recurringTotalCents - estimate.recurringDiscountCents
                   : estimate.totalCents) + shippingCents
               )}</span>
@@ -1632,9 +1888,9 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
               ONLY {formatWholeDollars(effectiveBasePriceCents)} today
             </p>
 
-            {effectiveRecurringPriceCents != null && effectiveRecurringPriceCents > 0 && (
+            {displayRecurringPriceCents != null && displayRecurringPriceCents > 0 && (
               <p className="mt-1 text-sm text-white/90">
-                {formatWholeDollars(effectiveRecurringPriceCents)} /{recurringLabel === "yr" ? "YEAR" : "MONTH"}
+                {formatWholeDollars(displayRecurringPriceCents)} /{recurringLabel === "yr" ? "YEAR" : "MONTH"}
               </p>
             )}
           </div>

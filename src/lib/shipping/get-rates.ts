@@ -95,10 +95,19 @@ async function loadSettings() {
   });
 }
 
+export interface ShippingRateResult {
+  rates: ShippingRate[];
+  error?: string;
+  /** Raw Shippo request payload (for audit logging). */
+  rawRequest?: Record<string, unknown>;
+  /** Raw Shippo response body (for audit logging). */
+  rawResponse?: Record<string, unknown>;
+}
+
 export async function getShippingRates(
   toAddress: ShippoToAddress,
   quantity: number,
-): Promise<{ rates: ShippingRate[]; error?: string }> {
+): Promise<ShippingRateResult> {
   const token = process.env.SHIPPO_API_TOKEN;
   if (!token) {
     return { rates: [], error: "Shippo API token not configured." };
@@ -109,41 +118,48 @@ export async function getShippingRates(
     return { rates: [], error: "Shipping settings not configured." };
   }
 
+  const requestPayload = {
+    address_from: {
+      name: settings.warehouseName,
+      street1: settings.warehouseStreet,
+      city: settings.warehouseCity,
+      state: settings.warehouseState,
+      zip: settings.warehouseZip,
+      country: settings.warehouseCountry,
+      phone: settings.warehousePhone,
+    },
+    address_to: {
+      name: toAddress.name || "Customer",
+      street1: toAddress.street1,
+      city: toAddress.city,
+      state: toAddress.state,
+      zip: toAddress.zip,
+      country: toAddress.country,
+      phone: toAddress.phone || "",
+      email: toAddress.email || "",
+    },
+    parcels,
+    async: false,
+  };
+
   const res = await fetch("https://api.goshippo.com/shipments/", {
     method: "POST",
     headers: {
       Authorization: `ShippoToken ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      address_from: {
-        name: settings.warehouseName,
-        street1: settings.warehouseStreet,
-        city: settings.warehouseCity,
-        state: settings.warehouseState,
-        zip: settings.warehouseZip,
-        country: settings.warehouseCountry,
-        phone: settings.warehousePhone,
-      },
-      address_to: {
-        name: toAddress.name || "Customer",
-        street1: toAddress.street1,
-        city: toAddress.city,
-        state: toAddress.state,
-        zip: toAddress.zip,
-        country: toAddress.country,
-        phone: toAddress.phone || "",
-        email: toAddress.email || "",
-      },
-      parcels,
-      async: false,
-    }),
+    body: JSON.stringify(requestPayload),
   });
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     console.error("Shippo API error", res.status, text);
-    return { rates: [], error: `Shippo returned ${res.status}` };
+    return {
+      rates: [],
+      error: `Shippo returned ${res.status}`,
+      rawRequest: requestPayload,
+      rawResponse: { status: res.status, body: text },
+    };
   }
 
   const data: ShippoShipmentResponse = await res.json();
@@ -164,5 +180,5 @@ export async function getShippingRates(
     }))
     .sort((a, b) => a.amountCents - b.amountCents);
 
-  return { rates };
+  return { rates, rawRequest: requestPayload, rawResponse: data as unknown as Record<string, unknown> };
 }

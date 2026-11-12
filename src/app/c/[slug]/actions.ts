@@ -23,7 +23,7 @@ import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendOrderConfirmationEmail } from "@/lib/email/send-order-confirmation";
 import { sendOrderWebhook } from "@/lib/webhook/send";
 import { logOrderEvent } from "@/lib/orders/log-event";
-import { getShippingRates, type ShippingRate } from "@/lib/shipping/get-rates";
+import { getShippingRates, type ShippingRate, type ShippingRateResult } from "@/lib/shipping/get-rates";
 import { DOMESTIC_COUNTRY } from "@/lib/shipping/config";
 
 /**
@@ -227,7 +227,7 @@ export async function getShippingOptions(
   if (!order || !order.shippingAddressLine1 || !order.shippingCountry) {
     return { rates: [], error: "Shipping address not found." };
   }
-  return getShippingRates({
+  const result = await getShippingRates({
     name: `${order.firstName} ${order.lastName}`,
     street1: order.shippingAddressLine1,
     city: order.shippingCity ?? "",
@@ -237,6 +237,19 @@ export async function getShippingOptions(
     phone: order.phone,
     email: order.email,
   }, order.quantity);
+
+  // Log Shippo request/response for audit
+  if (result.rawRequest || result.rawResponse) {
+    await prisma.shippingRateLog.create({
+      data: {
+        orderId,
+        request: (result.rawRequest ?? {}) as any,
+        response: (result.rawResponse ?? {}) as any,
+      },
+    }).catch((err) => console.error("Failed to log shipping rate:", err));
+  }
+
+  return { rates: result.rates, error: result.error };
 }
 
 /**
@@ -268,6 +281,8 @@ export async function saveBillingPlan(
   orderId: string,
   billingPlanId: string | null,
   listingQty: number = 1,
+  planTierId?: string | null,
+  tierInterval?: "monthly" | "annually",
 ): Promise<void> {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
@@ -276,6 +291,7 @@ export async function saveBillingPlan(
         include: {
           priceTiers: { orderBy: { sortOrder: "asc" } },
           billingPlans: true,
+          planTiers: { include: { prices: { orderBy: { sortOrder: "asc" } } } },
         },
       },
     },
@@ -311,9 +327,29 @@ export async function saveBillingPlan(
     if (matchedTier) unitPriceCents = matchedTier.priceCents;
   }
 
-  // Resolve recurring from selected plan
+  // Resolve recurring from tiered plan or billing plan
   let recurringCents: number | null = null;
-  if (billingPlanId && checkoutPage.billingPlans.length > 0) {
+  let selectedPlanTierId: string | null = null;
+  let selectedTierInterval: string | null = null;
+
+  if (planTierId && checkoutPage.tieredPlansEnabled) {
+    const tier = checkoutPage.planTiers.find((t) => t.id === planTierId);
+    if (tier) {
+      selectedPlanTierId = tier.id;
+      selectedTierInterval = tierInterval ?? "monthly";
+      const priceRow = tier.prices.find(
+        (p) => order.quantity >= p.minQty && (p.maxQty == null || order.quantity <= p.maxQty),
+      ) ?? tier.prices[0];
+      if (priceRow) {
+        if (tierInterval === "annually") {
+          const annualPerListing = Math.round(priceRow.monthlyPriceCents * 12 * (1 - tier.annualDiscountPercent / 100));
+          recurringCents = annualPerListing * Math.max(1, listingQty);
+        } else {
+          recurringCents = priceRow.monthlyPriceCents * order.quantity;
+        }
+      }
+    }
+  } else if (billingPlanId && checkoutPage.billingPlans.length > 0) {
     const plan = checkoutPage.billingPlans.find((p) => p.id === billingPlanId);
     if (plan) recurringCents = plan.priceCents * Math.max(1, listingQty);
   }
@@ -322,6 +358,8 @@ export async function saveBillingPlan(
     where: { id: orderId },
     data: {
       selectedBillingPlanId: billingPlanId,
+      selectedPlanTierId: selectedPlanTierId,
+      selectedTierInterval: selectedTierInterval,
       amountCents: unitPriceCents * order.quantity,
       recurringAmountCents: recurringCents,
     },
@@ -346,6 +384,7 @@ export async function completeCheckout(
           addonLinks: { where: { addon: { isActive: true } }, include: { addon: true } },
           priceTiers: { orderBy: { sortOrder: "asc" } },
           billingPlans: true,
+          planTiers: { include: { prices: { orderBy: { sortOrder: "asc" } } } },
         },
       },
     },
@@ -357,10 +396,11 @@ export async function completeCheckout(
   if (order.status === "paid") {
     return { status: "error", message: "This order has already been paid." };
   }
-  const { addressLine1, city, state, zip, country } = order;
-  if (!addressLine1 || !city || !state || !zip || !country) {
+  const { addressLine1, city, state: rawState, zip, country } = order;
+  if (!addressLine1 || !city || !zip || !country || (country === "US" && !rawState)) {
     return { status: "error", message: "Please complete your billing address first." };
   }
+  const state = rawState ?? "";
 
   const checkoutPage = order.checkoutPage;
   const pageAddons = checkoutPage.addonLinks.map((link) => link.addon);
@@ -423,14 +463,46 @@ export async function completeCheckout(
     }
   }
 
-  // Resolve billing plan
+  // Resolve billing plan or tiered plan
   const billingPlanId = formData.get("billingPlanId")?.toString() ?? null;
+  const planTierId = formData.get("planTierId")?.toString() ?? null;
+  const tierInterval = (formData.get("tierInterval")?.toString() ?? null) as "monthly" | "annually" | null;
   const listingQty = Math.max(1, Number(formData.get("listingQty")) || 1);
   let resolvedRecurringPriceCents = checkoutPage.recurringPriceCents;
   let fullRecurringPriceCents = checkoutPage.recurringPriceCents; // always the real price, for discount calc
   let resolvedZohoRecurringItemId = checkoutPage.zohoRecurringItemId;
   let chargeRecurringAtCheckout = false;
-  if (billingPlanId && checkoutPage.billingPlans.length > 0) {
+  let resolvedPlanTierId: string | null = null;
+  let resolvedTierInterval: string | null = null;
+
+  if (planTierId && checkoutPage.tieredPlansEnabled) {
+    // Tiered plan flow
+    const tier = checkoutPage.planTiers.find((t) => t.id === planTierId);
+    if (tier) {
+      resolvedPlanTierId = tier.id;
+      resolvedTierInterval = tierInterval ?? "monthly";
+      const priceRow = tier.prices.find(
+        (p) => data.quantity >= p.minQty && (p.maxQty == null || data.quantity <= p.maxQty),
+      ) ?? tier.prices[0];
+      if (priceRow) {
+        if (tierInterval === "annually") {
+          const annualPerListing = Math.round(priceRow.monthlyPriceCents * 12 * (1 - tier.annualDiscountPercent / 100));
+          fullRecurringPriceCents = annualPerListing * listingQty;
+          chargeRecurringAtCheckout = true; // annual always charged upfront
+        } else {
+          fullRecurringPriceCents = priceRow.monthlyPriceCents * data.quantity;
+          chargeRecurringAtCheckout = false; // monthly tiered plans: never charged at checkout
+        }
+        resolvedRecurringPriceCents = chargeRecurringAtCheckout ? fullRecurringPriceCents : 0;
+      }
+      // Zoho item IDs from the tier
+      if (tierInterval === "annually" && tier.zohoAnnualItemId) {
+        resolvedZohoRecurringItemId = tier.zohoAnnualItemId;
+      } else if (tier.zohoMonthlyItemId) {
+        resolvedZohoRecurringItemId = tier.zohoMonthlyItemId;
+      }
+    }
+  } else if (billingPlanId && checkoutPage.billingPlans.length > 0) {
     const selectedPlan = checkoutPage.billingPlans.find((p) => p.id === billingPlanId);
     if (selectedPlan) {
       chargeRecurringAtCheckout = selectedPlan.chargeAtCheckout;
@@ -474,7 +546,7 @@ export async function completeCheckout(
   const selectedPlan = billingPlanId
     ? checkoutPage.billingPlans.find((p) => p.id === billingPlanId) ?? null
     : null;
-  const selectedInterval = selectedPlan?.interval ?? null;
+  const selectedInterval = resolvedTierInterval ?? selectedPlan?.interval ?? null;
 
   const promoForCalc = promo
     ? promo.mode === "split"
@@ -549,6 +621,8 @@ export async function completeCheckout(
       recurringAmountCents: price.recurringTotalCents || null,
       upgradeSelected: upgradeApplied,
       selectedBillingPlanId: billingPlanId,
+      selectedPlanTierId: resolvedPlanTierId,
+      selectedTierInterval: resolvedTierInterval,
       authNetResponseCode: chargeResult.responseCode,
       authNetAuthCode: chargeResult.authCode,
       authNetTransactionId: chargeResult.transactionId,
@@ -591,7 +665,7 @@ export async function completeCheckout(
       ? {
           streetad: order.shippingAddressLine1,
           city: order.shippingCity || city,
-          state: order.shippingState || state,
+          state: order.shippingState ?? state,
           zipcode: order.shippingZip || zip,
           country: order.shippingCountry || country,
         }
@@ -625,9 +699,10 @@ export async function completeCheckout(
 
     // Build recurring_discount metadata for Zoho (future cycles)
     let zohoRecurringDiscount: { plan: string; discount_per_cycle: number; quantity: number; number_of_cycles: null } | undefined;
-    if (promo && price.recurringDiscountCents > 0 && selectedPlan) {
-      const planLabel = selectedPlan.interval === "annually" ? "Annual" : "Monthly";
-      const recurringQty = selectedPlan.interval === "annually" ? listingQty : data.quantity;
+    const zohoInterval = resolvedTierInterval ?? selectedPlan?.interval ?? null;
+    if (promo && price.recurringDiscountCents > 0 && (selectedPlan || resolvedPlanTierId)) {
+      const planLabel = zohoInterval === "annually" ? "Annual" : "Monthly";
+      const recurringQty = zohoInterval === "annually" ? listingQty : data.quantity;
       zohoRecurringDiscount = {
         plan: planLabel,
         discount_per_cycle: Math.round(price.recurringDiscountCents / recurringQty) / 100,
@@ -656,6 +731,11 @@ export async function completeCheckout(
       discountAmount: zohoDiscountDollars || undefined,
       recurringDiscount: zohoRecurringDiscount,
       fulfillmentItems: lineItems,
+      planType: resolvedPlanTierId
+        ? checkoutPage.planTiers.find((t) => t.id === resolvedPlanTierId)?.name
+        : selectedPlan?.label || "GOLD",
+      billingCycle: resolvedTierInterval ?? selectedPlan?.interval ?? undefined,
+      billingQty: resolvedTierInterval === "annually" ? listingQty : resolvedTierInterval === "monthly" ? data.quantity : selectedPlan ? listingQty : undefined,
     });
 
     await prisma.order.update({
@@ -670,9 +750,12 @@ export async function completeCheckout(
 
     const emailSettings = await getEmailSettings();
 
-    // Resolve billing plan for internal email
+    // Resolve billing plan / tier for internal email
     const selectedBillingPlan = billingPlanId
       ? checkoutPage.billingPlans.find((p) => p.id === billingPlanId) ?? null
+      : null;
+    const selectedTier = resolvedPlanTierId
+      ? checkoutPage.planTiers.find((t) => t.id === resolvedPlanTierId) ?? null
       : null;
 
     // Build address strings
@@ -684,12 +767,17 @@ export async function completeCheckout(
     // Unit price for display
     const fmtDollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
     const unitSubtotal = resolvedBasePriceCents * data.quantity;
-    const planLabel = selectedBillingPlan
-      ? `${selectedBillingPlan.label} (${selectedBillingPlan.interval})`
-      : "—";
-    const planIntervalLabel = selectedBillingPlan?.interval === "annually" ? "year" : "month";
-    const planPrice = selectedBillingPlan
-      ? `${fmtDollars(selectedBillingPlan.priceCents)}/${planIntervalLabel} × ${listingQty} ${listingQty === 1 ? "listing" : "listings"}`
+    const planLabel = selectedTier
+      ? `${selectedTier.name} (${resolvedTierInterval ?? "monthly"})`
+      : selectedBillingPlan
+        ? `${selectedBillingPlan.label} (${selectedBillingPlan.interval})`
+        : "—";
+    const planIntervalLabel = (resolvedTierInterval ?? selectedBillingPlan?.interval) === "annually" ? "year" : "month";
+    const planUnitPriceCents = selectedTier
+      ? ((fullRecurringPriceCents ?? 0) > 0 ? Math.round((fullRecurringPriceCents ?? 0) / Math.max(1, listingQty)) : 0)
+      : (selectedBillingPlan?.priceCents ?? 0);
+    const planPrice = (selectedTier || selectedBillingPlan)
+      ? `${fmtDollars(planUnitPriceCents)}/${planIntervalLabel} × ${listingQty} ${listingQty === 1 ? "listing" : "listings"}`
       : "—";
     const addonsText = selectedAddons.length
       ? selectedAddons.map((a) => `${a.name} (${fmtDollars(a.priceCents)})`).join(", ")
@@ -717,7 +805,7 @@ export async function completeCheckout(
   <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}${activePromo ? ` (was ${fmtDollars(activePromo.priceTier.priceCents)}/ea — promo)` : ""}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Billing type</td><td style="padding:6px 0;text-align:right">${planLabel}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Plan price</td><td style="padding:6px 0;text-align:right">${planPrice}</td></tr>
-  <tr><td style="padding:6px 0;color:#666">${selectedBillingPlan?.interval === "annually" ? "Annual" : "Monthly"} total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>
+  <tr><td style="padding:6px 0;color:#666">${(resolvedTierInterval ?? selectedBillingPlan?.interval) === "annually" ? "Annual" : "Monthly"} total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Add-ons</td><td style="padding:6px 0;text-align:right">${addonsText}</td></tr>
   ${shippingCents > 0 ? `<tr><td style="padding:6px 0;color:#666">Shipping</td><td style="padding:6px 0;text-align:right">${fmtDollars(shippingCents)} (${order.shippingCarrier ?? ""} ${order.shippingService ?? ""})</td></tr>` : ""}
   <tr><td style="padding:6px 0;color:#666">Promo code</td><td style="padding:6px 0;text-align:right">${promoText}</td></tr>
@@ -782,7 +870,7 @@ export async function completeCheckout(
 
     if (checkoutPage.webhookUrl) {
       const shippingWebhook = !order.shippingSameAsBilling && order.shippingAddressLine1
-        ? { address: order.shippingAddressLine1, city: order.shippingCity || city, state: order.shippingState || state, zip: order.shippingZip || zip, country: order.shippingCountry || country }
+        ? { address: order.shippingAddressLine1, city: order.shippingCity || city, state: order.shippingState ?? state, zip: order.shippingZip || zip, country: order.shippingCountry || country }
         : { address: addressLine1, city, state, zip, country };
       const webhookResult = await sendOrderWebhook(checkoutPage.webhookUrl, {
         fname: order.firstName,
@@ -807,7 +895,7 @@ export async function completeCheckout(
         promo_code: promo ? data.promoCode : "",
         is_promo_valid: promo ? "true" : "false",
         product_name: product.title,
-        billing: selectedBillingPlan ? selectedBillingPlan.label : (checkoutPage.billingInterval ?? ""),
+        billing: selectedTier ? `${selectedTier.name} (${resolvedTierInterval ?? "monthly"})` : selectedBillingPlan ? selectedBillingPlan.label : (checkoutPage.billingInterval ?? ""),
         qty: String(data.quantity),
         unit_Price: String(resolvedBasePriceCents / 100),
         BumpOrder: upgradeApplied ? "true" : "false",

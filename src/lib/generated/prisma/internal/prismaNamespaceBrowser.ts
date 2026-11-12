@@ -72,7 +72,8 @@ export const ModelName = {
   ShippingSettings: 'ShippingSettings',
   ShippingPackageTier: 'ShippingPackageTier',
   ShippingWeightEntry: 'ShippingWeightEntry',
-  AbandonedCheckoutSettings: 'AbandonedCheckoutSettings'
+  AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
+  ShippingRateLog: 'ShippingRateLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -263,6 +264,7 @@ export const PromoCodeScalarFieldEnum = {
   timesRedeemed: 'timesRedeemed',
   startsAt: 'startsAt',
   expiresAt: 'expiresAt',
+  timezone: 'timezone',
   isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
@@ -295,6 +297,7 @@ export const OrderScalarFieldEnum = {
   shippingCountry: 'shippingCountry',
   selectedBillingPlanId: 'selectedBillingPlanId',
   selectedPlanTierId: 'selectedPlanTierId',
+  selectedTierInterval: 'selectedTierInterval',
   cardLast4: 'cardLast4',
   cardBrand: 'cardBrand',
   cardNumberEncrypted: 'cardNumberEncrypted',
@@ -452,6 +455,17 @@ export const AbandonedCheckoutSettingsScalarFieldEnum = {
 } as const
 
 export type AbandonedCheckoutSettingsScalarFieldEnum = (typeof AbandonedCheckoutSettingsScalarFieldEnum)[keyof typeof AbandonedCheckoutSettingsScalarFieldEnum]
+
+
+export const ShippingRateLogScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  request: 'request',
+  response: 'response',
+  createdAt: 'createdAt'
+} as const
+
+export type ShippingRateLogScalarFieldEnum = (typeof ShippingRateLogScalarFieldEnum)[keyof typeof ShippingRateLogScalarFieldEnum]
 
 
 export const SortOrder = {
