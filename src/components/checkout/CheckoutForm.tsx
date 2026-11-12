@@ -1004,7 +1004,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   )}
                   <div className="mt-1.5 space-y-0.5">
                     <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                      <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
+                      <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all {selectedTier?.name ?? "standard"} features
                     </div>
                     <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
                       <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple devices per listing
@@ -1172,7 +1172,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all {selectedTier?.name ?? "standard"} features
                 </div>
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
                   <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple devices per listing
