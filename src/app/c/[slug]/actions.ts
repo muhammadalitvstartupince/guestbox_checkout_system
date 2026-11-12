@@ -396,10 +396,11 @@ export async function completeCheckout(
   if (order.status === "paid") {
     return { status: "error", message: "This order has already been paid." };
   }
-  const { addressLine1, city, state, zip, country } = order;
-  if (!addressLine1 || !city || !zip || !country || (country === "US" && !state)) {
+  const { addressLine1, city, state: rawState, zip, country } = order;
+  if (!addressLine1 || !city || !zip || !country || (country === "US" && !rawState)) {
     return { status: "error", message: "Please complete your billing address first." };
   }
+  const state = rawState ?? "";
 
   const checkoutPage = order.checkoutPage;
   const pageAddons = checkoutPage.addonLinks.map((link) => link.addon);
@@ -664,7 +665,7 @@ export async function completeCheckout(
       ? {
           streetad: order.shippingAddressLine1,
           city: order.shippingCity || city,
-          state: order.shippingState || state,
+          state: order.shippingState ?? state,
           zipcode: order.shippingZip || zip,
           country: order.shippingCountry || country,
         }
@@ -869,7 +870,7 @@ export async function completeCheckout(
 
     if (checkoutPage.webhookUrl) {
       const shippingWebhook = !order.shippingSameAsBilling && order.shippingAddressLine1
-        ? { address: order.shippingAddressLine1, city: order.shippingCity || city, state: order.shippingState || state, zip: order.shippingZip || zip, country: order.shippingCountry || country }
+        ? { address: order.shippingAddressLine1, city: order.shippingCity || city, state: order.shippingState ?? state, zip: order.shippingZip || zip, country: order.shippingCountry || country }
         : { address: addressLine1, city, state, zip, country };
       const webhookResult = await sendOrderWebhook(checkoutPage.webhookUrl, {
         fname: order.firstName,
