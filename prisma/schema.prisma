@@ -433,12 +433,13 @@ model Order {
 
   status OrderStatus @default(pending)
 
-  // Shipping rate selected at checkout (international only; null = domestic/free)
-  shippingRateCents Int?    @map("shipping_rate_cents")
-  shippingCarrier   String? @map("shipping_carrier")
-  shippingService   String? @map("shipping_service")
-  shippingEstDays   Int?    @map("shipping_est_days")
-  shippoRateId      String? @map("shippo_rate_id")
+  // Shipping rate selected at checkout
+  shippingRateCents  Int?    @map("shipping_rate_cents")   // What customer is charged (0 for domestic)
+  shippingQuotedCents Int?   @map("shipping_quoted_cents") // What Shippo actually quoted (for admin records)
+  shippingCarrier    String? @map("shipping_carrier")
+  shippingService    String? @map("shipping_service")
+  shippingEstDays    Int?    @map("shipping_est_days")
+  shippoRateId       String? @map("shippo_rate_id")
 
   zohoSynced   Boolean @default(false) @map("zoho_synced")
   zohoPayload  Json?   @map("zoho_payload")

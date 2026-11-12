@@ -212,7 +212,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     }
   }
 
-  // Shipping rate state (international only) — declared early so the billing
+  // Shipping rate state — declared early so the billing
   // transition block below can kick off background fetch immediately.
   const [shippingRates, setShippingRates] = useState<Array<{ objectId: string; carrier: string; service: string; amountCents: number; currency: string; estimatedDays: number | null; attributes: string[]; carrierLogo: string | null }>>([]);
   const [shippingLoading, setShippingLoading] = useState(false);
@@ -225,21 +225,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     setLastBillingState(billingState);
     setBillingGen((g) => g + 1);
     if (billingState.status === "success") {
-      if (billingState.isInternational && orderId) {
-        // Start fetching shipping rates in the background immediately
-        setShippingLoading(true);
-        setShippingError(null);
-        getShippingOptions(orderId).then((result) => {
-          setShippingRates(result.rates);
-          if (result.rates.length > 0) {
-            const cheapest = result.rates.reduce((a, b) => a.amountCents <= b.amountCents ? a : b);
-            setSelectedShipping({ objectId: cheapest.objectId, carrier: cheapest.carrier, service: cheapest.service, amountCents: cheapest.amountCents, estimatedDays: cheapest.estimatedDays });
-            if (orderId) selectShippingRate(orderId, { objectId: cheapest.objectId, carrier: cheapest.carrier, service: cheapest.service, amountCents: cheapest.amountCents, estimatedDays: cheapest.estimatedDays });
-          }
-          if (result.error) setShippingError(result.error);
-          setShippingLoading(false);
-        });
-      }
       if (hasPlans) {
         setDetailsSubStep("billing-cycle");
       } else {
@@ -247,6 +232,29 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
       }
     }
   }
+
+  // Fetch shipping rates in background after billing address is saved
+  useEffect(() => {
+    if (billingState.status !== "success" || !billingState.shippingEnabled || !orderId) return;
+    setShippingLoading(true);
+    setShippingError(null);
+    getShippingOptions(orderId).then((result) => {
+      setShippingRates(result.rates);
+      if (result.rates.length > 0) {
+        const cheapest = result.rates.reduce((a, b) => a.amountCents <= b.amountCents ? a : b);
+        setSelectedShipping({ objectId: cheapest.objectId, carrier: cheapest.carrier, service: cheapest.service, amountCents: cheapest.amountCents, estimatedDays: cheapest.estimatedDays });
+        // Persist to DB: international keeps actual cost, domestic stores 0 for ETA visibility
+        const persistCents = billingState.isInternational ? cheapest.amountCents : 0;
+        selectShippingRate(orderId, { objectId: cheapest.objectId, carrier: cheapest.carrier, service: cheapest.service, amountCents: persistCents, quotedCents: cheapest.amountCents, estimatedDays: cheapest.estimatedDays });
+      }
+      if (result.error) setShippingError(result.error);
+      setShippingLoading(false);
+    }).catch(() => {
+      setShippingError("Could not calculate shipping rates.");
+      setShippingLoading(false);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [billingGen]);
 
   const [lastInitState, setLastInitState] = useState(initState);
   const [initGen, setInitGen] = useState(0);
@@ -447,7 +455,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     return targets.length > 0 ? `Valid — ${label} off ${targets.join(" + ")}` : "Valid";
   }, [appliedPromo, selectedBillingInterval, promoCheck.message]);
 
-  const shippingCents = selectedShipping?.amountCents ?? 0;
+  const shippingCents = billingState.isInternational ? (selectedShipping?.amountCents ?? 0) : 0;
 
   const primaryColor = checkoutPage.skinConfig.colors?.primary ?? "#0d1b2a";
   const accentColor = checkoutPage.skinConfig.colors?.accent ?? "#00b4d8";
@@ -898,11 +906,13 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const [lastSavedShippingId, setLastSavedShippingId] = useState<string | null>(null);
   if (selectedShipping && orderId && selectedShipping.objectId !== lastSavedShippingId) {
     setLastSavedShippingId(selectedShipping.objectId);
+    const persistCents = billingState.isInternational ? selectedShipping.amountCents : 0;
     selectShippingRate(orderId, {
       objectId: selectedShipping.objectId,
       carrier: selectedShipping.carrier,
       service: selectedShipping.service,
-      amountCents: selectedShipping.amountCents,
+      amountCents: persistCents,
+      quotedCents: selectedShipping.amountCents,
       estimatedDays: selectedShipping.estimatedDays,
     });
   }
@@ -948,6 +958,9 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                     <span className={`text-[10px] sm:text-xs font-extrabold uppercase tracking-wider sm:tracking-widest transition-colors ${
                       isSelected ? "text-zinc-900" : "text-zinc-500"
                     }`}>{tier.name}</span>
+                    {tier.name.toUpperCase() === "GOLD" && <span className="text-[9px] sm:text-[11px] font-medium text-zinc-400">Welcome &amp; guide</span>}
+                    {tier.name.toUpperCase() === "PLATINUM" && <span className="text-[9px] sm:text-[11px] font-medium text-zinc-400">Earn with upsells</span>}
+                    {tier.name.toUpperCase() === "DIAMOND" && <span className="text-[9px] sm:text-[11px] font-medium text-zinc-400">Maximize revenue</span>}
                     <div className="flex items-baseline">
                       <span className={`text-lg sm:text-2xl font-black transition-colors ${
                         isSelected ? "text-zinc-900" : "text-zinc-700"
@@ -1003,12 +1016,25 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                     </div>
                   )}
                   <div className="mt-1.5 space-y-0.5">
-                    <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                      <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all {selectedTier?.name ?? "standard"} features
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                      <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple devices per listing
-                    </div>
+                    {(selectedTier?.name?.toUpperCase() === "GOLD" ? [
+                      "Branded TV welcome screen for every guest",
+                      "Digital guidebook with local spots",
+                      "Automatic check-in & check-out synced to your booking platform",
+                    ] : selectedTier?.name?.toUpperCase() === "PLATINUM" ? [
+                      "Everything in Gold, plus paid upsells from the TV",
+                      "Local partner ads & smart-lock TV activation",
+                      "Team logins for your staff",
+                    ] : selectedTier?.name?.toUpperCase() === "DIAMOND" ? [
+                      "Everything in Platinum, plus video guides",
+                      "Commissions on tours & activities, sellable ad packages",
+                      "Wi-Fi guest capture & full analytics",
+                    ] : [
+                      `Access all ${selectedTier?.name ?? "standard"} features`,
+                    ]).map((feat, i) => (
+                      <div key={i} className="flex items-start gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                        <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500 mt-0.5" /> {feat}
+                      </div>
+                    ))}
                   </div>
                 </label>
 
@@ -1056,11 +1082,27 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                         {formatWholeDollars(tierMonthlyPriceCents)}/mo × 12 − {savePct}% = {formatWholeDollars(yrPerListing)}/yr per listing
                       </div>
                       <div className="-mt-0.5 space-y-0.5">
-                        <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Priority support
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Save {formatWholeDollars(yrFullPerListing - yrPerListing)}/year
+                        {(selectedTier?.name?.toUpperCase() === "GOLD" ? [
+                          "Branded TV welcome screen for every guest",
+                          "Digital guidebook with local spots",
+                          "Automatic check-in & check-out synced to your booking platform",
+                        ] : selectedTier?.name?.toUpperCase() === "PLATINUM" ? [
+                          "Everything in Gold, plus paid upsells from the TV",
+                          "Local partner ads & smart-lock TV activation",
+                          "Team logins for your staff",
+                        ] : selectedTier?.name?.toUpperCase() === "DIAMOND" ? [
+                          "Everything in Platinum, plus video guides",
+                          "Commissions on tours & activities, sellable ad packages",
+                          "Wi-Fi guest capture & full analytics",
+                        ] : [
+                          `Access all ${selectedTier?.name ?? "standard"} features`,
+                        ]).map((feat, i) => (
+                          <div key={i} className="flex items-start gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                            <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500 mt-0.5" /> {feat}
+                          </div>
+                        ))}
+                        <div className="flex items-start gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
+                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500 mt-0.5" /> Save {formatWholeDollars(yrFullPerListing - yrPerListing)}/year
                           <span className="ml-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-extrabold text-emerald-600">
                             {formatWholeDollars(yrFullPerListing - yrPerListing)} OFF
                           </span>
@@ -1445,8 +1487,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             </div>
           </div>
 
-          {/* Shipping options (international only) */}
-          {billingState.isInternational && (
+          {/* Shipping — international: rate picker; domestic: ETA-only info line */}
+          {billingState.isInternational ? (
             <section className="space-y-2">
               <p className="text-sm font-semibold text-zinc-700 flex items-center gap-1.5"><Truck className="h-4 w-4" /> Shipping Method</p>
               {shippingLoading && (
@@ -1501,7 +1543,33 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                 </div>
               )}
             </section>
-          )}
+          ) : billingState.shippingEnabled ? (
+            <section className="space-y-2">
+              <p className="text-sm font-semibold text-zinc-700 flex items-center gap-1.5"><Truck className="h-4 w-4" /> Shipping</p>
+              {shippingLoading && (
+                <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600" />
+                  <span className="text-sm text-zinc-600">Calculating delivery estimate...</span>
+                </div>
+              )}
+              {!shippingLoading && shippingRates.length > 0 && (() => {
+                const cheapest = shippingRates[0];
+                return (
+                  <div className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50/60 p-3">
+                    {cheapest.carrierLogo && (
+                      <img src={cheapest.carrierLogo} alt={cheapest.carrier} className="h-7 w-7 shrink-0 rounded object-contain" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-emerald-800">FREE Shipping</div>
+                      {cheapest.estimatedDays != null && (
+                        <div className="text-xs text-zinc-600">Est. delivery: {cheapest.estimatedDays} business day{cheapest.estimatedDays !== 1 ? "s" : ""} ({cheapest.carrier} {cheapest.service})</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+            </section>
+          ) : null}
 
           {/* Add-ons inline */}
           {checkoutPage.addons.length > 0 && (

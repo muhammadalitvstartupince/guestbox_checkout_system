@@ -314,6 +314,7 @@ export const OrderScalarFieldEnum = {
   authNetMessage: 'authNetMessage',
   status: 'status',
   shippingRateCents: 'shippingRateCents',
+  shippingQuotedCents: 'shippingQuotedCents',
   shippingCarrier: 'shippingCarrier',
   shippingService: 'shippingService',
   shippingEstDays: 'shippingEstDays',

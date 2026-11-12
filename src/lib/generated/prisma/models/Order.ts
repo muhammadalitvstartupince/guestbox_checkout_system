@@ -31,6 +31,7 @@ export type OrderAvgAggregateOutputType = {
   amountCents: number | null
   recurringAmountCents: number | null
   shippingRateCents: number | null
+  shippingQuotedCents: number | null
   shippingEstDays: number | null
 }
 
@@ -39,6 +40,7 @@ export type OrderSumAggregateOutputType = {
   amountCents: number | null
   recurringAmountCents: number | null
   shippingRateCents: number | null
+  shippingQuotedCents: number | null
   shippingEstDays: number | null
 }
 
@@ -84,6 +86,7 @@ export type OrderMinAggregateOutputType = {
   authNetMessage: string | null
   status: $Enums.OrderStatus | null
   shippingRateCents: number | null
+  shippingQuotedCents: number | null
   shippingCarrier: string | null
   shippingService: string | null
   shippingEstDays: number | null
@@ -135,6 +138,7 @@ export type OrderMaxAggregateOutputType = {
   authNetMessage: string | null
   status: $Enums.OrderStatus | null
   shippingRateCents: number | null
+  shippingQuotedCents: number | null
   shippingCarrier: string | null
   shippingService: string | null
   shippingEstDays: number | null
@@ -186,6 +190,7 @@ export type OrderCountAggregateOutputType = {
   authNetMessage: number
   status: number
   shippingRateCents: number
+  shippingQuotedCents: number
   shippingCarrier: number
   shippingService: number
   shippingEstDays: number
@@ -204,6 +209,7 @@ export type OrderAvgAggregateInputType = {
   amountCents?: true
   recurringAmountCents?: true
   shippingRateCents?: true
+  shippingQuotedCents?: true
   shippingEstDays?: true
 }
 
@@ -212,6 +218,7 @@ export type OrderSumAggregateInputType = {
   amountCents?: true
   recurringAmountCents?: true
   shippingRateCents?: true
+  shippingQuotedCents?: true
   shippingEstDays?: true
 }
 
@@ -257,6 +264,7 @@ export type OrderMinAggregateInputType = {
   authNetMessage?: true
   status?: true
   shippingRateCents?: true
+  shippingQuotedCents?: true
   shippingCarrier?: true
   shippingService?: true
   shippingEstDays?: true
@@ -308,6 +316,7 @@ export type OrderMaxAggregateInputType = {
   authNetMessage?: true
   status?: true
   shippingRateCents?: true
+  shippingQuotedCents?: true
   shippingCarrier?: true
   shippingService?: true
   shippingEstDays?: true
@@ -359,6 +368,7 @@ export type OrderCountAggregateInputType = {
   authNetMessage?: true
   status?: true
   shippingRateCents?: true
+  shippingQuotedCents?: true
   shippingCarrier?: true
   shippingService?: true
   shippingEstDays?: true
@@ -499,6 +509,7 @@ export type OrderGroupByOutputType = {
   authNetMessage: string | null
   status: $Enums.OrderStatus
   shippingRateCents: number | null
+  shippingQuotedCents: number | null
   shippingCarrier: string | null
   shippingService: string | null
   shippingEstDays: number | null
@@ -575,6 +586,7 @@ export type OrderWhereInput = {
   authNetMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   shippingRateCents?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippingQuotedCents?: Prisma.IntNullableFilter<"Order"> | number | null
   shippingCarrier?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingService?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingEstDays?: Prisma.IntNullableFilter<"Order"> | number | null
@@ -636,6 +648,7 @@ export type OrderOrderByWithRelationInput = {
   authNetMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingCarrier?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingService?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -700,6 +713,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   authNetMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   shippingRateCents?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippingQuotedCents?: Prisma.IntNullableFilter<"Order"> | number | null
   shippingCarrier?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingService?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingEstDays?: Prisma.IntNullableFilter<"Order"> | number | null
@@ -761,6 +775,7 @@ export type OrderOrderByWithAggregationInput = {
   authNetMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingCarrier?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingService?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -822,6 +837,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   authNetMessage?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
   shippingRateCents?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
+  shippingQuotedCents?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
   shippingCarrier?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   shippingService?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   shippingEstDays?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
@@ -871,6 +887,7 @@ export type OrderCreateInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -932,6 +949,7 @@ export type OrderUncheckedCreateInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -985,6 +1003,7 @@ export type OrderUpdateInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1046,6 +1065,7 @@ export type OrderUncheckedUpdateInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1103,6 +1123,7 @@ export type OrderCreateManyInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -1152,6 +1173,7 @@ export type OrderUpdateManyMutationInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1205,6 +1227,7 @@ export type OrderUncheckedUpdateManyInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1268,6 +1291,7 @@ export type OrderCountOrderByAggregateInput = {
   authNetMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrder
   shippingCarrier?: Prisma.SortOrder
   shippingService?: Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrder
@@ -1284,6 +1308,7 @@ export type OrderAvgOrderByAggregateInput = {
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrder
 }
 
@@ -1329,6 +1354,7 @@ export type OrderMaxOrderByAggregateInput = {
   authNetMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrder
   shippingCarrier?: Prisma.SortOrder
   shippingService?: Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrder
@@ -1380,6 +1406,7 @@ export type OrderMinOrderByAggregateInput = {
   authNetMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrder
   shippingCarrier?: Prisma.SortOrder
   shippingService?: Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrder
@@ -1394,6 +1421,7 @@ export type OrderSumOrderByAggregateInput = {
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
+  shippingQuotedCents?: Prisma.SortOrder
   shippingEstDays?: Prisma.SortOrder
 }
 
@@ -1668,6 +1696,7 @@ export type OrderCreateWithoutCheckoutPageInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -1727,6 +1756,7 @@ export type OrderUncheckedCreateWithoutCheckoutPageInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -1813,6 +1843,7 @@ export type OrderScalarWhereInput = {
   authNetMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   shippingRateCents?: Prisma.IntNullableFilter<"Order"> | number | null
+  shippingQuotedCents?: Prisma.IntNullableFilter<"Order"> | number | null
   shippingCarrier?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingService?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingEstDays?: Prisma.IntNullableFilter<"Order"> | number | null
@@ -1862,6 +1893,7 @@ export type OrderCreateWithoutSelectedPlanTierInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -1921,6 +1953,7 @@ export type OrderUncheckedCreateWithoutSelectedPlanTierInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2000,6 +2033,7 @@ export type OrderCreateWithoutPromoCodeInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2059,6 +2093,7 @@ export type OrderUncheckedCreateWithoutPromoCodeInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2138,6 +2173,7 @@ export type OrderCreateWithoutEventsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2198,6 +2234,7 @@ export type OrderUncheckedCreateWithoutEventsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2266,6 +2303,7 @@ export type OrderUpdateWithoutEventsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2326,6 +2364,7 @@ export type OrderUncheckedUpdateWithoutEventsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2378,6 +2417,7 @@ export type OrderCreateWithoutOrderAddonsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2438,6 +2478,7 @@ export type OrderUncheckedCreateWithoutOrderAddonsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2506,6 +2547,7 @@ export type OrderUpdateWithoutOrderAddonsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2566,6 +2608,7 @@ export type OrderUncheckedUpdateWithoutOrderAddonsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2618,6 +2661,7 @@ export type OrderCreateWithoutCardAccessLogsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2678,6 +2722,7 @@ export type OrderUncheckedCreateWithoutCardAccessLogsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2746,6 +2791,7 @@ export type OrderUpdateWithoutCardAccessLogsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2806,6 +2852,7 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2858,6 +2905,7 @@ export type OrderCreateWithoutPromotionInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2917,6 +2965,7 @@ export type OrderUncheckedCreateWithoutPromotionInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -2996,6 +3045,7 @@ export type OrderCreateWithoutShippingRateLogsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -3056,6 +3106,7 @@ export type OrderUncheckedCreateWithoutShippingRateLogsInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -3124,6 +3175,7 @@ export type OrderUpdateWithoutShippingRateLogsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3184,6 +3236,7 @@ export type OrderUncheckedUpdateWithoutShippingRateLogsInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3239,6 +3292,7 @@ export type OrderCreateManyCheckoutPageInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -3288,6 +3342,7 @@ export type OrderUpdateWithoutCheckoutPageInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3347,6 +3402,7 @@ export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3403,6 +3459,7 @@ export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3455,6 +3512,7 @@ export type OrderCreateManySelectedPlanTierInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -3504,6 +3562,7 @@ export type OrderUpdateWithoutSelectedPlanTierInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3563,6 +3622,7 @@ export type OrderUncheckedUpdateWithoutSelectedPlanTierInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3619,6 +3679,7 @@ export type OrderUncheckedUpdateManyWithoutSelectedPlanTierInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3671,6 +3732,7 @@ export type OrderCreateManyPromoCodeInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -3720,6 +3782,7 @@ export type OrderUpdateWithoutPromoCodeInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3779,6 +3842,7 @@ export type OrderUncheckedUpdateWithoutPromoCodeInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3835,6 +3899,7 @@ export type OrderUncheckedUpdateManyWithoutPromoCodeInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3887,6 +3952,7 @@ export type OrderCreateManyPromotionInput = {
   authNetMessage?: string | null
   status?: $Enums.OrderStatus
   shippingRateCents?: number | null
+  shippingQuotedCents?: number | null
   shippingCarrier?: string | null
   shippingService?: string | null
   shippingEstDays?: number | null
@@ -3936,6 +4002,7 @@ export type OrderUpdateWithoutPromotionInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3995,6 +4062,7 @@ export type OrderUncheckedUpdateWithoutPromotionInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4051,6 +4119,7 @@ export type OrderUncheckedUpdateManyWithoutPromotionInput = {
   authNetMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   shippingRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  shippingQuotedCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   shippingCarrier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingEstDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4162,6 +4231,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   authNetMessage?: boolean
   status?: boolean
   shippingRateCents?: boolean
+  shippingQuotedCents?: boolean
   shippingCarrier?: boolean
   shippingService?: boolean
   shippingEstDays?: boolean
@@ -4224,6 +4294,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   authNetMessage?: boolean
   status?: boolean
   shippingRateCents?: boolean
+  shippingQuotedCents?: boolean
   shippingCarrier?: boolean
   shippingService?: boolean
   shippingEstDays?: boolean
@@ -4281,6 +4352,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   authNetMessage?: boolean
   status?: boolean
   shippingRateCents?: boolean
+  shippingQuotedCents?: boolean
   shippingCarrier?: boolean
   shippingService?: boolean
   shippingEstDays?: boolean
@@ -4338,6 +4410,7 @@ export type OrderSelectScalar = {
   authNetMessage?: boolean
   status?: boolean
   shippingRateCents?: boolean
+  shippingQuotedCents?: boolean
   shippingCarrier?: boolean
   shippingService?: boolean
   shippingEstDays?: boolean
@@ -4349,7 +4422,7 @@ export type OrderSelectScalar = {
   abandonedNotifiedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "selectedPlanTierId" | "selectedTierInterval" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "selectedPlanTierId" | "selectedTierInterval" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingQuotedCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
@@ -4428,6 +4501,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     authNetMessage: string | null
     status: $Enums.OrderStatus
     shippingRateCents: number | null
+    shippingQuotedCents: number | null
     shippingCarrier: string | null
     shippingService: string | null
     shippingEstDays: number | null
@@ -4909,6 +4983,7 @@ export interface OrderFieldRefs {
   readonly authNetMessage: Prisma.FieldRef<"Order", 'String'>
   readonly status: Prisma.FieldRef<"Order", 'OrderStatus'>
   readonly shippingRateCents: Prisma.FieldRef<"Order", 'Int'>
+  readonly shippingQuotedCents: Prisma.FieldRef<"Order", 'Int'>
   readonly shippingCarrier: Prisma.FieldRef<"Order", 'String'>
   readonly shippingService: Prisma.FieldRef<"Order", 'String'>
   readonly shippingEstDays: Prisma.FieldRef<"Order", 'Int'>

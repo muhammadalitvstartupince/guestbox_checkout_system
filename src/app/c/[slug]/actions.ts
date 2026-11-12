@@ -206,8 +206,9 @@ export async function saveBillingInfo(
   await logOrderEvent(order.id, "billing_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
 
   const shippingConfig = await prisma.shippingSettings.findFirst({ select: { enabled: true } });
-  const isInternational = shippingConfig?.enabled === true && data.country.toUpperCase() !== DOMESTIC_COUNTRY;
-  return { status: "success", isInternational };
+  const shippingEnabled = shippingConfig?.enabled === true;
+  const isInternational = shippingEnabled && data.country.toUpperCase() !== DOMESTIC_COUNTRY;
+  return { status: "success", isInternational, shippingEnabled };
 }
 
 /**
@@ -258,19 +259,20 @@ export async function getShippingOptions(
  */
 export async function selectShippingRate(
   orderId: string,
-  rate: { objectId: string; carrier: string; service: string; amountCents: number; estimatedDays: number | null },
+  rate: { objectId: string; carrier: string; service: string; amountCents: number; quotedCents: number; estimatedDays: number | null },
 ): Promise<void> {
   await prisma.order.update({
     where: { id: orderId },
     data: {
       shippingRateCents: rate.amountCents,
+      shippingQuotedCents: rate.quotedCents,
       shippingCarrier: rate.carrier,
       shippingService: rate.service,
       shippingEstDays: rate.estimatedDays,
       shippoRateId: rate.objectId,
     },
   });
-  await logOrderEvent(orderId, "shipping_rate_selected", `${rate.carrier} ${rate.service} — $${(rate.amountCents / 100).toFixed(2)}`);
+  await logOrderEvent(orderId, "shipping_rate_selected", `${rate.carrier} ${rate.service} — charged $${(rate.amountCents / 100).toFixed(2)}, quoted $${(rate.quotedCents / 100).toFixed(2)}`);
 }
 
 /**
