@@ -101,6 +101,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       promo: promoCalcInput,
       recurringPriceCents: order.recurringAmountCents ?? 0,
       selectedInterval: tierInterval ?? billingPlan?.interval ?? null,
+      recurringQuantity: order.listingQty,
     });
     promoRecurringDiscountCents = promoPrice.recurringDiscountCents;
     const totalPromoDiscount = promoPrice.discountCents + promoPrice.recurringDiscountCents;
@@ -197,13 +198,14 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <dl className="space-y-1.5 text-sm">
             <Row label="Product" value={productName} />
             <Row label="Status" value={order.status} />
-            <Row label="Quantity" value={String(order.quantity)} />
+            <Row label="Devices (GuestBoxes)" value={String(order.quantity)} />
+            <Row label="Properties (Listings)" value={String(order.listingQty)} />
             <Row
-              label="Unit price"
+              label="Device price"
               value={
                 promoOriginalPriceCents
-                  ? `${formatCents(unitPriceCents)} × ${order.quantity} = ${formatCents(unitPriceCents * order.quantity)} (was ${formatCents(promoOriginalPriceCents)}/ea — promo)`
-                  : `${formatCents(unitPriceCents)} × ${order.quantity} = ${formatCents(unitPriceCents * order.quantity)}`
+                  ? `${formatCents(unitPriceCents)} × ${order.quantity} devices = ${formatCents(unitPriceCents * order.quantity)} (was ${formatCents(promoOriginalPriceCents)}/ea — promo)`
+                  : `${formatCents(unitPriceCents)} × ${order.quantity} devices = ${formatCents(unitPriceCents * order.quantity)}`
               }
             />
             <Row label="Billing type" value={
@@ -214,33 +216,23 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             {(planTier || billingPlan) && (() => {
               const effectiveInterval = tierInterval ?? billingPlan?.interval ?? "monthly";
               const isAnnual = effectiveInterval === "annually";
-              let unitPrice = 0;
-              let listingCount = order.quantity;
-              if (planTier && order.recurringAmountCents) {
-                // For tiered plans, compute per-listing price from the tier
+              const listingCount = order.listingQty;
+              let perListingPrice = 0;
+              if (planTier) {
                 const priceRow = planTier.prices.find(
                   (p) => order.quantity >= p.minQty && (p.maxQty == null || order.quantity <= p.maxQty),
                 ) ?? planTier.prices[0];
                 if (priceRow) {
-                  if (isAnnual) {
-                    unitPrice = Math.round(priceRow.monthlyPriceCents * 12 * (1 - planTier.annualDiscountPercent / 100));
-                    listingCount = unitPrice > 0 ? Math.round(order.recurringAmountCents / unitPrice) : 1;
-                  } else {
-                    unitPrice = priceRow.monthlyPriceCents;
-                    listingCount = order.quantity;
-                  }
+                  perListingPrice = isAnnual
+                    ? Math.round(priceRow.monthlyPriceCents * 12 * (1 - planTier.annualDiscountPercent / 100))
+                    : priceRow.monthlyPriceCents;
                 }
               } else if (billingPlan) {
-                unitPrice = billingPlan.priceCents;
-                listingCount = isAnnual
-                  ? (order.recurringAmountCents && billingPlan.priceCents > 0
-                      ? Math.round(order.recurringAmountCents / billingPlan.priceCents)
-                      : 1)
-                  : order.quantity;
+                perListingPrice = billingPlan.priceCents;
               }
               const intervalLabel = isAnnual ? "year" : "month";
               return (
-                <Row label="Plan price" value={`${formatCents(unitPrice)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"}`} />
+                <Row label="Listing price" value={`${formatCents(perListingPrice)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"} = ${formatCents(perListingPrice * listingCount)}/${intervalLabel}`} />
               );
             })()}
             <Row label={(tierInterval ?? billingPlan?.interval) === "annually" ? "Annual total" : "Monthly total"} value={

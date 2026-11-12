@@ -2,6 +2,7 @@ import { verifyAdminSession } from "@/lib/auth/dal";
 import { prisma } from "@/lib/db/client";
 import { PromoCodeForm } from "@/components/admin/PromoCodeForm";
 import { togglePromoCode } from "./actions";
+import { PromoLinkButton } from "@/components/admin/PromoLinkButton";
 
 function formatDiscount(type: string, value: number) {
   return type === "percent" ? `${value}%` : `$${(value / 100).toFixed(2)}`;
@@ -36,17 +37,18 @@ const targetLabels: Record<string, string> = {
 export default async function AdminPromoCodesPage() {
   await verifyAdminSession();
 
-  const [promoCodes, checkoutPages] = await Promise.all([
+  const [promoCodes, allPages, livePages] = await Promise.all([
     prisma.promoCode.findMany({
       orderBy: { createdAt: "desc" },
-      include: { appliesToCheckoutPage: { select: { title: true } } },
+      include: { appliesToCheckoutPage: { select: { title: true, slug: true } } },
     }),
     prisma.checkoutPage.findMany({ orderBy: { title: "asc" }, select: { id: true, title: true } }),
+    prisma.checkoutPage.findMany({ where: { status: "live" }, orderBy: { title: "asc" }, select: { slug: true, title: true } }),
   ]);
 
   return (
     <div>
-      <PromoCodeForm checkoutPages={checkoutPages} />
+      <PromoCodeForm checkoutPages={allPages} />
 
       <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <table className="w-full min-w-[700px] text-left text-sm">
@@ -103,14 +105,21 @@ export default async function AdminPromoCodesPage() {
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">{promo.isActive ? "Yes" : "No"}</td>
                 <td className="px-5 py-3 text-right">
-                  <form action={togglePromoCode.bind(null, promo.id)}>
-                    <button
-                      type="submit"
-                      className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
-                    >
-                      {promo.isActive ? "Deactivate" : "Activate"}
-                    </button>
-                  </form>
+                  <div className="flex items-center justify-end gap-3">
+                    <PromoLinkButton
+                      code={promo.code}
+                      boundPageSlug={promo.appliesToCheckoutPage?.slug}
+                      checkoutPages={livePages}
+                    />
+                    <form action={togglePromoCode.bind(null, promo.id)}>
+                      <button
+                        type="submit"
+                        className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                      >
+                        {promo.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                    </form>
+                  </div>
                 </td>
               </tr>
             ))}

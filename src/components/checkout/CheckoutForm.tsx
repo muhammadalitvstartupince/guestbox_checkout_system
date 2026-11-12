@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { initiateOrder, saveBillingInfo, saveBillingPlan, completeCheckout, checkPromoCode, getShippingOptions, selectShippingRate } from "@/app/c/[slug]/actions";
 import { OrderSuccessModal } from "@/components/checkout/OrderSuccessModal";
 import { PhoneNumberField } from "@/components/checkout/PhoneNumberField";
@@ -17,7 +18,7 @@ import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
-import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone } from "lucide-react";
+import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone, Home } from "lucide-react";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
   switch (brand) {
@@ -275,11 +276,15 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
   const [quantity, setQuantity] = useState(1);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [upgradeSelected, setUpgradeSelected] = useState(false);
-  const [listingQty, setListingQty] = useState(1);
-  // Clamp listing qty to never exceed device qty
-  useEffect(() => {
-    setListingQty((prev) => Math.min(prev, quantity));
-  }, [quantity]);
+  const [listingQty, setListingQtyRaw] = useState(1);
+  const setListingQty = (updater: number | ((prev: number) => number)) => {
+    setListingQtyRaw((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      // GuestBoxes must always be >= Properties
+      setQuantity((q) => Math.max(q, next));
+      return next;
+    });
+  };
 
   const hasTiers = checkoutPage.priceTiers.length > 0;
   const baseTierPrice = hasTiers ? checkoutPage.priceTiers[0].priceCents : checkoutPage.basePriceCents;
@@ -369,6 +374,27 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     setPromoCheck({ status: "idle" });
   }
 
+  // Auto-apply promo code from ?promo=CODE URL param
+  const searchParams = useSearchParams();
+  const promoAutoApplied = useRef(false);
+  useEffect(() => {
+    const urlPromo = searchParams.get("promo");
+    if (urlPromo && !promoAutoApplied.current) {
+      promoAutoApplied.current = true;
+      setPaymentForm((f) => ({ ...f, promoCode: urlPromo }));
+      // Auto-validate
+      setPromoCheck({ status: "checking" });
+      checkPromoCode(checkoutPage.slug, urlPromo).then((result) => {
+        setPromoCheck({
+          status: result.valid ? "valid" : "invalid",
+          message: result.message,
+          discount: result.discount,
+          appliedCode: result.valid ? urlPromo.toUpperCase() : undefined,
+        });
+      });
+    }
+  }, [searchParams, checkoutPage.slug]);
+
   const effectiveTitle = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.title : checkoutPage.productName;
   // During promotion: use promo price directly as base (discount is baked in)
   const effectiveBasePriceCents = isPromoActive
@@ -386,15 +412,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
     ? selectedTierInterval === "annually"
     : (selectedPlan?.chargeAtCheckout ?? false);
 
-  const planListingMultiplier = hasTieredPlans
-    ? (selectedTierInterval === "annually" ? listingQty : quantity)
-    : hasPlans && selectedPlan
-      ? (selectedPlan.interval === "annually" ? listingQty : quantity)
-      : 1;
+  const planListingMultiplier = (hasTieredPlans || (hasPlans && selectedPlan)) ? listingQty : 1;
 
   // The plan price for display / promo calc (always the full recurring amount)
   const displayRecurringPriceCents = hasTieredPlans
-    ? (selectedTierInterval === "annually" ? tierAnnualPerListing * listingQty : tierMonthlyPriceCents * quantity)
+    ? (selectedTierInterval === "annually" ? tierAnnualPerListing * listingQty : tierMonthlyPriceCents * listingQty)
     : hasPlans && selectedPlan
       ? selectedPlan.priceCents * planListingMultiplier
       : upgradeSelected && checkoutPage.upgrade
@@ -483,14 +505,14 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
         {isPromoActive && (() => {
           const savePercent = Math.round(((activePromotion.originalPriceCents - activePromotion.promoPriceCents) / activePromotion.originalPriceCents) * 100);
           return (
-            <div className="relative overflow-hidden rounded-2xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-5 pb-5 pt-8 text-center shadow-lg">
+            <div className="relative overflow-hidden rounded-xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-3 pb-3 pt-6 text-center shadow-lg sm:rounded-2xl sm:px-5 sm:pb-5 sm:pt-8">
               {/* Animated shimmer overlay */}
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.6)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
 
               {/* Top ribbon */}
               <div className="absolute -left-1 -top-1 z-10">
-                <div className="flex items-center gap-1 rounded-br-xl rounded-tl-xl bg-gradient-to-r from-red-600 to-orange-500 px-4 py-1.5 text-xs font-extrabold tracking-widest text-white uppercase shadow-md">
-                  <Zap className="h-3.5 w-3.5 fill-yellow-300 text-yellow-300" />
+                <div className="flex items-center gap-0.5 rounded-br-lg rounded-tl-lg bg-gradient-to-r from-red-600 to-orange-500 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white uppercase shadow-md sm:gap-1 sm:rounded-br-xl sm:rounded-tl-xl sm:px-4 sm:py-1.5 sm:text-xs">
+                  <Zap className="h-3 w-3 fill-yellow-300 text-yellow-300 sm:h-3.5 sm:w-3.5" />
                   {activePromotion.badgeText || "Limited Time"}
                 </div>
               </div>
@@ -498,30 +520,30 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
               {/* Save badge */}
               {savePercent > 0 && (
                 <div className="absolute -right-1 -top-1 z-10">
-                  <div className="rounded-bl-xl rounded-tr-xl bg-emerald-500 px-3 py-1.5 text-xs font-extrabold text-white shadow-md">
+                  <div className="rounded-bl-lg rounded-tr-lg bg-emerald-500 px-2 py-1 text-[10px] font-extrabold text-white shadow-md sm:rounded-bl-xl sm:rounded-tr-xl sm:px-3 sm:py-1.5 sm:text-xs">
                     SAVE {savePercent}%
                   </div>
                 </div>
               )}
 
               {/* Price display */}
-              <div className="mt-2 flex items-baseline justify-center gap-2">
-                <span className="text-xl font-semibold text-zinc-400 line-through decoration-red-400 decoration-2">
+              <div className="mt-1 flex items-baseline justify-center gap-1.5 sm:mt-2 sm:gap-2">
+                <span className="text-base font-semibold text-zinc-400 line-through decoration-red-400 decoration-2 sm:text-xl">
                   {formatWholeDollars(activePromotion.originalPriceCents)}
                 </span>
-                <span className="text-5xl font-black text-zinc-900">
+                <span className="text-3xl font-black text-zinc-900 sm:text-5xl">
                   {formatWholeDollars(activePromotion.promoPriceCents)}
                 </span>
-                <span className="text-sm font-medium text-zinc-500">/each</span>
+                <span className="text-xs font-medium text-zinc-500 sm:text-sm">/each</span>
               </div>
 
-              <p className="mt-1.5 text-sm font-medium text-zinc-600">{checkoutPage.productName}</p>
+              <p className="mt-1 text-xs font-medium text-zinc-600 sm:mt-1.5 sm:text-sm">{checkoutPage.productName}</p>
 
               {/* Urgency nudge */}
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
-                <span className="relative flex h-2 w-2">
+              <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700 sm:mt-3 sm:gap-1.5 sm:px-3 sm:py-1 sm:text-xs">
+                <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-600" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-600 sm:h-2 sm:w-2" />
                 </span>
                 {activePromotion.urgencyText || "Offer ends soon \u2014 don\u2019t miss out!"}
               </div>
@@ -573,35 +595,110 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           </div>
         )}
 
-        {/* Quantity control — always shown */}
-        <div className="text-center">
-          <p className="mb-2 text-sm font-semibold text-zinc-700">Quantity</p>
-          <div className="inline-flex items-center gap-0">
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="flex h-12 w-14 items-center justify-center rounded-l-full bg-red-200 text-red-700 transition-colors hover:bg-red-300"
-            >
-              <Minus className="h-5 w-5" />
-            </button>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={quantity}
-              onChange={(e) => {
-                const v = parseInt(e.target.value, 10);
-                if (!isNaN(v) && v >= 1) setQuantity(v);
-              }}
-              className="h-12 w-20 border-y border-zinc-300 text-center text-lg font-bold text-zinc-900 focus:outline-none"
-            />
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => q + 1)}
-              className="flex h-12 w-14 items-center justify-center rounded-r-full bg-emerald-400 text-white transition-colors hover:bg-emerald-500"
-            >
-              <Plus className="h-5 w-5" />
-            </button>
+        {/* Properties & TVs cards */}
+        <div className="grid grid-cols-1 gap-3">
+          {/* Properties card */}
+          <div className="flex items-center gap-3 rounded-2xl border-2 bg-gradient-to-b from-cyan-50/40 to-white px-3 py-3 shadow-sm sm:px-5 sm:py-4" style={{ borderColor: `${accentColor}30` }}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12" style={{ backgroundColor: `${accentColor}15` }}>
+              <Home className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: accentColor }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-extrabold tracking-tight text-zinc-900 sm:text-base">Properties</p>
+              <p className="text-[11px] leading-tight text-zinc-400 sm:text-xs">How many do you manage?</p>
+            </div>
+            <div className="flex items-center overflow-hidden rounded-xl shadow-sm" style={{ border: `1px solid ${accentColor}25` }}>
+              <button
+                type="button"
+                onClick={() => setListingQty((q) => Math.max(1, q - 1))}
+                className="flex h-10 w-10 items-center justify-center transition-colors sm:h-11 sm:w-11"
+                style={{ backgroundColor: `${accentColor}12`, color: `${accentColor}90` }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = `${accentColor}22`; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = `${accentColor}12`; }}
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={listingQty}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (!isNaN(v) && v >= 1) setListingQty(v);
+                }}
+                className="h-10 w-10 min-w-0 bg-white text-center text-base font-extrabold text-zinc-900 focus:outline-none sm:h-11 sm:w-12 sm:text-lg"
+                style={{ borderLeft: `1px solid ${accentColor}25`, borderRight: `1px solid ${accentColor}25` }}
+              />
+              <button
+                type="button"
+                onClick={() => setListingQty((q) => q + 1)}
+                className="flex h-10 w-10 items-center justify-center text-white transition-colors sm:h-11 sm:w-11"
+                style={{ backgroundColor: accentColor }}
+                onMouseEnter={(e) => { e.currentTarget.style.filter = "brightness(1.1)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.filter = ""; }}
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* GuestBoxes card */}
+          <div className="flex items-center gap-3 rounded-2xl border-2 bg-gradient-to-b from-cyan-50/40 to-white px-3 py-3 shadow-sm sm:px-5 sm:py-4" style={{ borderColor: `${accentColor}30` }}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12" style={{ backgroundColor: `${accentColor}15` }}>
+              <Tv className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: accentColor }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-extrabold tracking-tight text-zinc-900 sm:text-base">GuestBoxes</p>
+              <p className="text-[11px] leading-tight text-zinc-400 sm:text-xs">How many do you need?</p>
+            </div>
+            <div className="flex items-center overflow-hidden rounded-xl shadow-sm" style={{ border: `1px solid ${accentColor}25` }}>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(listingQty, q - 1))}
+                className="flex h-10 w-10 items-center justify-center transition-colors sm:h-11 sm:w-11"
+                style={{ backgroundColor: `${accentColor}12`, color: `${accentColor}90` }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = `${accentColor}22`; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = `${accentColor}12`; }}
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={quantity}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (!isNaN(v) && v >= listingQty) setQuantity(v);
+                }}
+                className="h-10 w-10 min-w-0 bg-white text-center text-base font-extrabold text-zinc-900 focus:outline-none sm:h-11 sm:w-12 sm:text-lg"
+                style={{ borderLeft: `1px solid ${accentColor}25`, borderRight: `1px solid ${accentColor}25` }}
+              />
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                className="flex h-10 w-10 items-center justify-center text-white transition-colors sm:h-11 sm:w-11"
+                style={{ backgroundColor: accentColor }}
+                onMouseEnter={(e) => { e.currentTarget.style.filter = "brightness(1.1)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.filter = ""; }}
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* How it works info */}
+        <div className="flex gap-2 rounded-lg bg-blue-50/80 px-2.5 py-2 sm:gap-3 sm:rounded-xl sm:px-4 sm:py-3.5">
+          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-[9px] font-bold text-white sm:h-7 sm:w-7 sm:text-sm">i</div>
+          <div className="min-w-0 text-[10px] leading-snug text-zinc-600 sm:text-sm sm:leading-relaxed">
+            <p className="font-bold text-zinc-800">How it works:</p>
+            <ul className="mt-0.5 list-disc space-y-0 pl-3 sm:space-y-0.5 sm:pl-4">
+              <li>1 <span className="font-bold text-zinc-800">Property</span> = one rental home, unit, or listing.</li>
+              <li>Each TV needs one <span className="font-bold text-zinc-800">GuestBox</span> device.</li>
+              <li>Multiple properties? Add more devices now or later.</li>
+              <li>Extra devices are {formatWholeDollars(promoUnitPrice)} each.</li>
+            </ul>
           </div>
         </div>
 
@@ -615,7 +712,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
           {hasTieredPlans
             ? " | First Month FREE"
-            : selectedPlan ? (selectedPlan.interval === "monthly" ? " | First Month FREE" : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per listing`) : ""}
+            : selectedPlan ? (selectedPlan.interval === "monthly" ? " | First Month FREE" : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per property`) : ""}
         </p>
         <div className="-mt-1 flex items-center justify-evenly rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 px-2 py-2 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
           <span className="flex flex-col items-center gap-0.5">
@@ -977,7 +1074,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
           {/* Monthly / Annual toggle */}
           {selectedTier && (() => {
-            const moTotal = tierMonthlyPriceCents * quantity;
+            const moTotal = tierMonthlyPriceCents * listingQty;
             const yrPerListing = tierAnnualPerListing;
             const yrFullPerListing = tierMonthlyPriceCents * 12;
             const savePct = selectedTier.annualDiscountPercent;
@@ -1010,9 +1107,9 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                       </div>
                     </div>
                   </div>
-                  {quantity > 1 && (
+                  {listingQty > 1 && (
                     <div className="mt-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-500">
-                      {formatWholeDollars(tierMonthlyPriceCents)}/mo × {quantity} devices = {formatWholeDollars(moTotal)}/mo
+                      {formatWholeDollars(tierMonthlyPriceCents)}/mo × {listingQty} properties = {formatWholeDollars(moTotal)}/mo
                     </div>
                   )}
                   <div className="mt-1.5 space-y-0.5">
@@ -1071,15 +1168,17 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                           <div className="flex items-center justify-between">
                             <span className="text-base font-bold text-zinc-900">Annual</span>
                             <div className="translate-y-2.5 text-right">
-                              <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(yrPerListing)}</span>
+                              <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(yrPerListing * listingQty)}</span>
                               <span className="text-sm text-zinc-400">/year</span>
-                              <div className="text-xs text-zinc-400 line-through">{formatWholeDollars(yrFullPerListing)}/year</div>
+                              <div className="text-xs text-zinc-400 line-through">{formatWholeDollars(yrFullPerListing * listingQty)}/year</div>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div className="mt-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-500">
-                        {formatWholeDollars(tierMonthlyPriceCents)}/mo × 12 − {savePct}% = {formatWholeDollars(yrPerListing)}/yr per listing
+                        {listingQty > 1
+                          ? <>{formatWholeDollars(yrPerListing)}/yr × {listingQty} properties = {formatWholeDollars(yrPerListing * listingQty)}/yr</>
+                          : <>{formatWholeDollars(tierMonthlyPriceCents)}/mo × 12 − {savePct}% = {formatWholeDollars(yrPerListing)}/yr per property</>}
                       </div>
                       <div className="-mt-0.5 space-y-0.5">
                         {(selectedTier?.name?.toUpperCase() === "GOLD" ? [
@@ -1102,9 +1201,9 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                           </div>
                         ))}
                         <div className="flex items-start gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500 mt-0.5" /> Save {formatWholeDollars(yrFullPerListing - yrPerListing)}/year
+                          <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500 mt-0.5" /> Save {formatWholeDollars((yrFullPerListing - yrPerListing) * listingQty)}/year
                           <span className="ml-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-extrabold text-emerald-600">
-                            {formatWholeDollars(yrFullPerListing - yrPerListing)} OFF
+                            {formatWholeDollars((yrFullPerListing - yrPerListing) * listingQty)} OFF
                           </span>
                         </div>
                       </div>
@@ -1115,30 +1214,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             );
           })()}
 
-          {/* Listing qty selector for annual */}
-          {selectedTierInterval === "annually" && quantity > 1 && selectedTier && (() => {
-            const perListing = tierAnnualPerListing;
-            const listingTotal = perListing * listingQty;
-            return (
-              <div className="rounded-2xl border-2 border-zinc-200 bg-gradient-to-b from-white to-zinc-50/80 p-5">
-                <p className="text-center text-base font-bold text-zinc-900">How many listings do you want to manage?</p>
-                <p className="mt-1 text-center text-xs text-zinc-500">Each listing is billed at {formatWholeDollars(perListing)}/year</p>
-                <div className="mt-4 flex items-center justify-center gap-0">
-                  <button type="button" disabled={listingQty <= 1} onClick={() => setListingQty((q) => Math.max(1, q - 1))} className="flex h-12 w-14 items-center justify-center rounded-l-full bg-red-200 text-red-700 transition-colors hover:bg-red-300 disabled:opacity-40">
-                    <Minus className="h-5 w-5" />
-                  </button>
-                  <input type="text" inputMode="numeric" pattern="[0-9]*" value={listingQty} onChange={(e) => { const v = parseInt(e.target.value, 10); if (!isNaN(v) && v >= 1) setListingQty(Math.min(v, quantity)); }} className="h-12 w-20 border-y border-zinc-300 bg-white text-center text-lg font-bold text-zinc-900 focus:outline-none" />
-                  <button type="button" disabled={listingQty >= quantity} onClick={() => setListingQty((q) => Math.min(q + 1, quantity))} className="flex h-12 w-14 items-center justify-center rounded-r-full bg-emerald-400 text-white transition-colors hover:bg-emerald-500 disabled:opacity-40">
-                    <Plus className="h-5 w-5" />
-                  </button>
-                </div>
-                <div className="mt-4 flex items-center justify-between rounded-xl bg-zinc-100 px-4 py-2.5">
-                  <span className="text-sm text-zinc-600">{listingQty} {listingQty === 1 ? "listing" : "listings"} × {formatWholeDollars(perListing)}/yr</span>
-                  <span className="text-base font-bold text-zinc-900">{formatWholeDollars(listingTotal)}/yr</span>
-                </div>
-              </div>
-            );
-          })()}
 
           <div className="text-center">
             <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
@@ -1155,7 +1230,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
             <button
               type="button"
               onClick={async () => {
-                if (orderId) await saveBillingPlan(orderId, null, selectedTierInterval === "annually" ? listingQty : quantity, selectedTierId, selectedTierInterval);
+                if (orderId) await saveBillingPlan(orderId, null, listingQty, selectedTierId, selectedTierInterval);
                 setWizardStep(3);
               }}
               className="flex-1 rounded-full py-3 font-bold text-white transition hover:brightness-110"
@@ -1206,18 +1281,23 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   <div className="flex items-center justify-between">
                     <span className="text-base font-bold text-zinc-900">{monthlyPlan.label}</span>
                     <div className="text-right">
-                      <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(monthlyPlan.priceCents)}</span>
+                      <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(monthlyPlan.priceCents * listingQty)}</span>
                       <span className="text-sm text-zinc-400">/month</span>
                     </div>
                   </div>
                 </div>
               </div>
+              {listingQty > 1 && (
+                <div className="mt-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-500">
+                  {formatWholeDollars(monthlyPlan.priceCents)}/mo × {listingQty} properties = {formatWholeDollars(monthlyPlan.priceCents * listingQty)}/mo
+                </div>
+              )}
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all {selectedTier?.name ?? "standard"} features
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Access all standard features
                 </div>
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple devices per listing
+                  <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Supports multiple TVs per property
                 </div>
               </div>
             </label>
@@ -1263,21 +1343,26 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                     <div className="flex items-center justify-between">
                       <span className="text-base font-bold text-zinc-900">{annualPlan.label}</span>
                       <div className="translate-y-2.5 text-right">
-                        <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(annualPlan.priceCents)}</span>
+                        <span className="text-2xl font-extrabold text-zinc-900">{formatWholeDollars(annualPlan.priceCents * listingQty)}</span>
                         <span className="text-sm text-zinc-400">/year</span>
                         {monthlyAsAnnual > 0 && (
-                          <div className="text-xs text-zinc-400 line-through">{formatWholeDollars(monthlyAsAnnual)}/year</div>
+                          <div className="text-xs text-zinc-400 line-through">{formatWholeDollars(monthlyAsAnnual * listingQty)}/year</div>
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
+                {listingQty > 1 && (
+                  <div className="mt-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-500">
+                    {formatWholeDollars(annualPlan.priceCents)}/yr × {listingQty} properties = {formatWholeDollars(annualPlan.priceCents * listingQty)}/yr
+                  </div>
+                )}
                 <div className="-mt-1 space-y-0.5">
                   <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
                     <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Priority support
                   </div>
                   <div className="flex items-center gap-1.5 text-xs sm:text-sm sm:gap-2 text-zinc-600">
-                    <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Save {formatWholeDollars(annualSavings)}/year
+                    <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Save {formatWholeDollars(annualSavings * listingQty)}/year
                     {annualSavings > 0 && (
                       <span className="ml-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-extrabold text-emerald-600">
                         {formatWholeDollars(annualSavings)} OFF
@@ -1323,50 +1408,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           );
         })}
 
-        {selectedPlan?.interval === "annually" && quantity > 1 && (() => {
-          const listingTotal = selectedPlan.priceCents * listingQty;
-          return (
-            <div className="rounded-2xl border-2 border-zinc-200 bg-gradient-to-b from-white to-zinc-50/80 p-5">
-              <p className="text-center text-base font-bold text-zinc-900">How many listings do you to manage?</p>
-              <p className="mt-1 text-center text-xs text-zinc-500">Each listing is billed at {formatWholeDollars(selectedPlan.priceCents)}/year</p>
-
-              <div className="mt-4 flex items-center justify-center gap-0">
-                <button
-                  type="button"
-                  disabled={listingQty <= 1}
-                  onClick={() => setListingQty((q) => Math.max(1, q - 1))}
-                  className="flex h-12 w-14 items-center justify-center rounded-l-full bg-red-200 text-red-700 transition-colors hover:bg-red-300 disabled:opacity-40"
-                >
-                  <Minus className="h-5 w-5" />
-                </button>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  value={listingQty}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    if (!isNaN(v) && v >= 1) setListingQty(Math.min(v, quantity));
-                  }}
-                  className="h-12 w-20 border-y border-zinc-300 bg-white text-center text-lg font-bold text-zinc-900 focus:outline-none"
-                />
-                <button
-                  type="button"
-                  disabled={listingQty >= quantity}
-                  onClick={() => setListingQty((q) => Math.min(q + 1, quantity))}
-                  className="flex h-12 w-14 items-center justify-center rounded-r-full bg-emerald-400 text-white transition-colors hover:bg-emerald-500 disabled:opacity-40"
-                >
-                  <Plus className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between rounded-xl bg-zinc-100 px-4 py-2.5">
-                <span className="text-sm text-zinc-600">{listingQty} {listingQty === 1 ? "listing" : "listings"} × {formatWholeDollars(selectedPlan.priceCents)}/yr</span>
-                <span className="text-base font-bold text-zinc-900">{formatWholeDollars(listingTotal)}/yr</span>
-              </div>
-            </div>
-          );
-        })()}
 
         <div className="text-center">
         <span className="inline-block rounded-full bg-emerald-50 px-3 py-1.5 text-xs sm:text-sm sm:px-4 font-extrabold text-emerald-600">
@@ -1387,7 +1428,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           <button
             type="button"
             onClick={async () => {
-              if (orderId) await saveBillingPlan(orderId, selectedPlanId, selectedPlan?.interval === "annually" ? listingQty : quantity);
+              if (orderId) await saveBillingPlan(orderId, selectedPlanId, listingQty);
               setWizardStep(3);
             }}
             className="flex-1 rounded-full py-3 font-bold text-white transition hover:brightness-110"
@@ -1412,7 +1453,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
           ))}
           {upgradeSelected && <input type="hidden" name="upgradeSelected" value="on" />}
           <input type="hidden" name="quantity" value={quantity} />
-          <input type="hidden" name="listingQty" value={selectedBillingInterval === "annually" ? listingQty : quantity} />
+          <input type="hidden" name="listingQty" value={listingQty} />
           {hasTieredPlans && selectedTierId && <input type="hidden" name="planTierId" value={selectedTierId} />}
           {hasTieredPlans && <input type="hidden" name="tierInterval" value={selectedTierInterval} />}
           {!hasTieredPlans && selectedPlanId && <input type="hidden" name="billingPlanId" value={selectedPlanId} />}
@@ -1735,7 +1776,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
                   : (selectedPlan?.label ?? "");
                 return (
                   <div className="flex justify-between">
-                    <span>+ {rLabel} ({planListingMultiplier} {planListingMultiplier === 1 ? "listing" : "listings"} × {formatWholeDollars(rUnitPrice)}/{recurringLabel})</span>
+                    <span>+ {rLabel} ({planListingMultiplier} {planListingMultiplier === 1 ? "property" : "properties"} × {formatWholeDollars(rUnitPrice)}/{recurringLabel})</span>
                     <span className="font-medium">{formatWholeDollars(rUnitPrice * planListingMultiplier)}</span>
                   </div>
                 );

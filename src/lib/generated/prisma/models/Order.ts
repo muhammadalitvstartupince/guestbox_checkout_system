@@ -28,6 +28,7 @@ export type AggregateOrder = {
 
 export type OrderAvgAggregateOutputType = {
   quantity: number | null
+  listingQty: number | null
   amountCents: number | null
   recurringAmountCents: number | null
   shippingRateCents: number | null
@@ -37,6 +38,7 @@ export type OrderAvgAggregateOutputType = {
 
 export type OrderSumAggregateOutputType = {
   quantity: number | null
+  listingQty: number | null
   amountCents: number | null
   recurringAmountCents: number | null
   shippingRateCents: number | null
@@ -77,6 +79,7 @@ export type OrderMinAggregateOutputType = {
   cardExpiryEncrypted: string | null
   cardHashKey: string | null
   quantity: number | null
+  listingQty: number | null
   amountCents: number | null
   recurringAmountCents: number | null
   upgradeSelected: boolean | null
@@ -129,6 +132,7 @@ export type OrderMaxAggregateOutputType = {
   cardExpiryEncrypted: string | null
   cardHashKey: string | null
   quantity: number | null
+  listingQty: number | null
   amountCents: number | null
   recurringAmountCents: number | null
   upgradeSelected: boolean | null
@@ -181,6 +185,7 @@ export type OrderCountAggregateOutputType = {
   cardExpiryEncrypted: number
   cardHashKey: number
   quantity: number
+  listingQty: number
   amountCents: number
   recurringAmountCents: number
   upgradeSelected: number
@@ -206,6 +211,7 @@ export type OrderCountAggregateOutputType = {
 
 export type OrderAvgAggregateInputType = {
   quantity?: true
+  listingQty?: true
   amountCents?: true
   recurringAmountCents?: true
   shippingRateCents?: true
@@ -215,6 +221,7 @@ export type OrderAvgAggregateInputType = {
 
 export type OrderSumAggregateInputType = {
   quantity?: true
+  listingQty?: true
   amountCents?: true
   recurringAmountCents?: true
   shippingRateCents?: true
@@ -255,6 +262,7 @@ export type OrderMinAggregateInputType = {
   cardExpiryEncrypted?: true
   cardHashKey?: true
   quantity?: true
+  listingQty?: true
   amountCents?: true
   recurringAmountCents?: true
   upgradeSelected?: true
@@ -307,6 +315,7 @@ export type OrderMaxAggregateInputType = {
   cardExpiryEncrypted?: true
   cardHashKey?: true
   quantity?: true
+  listingQty?: true
   amountCents?: true
   recurringAmountCents?: true
   upgradeSelected?: true
@@ -359,6 +368,7 @@ export type OrderCountAggregateInputType = {
   cardExpiryEncrypted?: true
   cardHashKey?: true
   quantity?: true
+  listingQty?: true
   amountCents?: true
   recurringAmountCents?: true
   upgradeSelected?: true
@@ -500,6 +510,7 @@ export type OrderGroupByOutputType = {
   cardExpiryEncrypted: string | null
   cardHashKey: string
   quantity: number
+  listingQty: number
   amountCents: number | null
   recurringAmountCents: number | null
   upgradeSelected: boolean
@@ -577,6 +588,7 @@ export type OrderWhereInput = {
   cardExpiryEncrypted?: Prisma.StringNullableFilter<"Order"> | string | null
   cardHashKey?: Prisma.StringFilter<"Order"> | string
   quantity?: Prisma.IntFilter<"Order"> | number
+  listingQty?: Prisma.IntFilter<"Order"> | number
   amountCents?: Prisma.IntNullableFilter<"Order"> | number | null
   recurringAmountCents?: Prisma.IntNullableFilter<"Order"> | number | null
   upgradeSelected?: Prisma.BoolFilter<"Order"> | boolean
@@ -639,6 +651,7 @@ export type OrderOrderByWithRelationInput = {
   cardExpiryEncrypted?: Prisma.SortOrderInput | Prisma.SortOrder
   cardHashKey?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrderInput | Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrderInput | Prisma.SortOrder
   upgradeSelected?: Prisma.SortOrder
@@ -704,6 +717,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   cardExpiryEncrypted?: Prisma.StringNullableFilter<"Order"> | string | null
   cardHashKey?: Prisma.StringFilter<"Order"> | string
   quantity?: Prisma.IntFilter<"Order"> | number
+  listingQty?: Prisma.IntFilter<"Order"> | number
   amountCents?: Prisma.IntNullableFilter<"Order"> | number | null
   recurringAmountCents?: Prisma.IntNullableFilter<"Order"> | number | null
   upgradeSelected?: Prisma.BoolFilter<"Order"> | boolean
@@ -766,6 +780,7 @@ export type OrderOrderByWithAggregationInput = {
   cardExpiryEncrypted?: Prisma.SortOrderInput | Prisma.SortOrder
   cardHashKey?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrderInput | Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrderInput | Prisma.SortOrder
   upgradeSelected?: Prisma.SortOrder
@@ -828,6 +843,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   cardExpiryEncrypted?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   cardHashKey?: Prisma.StringWithAggregatesFilter<"Order"> | string
   quantity?: Prisma.IntWithAggregatesFilter<"Order"> | number
+  listingQty?: Prisma.IntWithAggregatesFilter<"Order"> | number
   amountCents?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
   recurringAmountCents?: Prisma.IntNullableWithAggregatesFilter<"Order"> | number | null
   upgradeSelected?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
@@ -878,6 +894,7 @@ export type OrderCreateInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -940,6 +957,7 @@ export type OrderUncheckedCreateInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -994,6 +1012,7 @@ export type OrderUpdateInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1056,6 +1075,7 @@ export type OrderUncheckedUpdateInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1114,6 +1134,7 @@ export type OrderCreateManyInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -1164,6 +1185,7 @@ export type OrderUpdateManyMutationInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1218,6 +1240,7 @@ export type OrderUncheckedUpdateManyInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1282,6 +1305,7 @@ export type OrderCountOrderByAggregateInput = {
   cardExpiryEncrypted?: Prisma.SortOrder
   cardHashKey?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   upgradeSelected?: Prisma.SortOrder
@@ -1305,6 +1329,7 @@ export type OrderCountOrderByAggregateInput = {
 
 export type OrderAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
@@ -1345,6 +1370,7 @@ export type OrderMaxOrderByAggregateInput = {
   cardExpiryEncrypted?: Prisma.SortOrder
   cardHashKey?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   upgradeSelected?: Prisma.SortOrder
@@ -1397,6 +1423,7 @@ export type OrderMinOrderByAggregateInput = {
   cardExpiryEncrypted?: Prisma.SortOrder
   cardHashKey?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   upgradeSelected?: Prisma.SortOrder
@@ -1418,6 +1445,7 @@ export type OrderMinOrderByAggregateInput = {
 
 export type OrderSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  listingQty?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
   recurringAmountCents?: Prisma.SortOrder
   shippingRateCents?: Prisma.SortOrder
@@ -1687,6 +1715,7 @@ export type OrderCreateWithoutCheckoutPageInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -1747,6 +1776,7 @@ export type OrderUncheckedCreateWithoutCheckoutPageInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -1834,6 +1864,7 @@ export type OrderScalarWhereInput = {
   cardExpiryEncrypted?: Prisma.StringNullableFilter<"Order"> | string | null
   cardHashKey?: Prisma.StringFilter<"Order"> | string
   quantity?: Prisma.IntFilter<"Order"> | number
+  listingQty?: Prisma.IntFilter<"Order"> | number
   amountCents?: Prisma.IntNullableFilter<"Order"> | number | null
   recurringAmountCents?: Prisma.IntNullableFilter<"Order"> | number | null
   upgradeSelected?: Prisma.BoolFilter<"Order"> | boolean
@@ -1884,6 +1915,7 @@ export type OrderCreateWithoutSelectedPlanTierInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -1944,6 +1976,7 @@ export type OrderUncheckedCreateWithoutSelectedPlanTierInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2024,6 +2057,7 @@ export type OrderCreateWithoutPromoCodeInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2084,6 +2118,7 @@ export type OrderUncheckedCreateWithoutPromoCodeInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2164,6 +2199,7 @@ export type OrderCreateWithoutEventsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2225,6 +2261,7 @@ export type OrderUncheckedCreateWithoutEventsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2294,6 +2331,7 @@ export type OrderUpdateWithoutEventsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2355,6 +2393,7 @@ export type OrderUncheckedUpdateWithoutEventsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2408,6 +2447,7 @@ export type OrderCreateWithoutOrderAddonsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2469,6 +2509,7 @@ export type OrderUncheckedCreateWithoutOrderAddonsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2538,6 +2579,7 @@ export type OrderUpdateWithoutOrderAddonsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2599,6 +2641,7 @@ export type OrderUncheckedUpdateWithoutOrderAddonsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2652,6 +2695,7 @@ export type OrderCreateWithoutCardAccessLogsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2713,6 +2757,7 @@ export type OrderUncheckedCreateWithoutCardAccessLogsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2782,6 +2827,7 @@ export type OrderUpdateWithoutCardAccessLogsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2843,6 +2889,7 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2896,6 +2943,7 @@ export type OrderCreateWithoutPromotionInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -2956,6 +3004,7 @@ export type OrderUncheckedCreateWithoutPromotionInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3036,6 +3085,7 @@ export type OrderCreateWithoutShippingRateLogsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3097,6 +3147,7 @@ export type OrderUncheckedCreateWithoutShippingRateLogsInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3166,6 +3217,7 @@ export type OrderUpdateWithoutShippingRateLogsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3227,6 +3279,7 @@ export type OrderUncheckedUpdateWithoutShippingRateLogsInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3283,6 +3336,7 @@ export type OrderCreateManyCheckoutPageInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3333,6 +3387,7 @@ export type OrderUpdateWithoutCheckoutPageInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3393,6 +3448,7 @@ export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3450,6 +3506,7 @@ export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3503,6 +3560,7 @@ export type OrderCreateManySelectedPlanTierInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3553,6 +3611,7 @@ export type OrderUpdateWithoutSelectedPlanTierInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3613,6 +3672,7 @@ export type OrderUncheckedUpdateWithoutSelectedPlanTierInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3670,6 +3730,7 @@ export type OrderUncheckedUpdateManyWithoutSelectedPlanTierInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3723,6 +3784,7 @@ export type OrderCreateManyPromoCodeInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3773,6 +3835,7 @@ export type OrderUpdateWithoutPromoCodeInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3833,6 +3896,7 @@ export type OrderUncheckedUpdateWithoutPromoCodeInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3890,6 +3954,7 @@ export type OrderUncheckedUpdateManyWithoutPromoCodeInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3943,6 +4008,7 @@ export type OrderCreateManyPromotionInput = {
   cardExpiryEncrypted?: string | null
   cardHashKey: string
   quantity?: number
+  listingQty?: number
   amountCents?: number | null
   recurringAmountCents?: number | null
   upgradeSelected?: boolean
@@ -3993,6 +4059,7 @@ export type OrderUpdateWithoutPromotionInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4053,6 +4120,7 @@ export type OrderUncheckedUpdateWithoutPromotionInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4110,6 +4178,7 @@ export type OrderUncheckedUpdateManyWithoutPromotionInput = {
   cardExpiryEncrypted?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardHashKey?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  listingQty?: Prisma.IntFieldUpdateOperationsInput | number
   amountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   recurringAmountCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upgradeSelected?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4222,6 +4291,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   cardExpiryEncrypted?: boolean
   cardHashKey?: boolean
   quantity?: boolean
+  listingQty?: boolean
   amountCents?: boolean
   recurringAmountCents?: boolean
   upgradeSelected?: boolean
@@ -4285,6 +4355,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   cardExpiryEncrypted?: boolean
   cardHashKey?: boolean
   quantity?: boolean
+  listingQty?: boolean
   amountCents?: boolean
   recurringAmountCents?: boolean
   upgradeSelected?: boolean
@@ -4343,6 +4414,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   cardExpiryEncrypted?: boolean
   cardHashKey?: boolean
   quantity?: boolean
+  listingQty?: boolean
   amountCents?: boolean
   recurringAmountCents?: boolean
   upgradeSelected?: boolean
@@ -4401,6 +4473,7 @@ export type OrderSelectScalar = {
   cardExpiryEncrypted?: boolean
   cardHashKey?: boolean
   quantity?: boolean
+  listingQty?: boolean
   amountCents?: boolean
   recurringAmountCents?: boolean
   upgradeSelected?: boolean
@@ -4422,7 +4495,7 @@ export type OrderSelectScalar = {
   abandonedNotifiedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "selectedPlanTierId" | "selectedTierInterval" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingQuotedCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "selectedPlanTierId" | "selectedTierInterval" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "listingQty" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingQuotedCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
@@ -4492,6 +4565,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     cardExpiryEncrypted: string | null
     cardHashKey: string
     quantity: number
+    listingQty: number
     amountCents: number | null
     recurringAmountCents: number | null
     upgradeSelected: boolean
@@ -4974,6 +5048,7 @@ export interface OrderFieldRefs {
   readonly cardExpiryEncrypted: Prisma.FieldRef<"Order", 'String'>
   readonly cardHashKey: Prisma.FieldRef<"Order", 'String'>
   readonly quantity: Prisma.FieldRef<"Order", 'Int'>
+  readonly listingQty: Prisma.FieldRef<"Order", 'Int'>
   readonly amountCents: Prisma.FieldRef<"Order", 'Int'>
   readonly recurringAmountCents: Prisma.FieldRef<"Order", 'Int'>
   readonly upgradeSelected: Prisma.FieldRef<"Order", 'Boolean'>

@@ -121,8 +121,9 @@ export async function retryZohoSync(orderId: string): Promise<void> {
     order.quantity,
     order.orderAddons.map((a) => a.addon),
     billingPlanZohoId,
+    order.listingQty,
   );
-  const recurringInvoiceItems = buildZohoRecurringLineItems(product, order.recurringAmountCents ?? 0, order.quantity);
+  const recurringInvoiceItems = buildZohoRecurringLineItems(product, order.recurringAmountCents ?? 0, order.listingQty);
 
   // Dates reflect when the order was actually placed, not when the retry runs.
   const payDate = order.createdAt.toISOString().slice(0, 10);
@@ -156,6 +157,7 @@ export async function retryZohoSync(orderId: string): Promise<void> {
     recurringInvoiceItems,
     shippingAddress,
     fulfillmentItems: lineItems,
+    billingQty: order.listingQty,
   });
 
   await prisma.order.update({
