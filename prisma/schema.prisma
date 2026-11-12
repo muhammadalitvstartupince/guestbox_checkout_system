@@ -340,6 +340,7 @@ model PromoCode {
   timesRedeemed  Int       @default(0) @map("times_redeemed")
   startsAt       DateTime? @map("starts_at")
   expiresAt      DateTime? @map("expires_at")
+  timezone       String    @default("UTC") @map("timezone")
   isActive       Boolean   @default(true) @map("is_active")
   createdAt      DateTime  @default(now()) @map("created_at")
 
@@ -396,8 +397,10 @@ model Order {
   selectedBillingPlanId String? @map("selected_billing_plan_id") @db.Uuid
 
   // Which plan tier (GOLD/PLATINUM/DIAMOND) the customer selected (tiered plans mode).
-  selectedPlanTierId String?   @map("selected_plan_tier_id") @db.Uuid
-  selectedPlanTier   PlanTier? @relation(fields: [selectedPlanTierId], references: [id])
+  selectedPlanTierId    String?   @map("selected_plan_tier_id") @db.Uuid
+  selectedPlanTier      PlanTier? @relation(fields: [selectedPlanTierId], references: [id])
+  // "monthly" or "annually" — which billing interval the customer chose for the tiered plan.
+  selectedTierInterval  String?   @map("selected_tier_interval")
 
   cardLast4  String? @map("card_last4")
   cardBrand  String? @map("card_brand")
@@ -443,9 +446,10 @@ model Order {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  orderAddons    OrderAddon[]
-  cardAccessLogs CardAccessAuditLog[]
-  events         OrderEvent[]
+  orderAddons      OrderAddon[]
+  cardAccessLogs   CardAccessAuditLog[]
+  events           OrderEvent[]
+  shippingRateLogs ShippingRateLog[]
 
   abandonedNotifiedAt DateTime? @map("abandoned_notified_at")
 
@@ -603,4 +607,17 @@ model AbandonedCheckoutSettings {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@map("abandoned_checkout_settings")
+}
+
+// Logs every Shippo API call (request + response) so admins can audit
+// shipping rate calculations for any order.
+model ShippingRateLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String   @map("order_id") @db.Uuid
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  request   Json
+  response  Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("shipping_rate_logs")
 }

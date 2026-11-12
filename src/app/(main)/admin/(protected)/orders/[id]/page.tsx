@@ -27,6 +27,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         include: { adminUser: { select: { email: true } } },
       },
       events: { orderBy: { createdAt: "asc" } },
+      shippingRateLogs: { orderBy: { createdAt: "desc" } },
     },
   });
 
@@ -35,6 +36,11 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   const billingPlan = order.selectedBillingPlanId
     ? await prisma.billingPlan.findUnique({ where: { id: order.selectedBillingPlanId }, select: { label: true, interval: true, priceCents: true } })
     : null;
+
+  const planTier = order.selectedPlanTierId
+    ? await prisma.planTier.findUnique({ where: { id: order.selectedPlanTierId }, include: { prices: { orderBy: { sortOrder: "asc" } } } })
+    : null;
+  const tierInterval = order.selectedTierInterval as "monthly" | "annually" | null;
 
   // Load the promotion if this order was placed during one
   const activePromo = order.promotionId
@@ -94,7 +100,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       addons: order.orderAddons.map((a) => ({ priceCents: a.priceCents })),
       promo: promoCalcInput,
       recurringPriceCents: order.recurringAmountCents ?? 0,
-      selectedInterval: billingPlan?.interval ?? null,
+      selectedInterval: tierInterval ?? billingPlan?.interval ?? null,
     });
     promoRecurringDiscountCents = promoPrice.recurringDiscountCents;
     const totalPromoDiscount = promoPrice.discountCents + promoPrice.recurringDiscountCents;
@@ -200,20 +206,44 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                   : `${formatCents(unitPriceCents)} × ${order.quantity} = ${formatCents(unitPriceCents * order.quantity)}`
               }
             />
-            <Row label="Billing type" value={billingPlan ? `${billingPlan.label} (${billingPlan.interval})` : "—"} />
-            {billingPlan && (() => {
-              const isAnnual = billingPlan.interval === "annually";
-              const listingCount = isAnnual
-                ? (order.recurringAmountCents && billingPlan.priceCents > 0
-                    ? Math.round(order.recurringAmountCents / billingPlan.priceCents)
-                    : 1)
-                : order.quantity;
+            <Row label="Billing type" value={
+              planTier ? `${planTier.name} (${tierInterval ?? "monthly"})`
+              : billingPlan ? `${billingPlan.label} (${billingPlan.interval})`
+              : "—"
+            } />
+            {(planTier || billingPlan) && (() => {
+              const effectiveInterval = tierInterval ?? billingPlan?.interval ?? "monthly";
+              const isAnnual = effectiveInterval === "annually";
+              let unitPrice = 0;
+              let listingCount = order.quantity;
+              if (planTier && order.recurringAmountCents) {
+                // For tiered plans, compute per-listing price from the tier
+                const priceRow = planTier.prices.find(
+                  (p) => order.quantity >= p.minQty && (p.maxQty == null || order.quantity <= p.maxQty),
+                ) ?? planTier.prices[0];
+                if (priceRow) {
+                  if (isAnnual) {
+                    unitPrice = Math.round(priceRow.monthlyPriceCents * 12 * (1 - planTier.annualDiscountPercent / 100));
+                    listingCount = unitPrice > 0 ? Math.round(order.recurringAmountCents / unitPrice) : 1;
+                  } else {
+                    unitPrice = priceRow.monthlyPriceCents;
+                    listingCount = order.quantity;
+                  }
+                }
+              } else if (billingPlan) {
+                unitPrice = billingPlan.priceCents;
+                listingCount = isAnnual
+                  ? (order.recurringAmountCents && billingPlan.priceCents > 0
+                      ? Math.round(order.recurringAmountCents / billingPlan.priceCents)
+                      : 1)
+                  : order.quantity;
+              }
               const intervalLabel = isAnnual ? "year" : "month";
               return (
-                <Row label="Plan price" value={`${formatCents(billingPlan.priceCents)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"}`} />
+                <Row label="Plan price" value={`${formatCents(unitPrice)}/${intervalLabel} × ${listingCount} ${listingCount === 1 ? "listing" : "listings"}`} />
               );
             })()}
-            <Row label={billingPlan?.interval === "annually" ? "Annual total" : "Monthly total"} value={
+            <Row label={(tierInterval ?? billingPlan?.interval) === "annually" ? "Annual total" : "Monthly total"} value={
               promoRecurringDiscountCents > 0 && order.recurringAmountCents
                 ? `${formatCents(order.recurringAmountCents - promoRecurringDiscountCents)} (was ${formatCents(order.recurringAmountCents)})`
                 : formatCents(order.recurringAmountCents)
@@ -298,6 +328,30 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             </div>
           )}
         </Card>
+
+        {order.shippingRateLogs.length > 0 && (
+          <Card title="Shippo Rate Logs">
+            {order.shippingRateLogs.map((log) => (
+              <div key={log.id} className="space-y-2 border-b border-zinc-100 pb-3 last:border-0 last:pb-0 dark:border-zinc-800">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  {log.createdAt.toISOString().slice(0, 16).replace("T", " ")} UTC
+                </p>
+                <div>
+                  <dt className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Request</dt>
+                  <pre className="overflow-x-auto rounded-lg bg-zinc-50 p-3 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                    {JSON.stringify(log.request, null, 2)}
+                  </pre>
+                </div>
+                <div>
+                  <dt className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Response</dt>
+                  <pre className="overflow-x-auto rounded-lg bg-zinc-50 p-3 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                    {JSON.stringify(log.response, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            ))}
+          </Card>
+        )}
 
         <Card
           title="Confirmation Email"

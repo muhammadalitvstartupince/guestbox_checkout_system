@@ -372,310 +372,396 @@ export function CheckoutPageForm({
       </fieldset>
 
       {/* Billing Plans — hidden when tiered plans is enabled */}
-      <fieldset className={`space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700${tieredPlansEnabled ? " hidden" : ""}`}>
-        <legend className="px-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+      <fieldset className={`space-y-4 rounded-xl border border-zinc-200 p-5 dark:border-zinc-700${tieredPlansEnabled ? " hidden" : ""}`}>
+        <legend className="px-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           Billing Plans (optional)
         </legend>
         <p className="-mt-2 text-xs text-zinc-500 dark:text-zinc-400">
           Recurring billing options — e.g. Monthly $24/mo, Annual $249/yr. Leave empty to use the recurring price above.
         </p>
-        {billingPlans.map((plan, i) => (
-          <div key={i} className="grid grid-cols-7 items-end gap-2">
-            <div>
-              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Interval</label>
-              <select
-                name={`billingPlan_${i}_interval`}
-                value={plan.interval}
-                onChange={(e) => {
-                  const next = [...billingPlans];
-                  next[i] = { ...next[i], interval: e.target.value as "monthly" | "annually" };
-                  setBillingPlans(next);
-                }}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-              >
-                <option value="monthly">Monthly</option>
-                <option value="annually">Annually</option>
-              </select>
+        <div className="space-y-3">
+          {billingPlans.map((plan, i) => (
+            <div key={i} className="rounded-xl border border-zinc-200 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/40">
+              {/* Plan header bar */}
+              <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-2.5 dark:border-zinc-700">
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
+                    plan.interval === "annually"
+                      ? "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"
+                      : "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
+                  }`}>
+                    {plan.interval === "annually" ? "Annual" : "Monthly"}
+                  </span>
+                  <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{plan.label || "Untitled Plan"}</span>
+                  {plan.priceCents && <span className="text-xs text-zinc-500 dark:text-zinc-400">${plan.priceCents}/{plan.interval === "annually" ? "yr" : "mo"}</span>}
+                </div>
+                <div className="flex items-center gap-2">
+                  {plan.isDefault && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400">DEFAULT</span>}
+                  {plan.chargeAtCheckout && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">CHARGE NOW</span>}
+                  <button
+                    type="button"
+                    onClick={() => setBillingPlans((p) => p.filter((_, j) => j !== i))}
+                    className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                    title="Remove plan"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+              </div>
+              {/* Plan fields */}
+              <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Interval</label>
+                  <select
+                    name={`billingPlan_${i}_interval`}
+                    value={plan.interval}
+                    onChange={(e) => {
+                      const next = [...billingPlans];
+                      next[i] = { ...next[i], interval: e.target.value as "monthly" | "annually" };
+                      setBillingPlans(next);
+                    }}
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="annually">Annually</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Label</label>
+                  <input
+                    name={`billingPlan_${i}_label`}
+                    value={plan.label}
+                    onChange={(e) => {
+                      const next = [...billingPlans];
+                      next[i] = { ...next[i], label: e.target.value };
+                      setBillingPlans(next);
+                    }}
+                    className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Price (USD)</label>
+                  <input
+                    name={`billingPlan_${i}_price`}
+                    value={plan.priceCents}
+                    onChange={(e) => {
+                      const next = [...billingPlans];
+                      next[i] = { ...next[i], priceCents: e.target.value };
+                      setBillingPlans(next);
+                    }}
+                    placeholder="0.00"
+                    className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Zoho Item ID</label>
+                  <input
+                    name={`billingPlan_${i}_zohoItemId`}
+                    value={plan.zohoItemId}
+                    onChange={(e) => {
+                      const next = [...billingPlans];
+                      next[i] = { ...next[i], zohoItemId: e.target.value };
+                      setBillingPlans(next);
+                    }}
+                    className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                  />
+                </div>
+              </div>
+              {/* Toggles row */}
+              <div className="flex items-center gap-5 border-t border-zinc-200 px-4 py-2.5 dark:border-zinc-700">
+                <label className="flex cursor-pointer items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300">
+                  <input
+                    type="checkbox"
+                    checked={plan.isDefault}
+                    onChange={(e) => {
+                      const next = [...billingPlans];
+                      next[i] = { ...next[i], isDefault: e.target.checked };
+                      setBillingPlans(next);
+                    }}
+                    className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-600"
+                  />
+                  Default plan
+                </label>
+                <label className="flex cursor-pointer items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300">
+                  <input
+                    type="checkbox"
+                    checked={plan.chargeAtCheckout}
+                    onChange={(e) => {
+                      const next = [...billingPlans];
+                      next[i] = { ...next[i], chargeAtCheckout: e.target.checked };
+                      setBillingPlans(next);
+                    }}
+                    className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-600"
+                  />
+                  Charge at checkout
+                </label>
+              </div>
             </div>
-            <div>
-              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Label</label>
-              <input
-                name={`billingPlan_${i}_label`}
-                value={plan.label}
-                onChange={(e) => {
-                  const next = [...billingPlans];
-                  next[i] = { ...next[i], label: e.target.value };
-                  setBillingPlans(next);
-                }}
-                className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Price (USD)</label>
-              <input
-                name={`billingPlan_${i}_price`}
-                value={plan.priceCents}
-                onChange={(e) => {
-                  const next = [...billingPlans];
-                  next[i] = { ...next[i], priceCents: e.target.value };
-                  setBillingPlans(next);
-                }}
-                className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Zoho Item ID</label>
-              <input
-                name={`billingPlan_${i}_zohoItemId`}
-                value={plan.zohoItemId}
-                onChange={(e) => {
-                  const next = [...billingPlans];
-                  next[i] = { ...next[i], zohoItemId: e.target.value };
-                  setBillingPlans(next);
-                }}
-                className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Default?</label>
-              <label className="flex items-center gap-1.5 py-2 text-sm text-zinc-700 dark:text-zinc-300">
-                <input
-                  type="checkbox"
-                  checked={plan.isDefault}
-                  onChange={(e) => {
-                    const next = [...billingPlans];
-                    next[i] = { ...next[i], isDefault: e.target.checked };
-                    setBillingPlans(next);
-                  }}
-                />
-                Default
-              </label>
-            </div>
-            <div>
-              <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Charge now?</label>
-              <label className="flex items-center gap-1.5 py-2 text-sm text-zinc-700 dark:text-zinc-300">
-                <input
-                  type="checkbox"
-                  checked={plan.chargeAtCheckout}
-                  onChange={(e) => {
-                    const next = [...billingPlans];
-                    next[i] = { ...next[i], chargeAtCheckout: e.target.checked };
-                    setBillingPlans(next);
-                  }}
-                />
-                At checkout
-              </label>
-            </div>
-            <button
-              type="button"
-              onClick={() => setBillingPlans((p) => p.filter((_, j) => j !== i))}
-              className="rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
         <input type="hidden" name="billingPlansJson" value={JSON.stringify(billingPlans)} />
         <button
           type="button"
           onClick={() => setBillingPlans((p) => [...p, { interval: "monthly", label: "Monthly Plan", priceCents: "", zohoItemId: "", chargeAtCheckout: false, isDefault: p.length === 0 }])}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-zinc-300 px-4 py-2 text-sm text-zinc-600 transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
         >
-          + Add Plan
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+          Add Plan
         </button>
       </fieldset>
 
       {/* Tiered Plans */}
-      <fieldset className="space-y-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
-        <legend className="px-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          Tiered Plans (optional)
+      <fieldset className="space-y-4 rounded-xl border border-zinc-200 p-5 dark:border-zinc-700">
+        <legend className="px-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          Billing Tiered Plans (optional)
         </legend>
-        <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-          <input
-            type="checkbox"
-            name="tieredPlansEnabled"
-            checked={tieredPlansEnabled}
-            onChange={(e) => setTieredPlansEnabled(e.target.checked)}
-          />
-          Enable tiered plans (GOLD / PLATINUM / DIAMOND style)
-        </label>
-        <p className="-mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-          When enabled, customers choose a plan tier at checkout. Each tier has qty-based monthly pricing. Annual = monthly × 12 minus the discount %. Overrides the simple billing plans above.
-        </p>
+
+        {/* Toggle switch */}
+        <div className="flex items-start gap-3 rounded-lg border border-zinc-200 bg-zinc-50/50 p-3.5 dark:border-zinc-700 dark:bg-zinc-800/40">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={tieredPlansEnabled}
+            onClick={() => setTieredPlansEnabled(!tieredPlansEnabled)}
+            className={`relative mt-0.5 inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
+              tieredPlansEnabled ? "bg-indigo-600" : "bg-zinc-300 dark:bg-zinc-600"
+            }`}
+          >
+            <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
+              tieredPlansEnabled ? "translate-x-[18px]" : "translate-x-[3px]"
+            }`} />
+          </button>
+          <input type="hidden" name="tieredPlansEnabled" value={tieredPlansEnabled ? "on" : ""} />
+          <div>
+            <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Enable tiered plans (GOLD / PLATINUM / DIAMOND style)</p>
+            <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+              Customers choose a plan tier at checkout. Each tier has qty-based monthly pricing. Annual = monthly × 12 minus the discount %. Overrides simple billing plans above.
+            </p>
+          </div>
+        </div>
 
         {tieredPlansEnabled && (
-          <div className="space-y-6">
-            {planTiers.map((tier, ti) => (
-              <div key={ti} className="rounded-lg border border-zinc-300 p-3 dark:border-zinc-600">
-                <div className="mb-3 grid grid-cols-6 items-end gap-2">
-                  <div>
-                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Tier Name</label>
-                    <input
-                      value={tier.name}
-                      onChange={(e) => {
-                        const next = [...planTiers];
-                        next[ti] = { ...next[ti], name: e.target.value };
-                        setPlanTiers(next);
-                      }}
-                      placeholder="GOLD"
-                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                    />
+          <div className="space-y-4">
+            {planTiers.map((tier, ti) => {
+              const tierColors = [
+                { bg: "bg-amber-50 dark:bg-amber-500/5", border: "border-amber-200 dark:border-amber-500/20", badge: "bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-400", accent: "border-amber-300 dark:border-amber-500/30" },
+                { bg: "bg-sky-50 dark:bg-sky-500/5", border: "border-sky-200 dark:border-sky-500/20", badge: "bg-sky-100 text-sky-800 dark:bg-sky-500/15 dark:text-sky-400", accent: "border-sky-300 dark:border-sky-500/30" },
+                { bg: "bg-violet-50 dark:bg-violet-500/5", border: "border-violet-200 dark:border-violet-500/20", badge: "bg-violet-100 text-violet-800 dark:bg-violet-500/15 dark:text-violet-400", accent: "border-violet-300 dark:border-violet-500/30" },
+                { bg: "bg-rose-50 dark:bg-rose-500/5", border: "border-rose-200 dark:border-rose-500/20", badge: "bg-rose-100 text-rose-800 dark:bg-rose-500/15 dark:text-rose-400", accent: "border-rose-300 dark:border-rose-500/30" },
+              ];
+              const c = tierColors[ti % tierColors.length];
+              return (
+                <div key={ti} className={`overflow-hidden rounded-xl border ${c.border}`}>
+                  {/* Tier header */}
+                  <div className={`flex items-center justify-between px-4 py-3 ${c.bg}`}>
+                    <div className="flex items-center gap-2.5">
+                      <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wider ${c.badge}`}>
+                        {tier.name || `Tier ${ti + 1}`}
+                      </span>
+                      {tier.isDefault && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400">DEFAULT</span>}
+                      {tier.annualDiscountPercent && Number(tier.annualDiscountPercent) > 0 && (
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400">{tier.annualDiscountPercent}% annual discount</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPlanTiers((t) => t.filter((_, j) => j !== ti))}
+                      className="rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                      title="Remove tier"
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                    </button>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Annual Discount %</label>
-                    <input
-                      value={tier.annualDiscountPercent}
-                      onChange={(e) => {
-                        const next = [...planTiers];
-                        next[ti] = { ...next[ti], annualDiscountPercent: e.target.value };
-                        setPlanTiers(next);
-                      }}
-                      placeholder="0"
-                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Zoho Monthly ID</label>
-                    <input
-                      value={tier.zohoMonthlyItemId}
-                      onChange={(e) => {
-                        const next = [...planTiers];
-                        next[ti] = { ...next[ti], zohoMonthlyItemId: e.target.value };
-                        setPlanTiers(next);
-                      }}
-                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Zoho Annual ID</label>
-                    <input
-                      value={tier.zohoAnnualItemId}
-                      onChange={(e) => {
-                        const next = [...planTiers];
-                        next[ti] = { ...next[ti], zohoAnnualItemId: e.target.value };
-                        setPlanTiers(next);
-                      }}
-                      className="w-full rounded-lg border border-zinc-300 px-2 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                    />
-                  </div>
-                  <div className="flex gap-3">
-                    <label className="flex items-center gap-1.5 py-2 text-xs text-zinc-700 dark:text-zinc-300">
+
+                  {/* Tier config fields */}
+                  <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-5">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Tier Name</label>
                       <input
-                        type="checkbox"
-                        checked={tier.isDefault}
-                        onChange={(e) => {
-                          const next = planTiers.map((t, j) => ({ ...t, isDefault: j === ti ? e.target.checked : false }));
-                          setPlanTiers(next);
-                        }}
-                      />
-                      Default
-                    </label>
-                    <label className="flex items-center gap-1.5 py-2 text-xs text-zinc-700 dark:text-zinc-300">
-                      <input
-                        type="checkbox"
-                        checked={tier.chargeAtCheckout}
+                        value={tier.name}
                         onChange={(e) => {
                           const next = [...planTiers];
-                          next[ti] = { ...next[ti], chargeAtCheckout: e.target.checked };
+                          next[ti] = { ...next[ti], name: e.target.value };
                           setPlanTiers(next);
                         }}
+                        placeholder="GOLD"
+                        className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm font-medium text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
                       />
-                      Charge&nbsp;now
-                    </label>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Annual Discount %</label>
+                      <input
+                        value={tier.annualDiscountPercent}
+                        onChange={(e) => {
+                          const next = [...planTiers];
+                          next[ti] = { ...next[ti], annualDiscountPercent: e.target.value };
+                          setPlanTiers(next);
+                        }}
+                        placeholder="0"
+                        className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Zoho Monthly ID</label>
+                      <input
+                        value={tier.zohoMonthlyItemId}
+                        onChange={(e) => {
+                          const next = [...planTiers];
+                          next[ti] = { ...next[ti], zohoMonthlyItemId: e.target.value };
+                          setPlanTiers(next);
+                        }}
+                        className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">Zoho Annual ID</label>
+                      <input
+                        value={tier.zohoAnnualItemId}
+                        onChange={(e) => {
+                          const next = [...planTiers];
+                          next[ti] = { ...next[ti], zohoAnnualItemId: e.target.value };
+                          setPlanTiers(next);
+                        }}
+                        className="w-full rounded-lg border border-zinc-300 px-2.5 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                      />
+                    </div>
+                    <div className="flex items-end gap-4 pb-0.5">
+                      <label className="flex cursor-pointer items-center gap-1.5 text-xs text-zinc-700 dark:text-zinc-300">
+                        <input
+                          type="checkbox"
+                          checked={tier.isDefault}
+                          onChange={(e) => {
+                            const next = planTiers.map((t, j) => ({ ...t, isDefault: j === ti ? e.target.checked : false }));
+                            setPlanTiers(next);
+                          }}
+                          className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-600"
+                        />
+                        Default
+                      </label>
+                      <label className="flex cursor-pointer items-center gap-1.5 text-xs text-zinc-700 dark:text-zinc-300">
+                        <input
+                          type="checkbox"
+                          checked={tier.chargeAtCheckout}
+                          onChange={(e) => {
+                            const next = [...planTiers];
+                            next[ti] = { ...next[ti], chargeAtCheckout: e.target.checked };
+                            setPlanTiers(next);
+                          }}
+                          className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-600"
+                        />
+                        Charge&nbsp;now
+                      </label>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setPlanTiers((t) => t.filter((_, j) => j !== ti))}
-                    className="rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
-                  >
-                    Remove Tier
-                  </button>
-                </div>
 
-                {/* Qty-based price rows */}
-                <div className="ml-2 space-y-2 border-l-2 border-zinc-200 pl-3 dark:border-zinc-700">
-                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Qty-based monthly prices</p>
-                  {tier.prices.map((row, ri) => (
-                    <div key={ri} className="grid grid-cols-4 items-end gap-2">
-                      <div>
-                        <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Min Qty</label>
-                        <input
-                          value={row.minQty}
-                          onChange={(e) => {
-                            const next = [...planTiers];
-                            const prices = [...next[ti].prices];
-                            prices[ri] = { ...prices[ri], minQty: e.target.value };
-                            next[ti] = { ...next[ti], prices };
-                            setPlanTiers(next);
-                          }}
-                          placeholder="1"
-                          className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                        />
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Max Qty</label>
-                        <input
-                          value={row.maxQty}
-                          onChange={(e) => {
-                            const next = [...planTiers];
-                            const prices = [...next[ti].prices];
-                            prices[ri] = { ...prices[ri], maxQty: e.target.value };
-                            next[ti] = { ...next[ti], prices };
-                            setPlanTiers(next);
-                          }}
-                          placeholder="∞"
-                          className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                        />
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-xs text-zinc-600 dark:text-zinc-400">Monthly (USD)</label>
-                        <input
-                          value={row.monthlyPriceCents}
-                          onChange={(e) => {
-                            const next = [...planTiers];
-                            const prices = [...next[ti].prices];
-                            prices[ri] = { ...prices[ri], monthlyPriceCents: e.target.value };
-                            next[ti] = { ...next[ti], prices };
-                            setPlanTiers(next);
-                          }}
-                          placeholder="20.00"
-                          className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                        />
-                      </div>
+                  {/* Qty-based price rows */}
+                  <div className={`border-t ${c.accent} bg-white/50 px-4 py-3 dark:bg-zinc-900/30`}>
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Qty-based monthly prices</p>
                       <button
                         type="button"
                         onClick={() => {
                           const next = [...planTiers];
-                          next[ti] = { ...next[ti], prices: next[ti].prices.filter((_, j) => j !== ri) };
+                          next[ti] = { ...next[ti], prices: [...next[ti].prices, { minQty: "", maxQty: "", monthlyPriceCents: "" }] };
                           setPlanTiers(next);
                         }}
-                        className="rounded-lg border border-red-300 px-2 py-1.5 text-xs text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
+                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
                       >
-                        ×
+                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        Add Row
                       </button>
                     </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = [...planTiers];
-                      next[ti] = { ...next[ti], prices: [...next[ti].prices, { minQty: "", maxQty: "", monthlyPriceCents: "" }] };
-                      setPlanTiers(next);
-                    }}
-                    className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                  >
-                    + Add Price Row
-                  </button>
+                    {tier.prices.length > 0 && (
+                      <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="bg-zinc-100/80 text-left text-xs font-medium uppercase tracking-wide text-zinc-500 dark:bg-zinc-800/80 dark:text-zinc-400">
+                              <th className="px-3 py-2">Min Qty</th>
+                              <th className="px-3 py-2">Max Qty</th>
+                              <th className="px-3 py-2">Monthly (USD)</th>
+                              <th className="w-10 px-3 py-2"></th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                            {tier.prices.map((row, ri) => (
+                              <tr key={ri} className="group">
+                                <td className="px-2 py-1.5">
+                                  <input
+                                    value={row.minQty}
+                                    onChange={(e) => {
+                                      const next = [...planTiers];
+                                      const prices = [...next[ti].prices];
+                                      prices[ri] = { ...prices[ri], minQty: e.target.value };
+                                      next[ti] = { ...next[ti], prices };
+                                      setPlanTiers(next);
+                                    }}
+                                    placeholder="1"
+                                    className="w-full rounded border border-transparent bg-transparent px-1.5 py-1 text-sm text-zinc-900 transition focus:border-zinc-300 focus:bg-white dark:text-zinc-100 dark:focus:border-zinc-600 dark:focus:bg-zinc-800"
+                                  />
+                                </td>
+                                <td className="px-2 py-1.5">
+                                  <input
+                                    value={row.maxQty}
+                                    onChange={(e) => {
+                                      const next = [...planTiers];
+                                      const prices = [...next[ti].prices];
+                                      prices[ri] = { ...prices[ri], maxQty: e.target.value };
+                                      next[ti] = { ...next[ti], prices };
+                                      setPlanTiers(next);
+                                    }}
+                                    placeholder="∞"
+                                    className="w-full rounded border border-transparent bg-transparent px-1.5 py-1 text-sm text-zinc-900 transition focus:border-zinc-300 focus:bg-white dark:text-zinc-100 dark:focus:border-zinc-600 dark:focus:bg-zinc-800"
+                                  />
+                                </td>
+                                <td className="px-2 py-1.5">
+                                  <input
+                                    value={row.monthlyPriceCents}
+                                    onChange={(e) => {
+                                      const next = [...planTiers];
+                                      const prices = [...next[ti].prices];
+                                      prices[ri] = { ...prices[ri], monthlyPriceCents: e.target.value };
+                                      next[ti] = { ...next[ti], prices };
+                                      setPlanTiers(next);
+                                    }}
+                                    placeholder="20.00"
+                                    className="w-full rounded border border-transparent bg-transparent px-1.5 py-1 text-sm font-medium text-zinc-900 transition focus:border-zinc-300 focus:bg-white dark:text-zinc-100 dark:focus:border-zinc-600 dark:focus:bg-zinc-800"
+                                  />
+                                </td>
+                                <td className="px-2 py-1.5 text-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const next = [...planTiers];
+                                      next[ti] = { ...next[ti], prices: next[ti].prices.filter((_, j) => j !== ri) };
+                                      setPlanTiers(next);
+                                    }}
+                                    className="rounded p-1 text-zinc-300 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                                    title="Remove row"
+                                  >
+                                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    {tier.prices.length === 0 && (
+                      <p className="py-3 text-center text-xs text-zinc-400 dark:text-zinc-500">No price rows yet — add one above.</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <input type="hidden" name="planTiersJson" value={JSON.stringify(planTiers)} />
             <button
               type="button"
               onClick={() => setPlanTiers((t) => [...t, { name: "", annualDiscountPercent: "0", zohoMonthlyItemId: "", zohoAnnualItemId: "", chargeAtCheckout: false, isDefault: t.length === 0, prices: [{ minQty: "1", maxQty: "", monthlyPriceCents: "" }] }])}
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-zinc-300 px-4 py-2.5 text-sm text-zinc-600 transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
             >
-              + Add Tier
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+              Add Tier
             </button>
           </div>
         )}

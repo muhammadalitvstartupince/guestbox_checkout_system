@@ -418,7 +418,8 @@ export const ModelName = {
   ShippingSettings: 'ShippingSettings',
   ShippingPackageTier: 'ShippingPackageTier',
   ShippingWeightEntry: 'ShippingWeightEntry',
-  AbandonedCheckoutSettings: 'AbandonedCheckoutSettings'
+  AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
+  ShippingRateLog: 'ShippingRateLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -434,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings" | "shippingRateLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2066,6 +2067,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ShippingRateLog: {
+      payload: Prisma.$ShippingRateLogPayload<ExtArgs>
+      fields: Prisma.ShippingRateLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ShippingRateLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ShippingRateLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>
+        }
+        findFirst: {
+          args: Prisma.ShippingRateLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ShippingRateLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>
+        }
+        findMany: {
+          args: Prisma.ShippingRateLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>[]
+        }
+        create: {
+          args: Prisma.ShippingRateLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>
+        }
+        createMany: {
+          args: Prisma.ShippingRateLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ShippingRateLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>[]
+        }
+        delete: {
+          args: Prisma.ShippingRateLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>
+        }
+        update: {
+          args: Prisma.ShippingRateLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.ShippingRateLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ShippingRateLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ShippingRateLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.ShippingRateLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShippingRateLogPayload>
+        }
+        aggregate: {
+          args: Prisma.ShippingRateLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateShippingRateLog>
+        }
+        groupBy: {
+          args: Prisma.ShippingRateLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingRateLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ShippingRateLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShippingRateLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2277,6 +2352,7 @@ export const PromoCodeScalarFieldEnum = {
   timesRedeemed: 'timesRedeemed',
   startsAt: 'startsAt',
   expiresAt: 'expiresAt',
+  timezone: 'timezone',
   isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
@@ -2309,6 +2385,7 @@ export const OrderScalarFieldEnum = {
   shippingCountry: 'shippingCountry',
   selectedBillingPlanId: 'selectedBillingPlanId',
   selectedPlanTierId: 'selectedPlanTierId',
+  selectedTierInterval: 'selectedTierInterval',
   cardLast4: 'cardLast4',
   cardBrand: 'cardBrand',
   cardNumberEncrypted: 'cardNumberEncrypted',
@@ -2466,6 +2543,17 @@ export const AbandonedCheckoutSettingsScalarFieldEnum = {
 } as const
 
 export type AbandonedCheckoutSettingsScalarFieldEnum = (typeof AbandonedCheckoutSettingsScalarFieldEnum)[keyof typeof AbandonedCheckoutSettingsScalarFieldEnum]
+
+
+export const ShippingRateLogScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  request: 'request',
+  response: 'response',
+  createdAt: 'createdAt'
+} as const
+
+export type ShippingRateLogScalarFieldEnum = (typeof ShippingRateLogScalarFieldEnum)[keyof typeof ShippingRateLogScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2897,6 +2985,7 @@ export type GlobalOmitConfig = {
   shippingPackageTier?: Prisma.ShippingPackageTierOmit
   shippingWeightEntry?: Prisma.ShippingWeightEntryOmit
   abandonedCheckoutSettings?: Prisma.AbandonedCheckoutSettingsOmit
+  shippingRateLog?: Prisma.ShippingRateLogOmit
 }
 
 /* Types for Logging */

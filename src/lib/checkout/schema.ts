@@ -26,9 +26,13 @@ export function parseContactInfoData(formData: FormData) {
 export const billingInfoSchema = z.object({
   addressLine1: z.string().trim().min(1, "Street address is required"),
   city: z.string().trim().min(1, "City is required"),
-  state: z.string().trim().min(1, "State is required"),
+  state: z.string().trim().default(""),
   zip: z.string().trim().min(1, "Zip code is required"),
   country: z.string().trim().min(2, "Select a country"),
+}).superRefine((data, ctx) => {
+  if (data.country === "US" && !data.state) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "State is required", path: ["state"] });
+  }
 });
 
 export type BillingInfoValues = z.infer<typeof billingInfoSchema>;

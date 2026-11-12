@@ -9,6 +9,22 @@ const inputClass =
 const labelClass = "mb-1 block text-xs text-zinc-500 dark:text-zinc-400";
 const selectClass = `${inputClass} bg-white dark:bg-zinc-800`;
 
+const TIMEZONES = [
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Anchorage",
+  "Pacific/Honolulu",
+  "UTC",
+  "Europe/London",
+  "Europe/Berlin",
+  "Asia/Dubai",
+  "Asia/Kolkata",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+];
+
 function DiscountSlotRow({ prefix, label }: { prefix: string; label: string }) {
   const [type, setType] = useState("");
   return (
@@ -150,14 +166,22 @@ export function PromoCodeForm({ checkoutPages }: { checkoutPages: { id: string; 
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         <div>
           <label className={labelClass}>Max Redemptions (optional)</label>
           <input name="maxRedemptions" className={inputClass} />
         </div>
         <div>
           <label className={labelClass}>Expires At (optional)</label>
-          <input type="date" name="expiresAt" className={`${inputClass} dark:[color-scheme:dark]`} />
+          <input type="datetime-local" name="expiresAt" className={`${inputClass} dark:[color-scheme:dark]`} />
+        </div>
+        <div>
+          <label className={labelClass}>Timezone</label>
+          <select name="timezone" defaultValue="America/New_York" className={selectClass}>
+            {TIMEZONES.map((tz) => (
+              <option key={tz} value={tz}>{tz.replace(/_/g, " ")}</option>
+            ))}
+          </select>
         </div>
         <div className="flex items-end">
           <button

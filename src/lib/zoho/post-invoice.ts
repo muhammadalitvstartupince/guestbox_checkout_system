@@ -60,6 +60,9 @@ export interface PostZohoInvoiceInput {
     quantity: number;
     number_of_cycles: null;
   };
+  planType?: string;
+  billingCycle?: string;
+  billingQty?: number;
 }
 
 export interface PostZohoInvoiceResult {
@@ -114,6 +117,9 @@ export async function postZohoInvoice(
   if (input.recurringDiscount) {
     payload.recurring_discount = input.recurringDiscount;
   }
+  if (input.planType) payload.plan_type = input.planType;
+  if (input.billingCycle) payload.billing_cycle = input.billingCycle;
+  if (input.billingQty != null) payload.qty = input.billingQty;
 
   const token = process.env.ZOHO_API_TOKEN;
   if (!token) {

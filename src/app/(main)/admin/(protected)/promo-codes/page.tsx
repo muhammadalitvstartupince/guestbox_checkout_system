@@ -12,6 +12,17 @@ function formatSlot(type: string | null, value: number | null, label: string): s
   return `${label}: ${formatDiscount(type, value)}`;
 }
 
+function formatExpiry(expiresAt: Date, timezone: string): string {
+  return expiresAt.toLocaleString("en-US", {
+    timeZone: timezone,
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 const targetLabels: Record<string, string> = {
   device: "Device",
   monthly: "Monthly",
@@ -81,7 +92,14 @@ export default async function AdminPromoCodesPage() {
                   {promo.maxRedemptions != null ? ` / ${promo.maxRedemptions}` : ""}
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
-                  {promo.expiresAt ? promo.expiresAt.toISOString().slice(0, 10) : "—"}
+                  {promo.expiresAt ? (
+                    <span title={promo.timezone}>
+                      {formatExpiry(promo.expiresAt, promo.timezone)}
+                      <span className="ml-1 text-xs text-zinc-400 dark:text-zinc-500">
+                        {promo.timezone.replace(/_/g, " ")}
+                      </span>
+                    </span>
+                  ) : "—"}
                 </td>
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">{promo.isActive ? "Yes" : "No"}</td>
                 <td className="px-5 py-3 text-right">

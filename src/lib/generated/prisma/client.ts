@@ -151,3 +151,8 @@ export type ShippingWeightEntry = Prisma.ShippingWeightEntryModel
  * 
  */
 export type AbandonedCheckoutSettings = Prisma.AbandonedCheckoutSettingsModel
+/**
+ * Model ShippingRateLog
+ * 
+ */
+export type ShippingRateLog = Prisma.ShippingRateLogModel
