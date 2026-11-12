@@ -2393,6 +2393,7 @@ export const OrderScalarFieldEnum = {
   cardExpiryEncrypted: 'cardExpiryEncrypted',
   cardHashKey: 'cardHashKey',
   quantity: 'quantity',
+  listingQty: 'listingQty',
   amountCents: 'amountCents',
   recurringAmountCents: 'recurringAmountCents',
   upgradeSelected: 'upgradeSelected',

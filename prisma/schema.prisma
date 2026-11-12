@@ -417,6 +417,7 @@ model Order {
   cardHashKey String @map("card_hash_key")
 
   quantity              Int     @default(1)
+  listingQty            Int     @default(1) @map("listing_qty")
   // Null until step 2 computes a final price (quantity/add-ons/upgrade/promo
   // aren't chosen yet at step 1).
   amountCents           Int?    @map("amount_cents")

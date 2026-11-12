@@ -347,7 +347,7 @@ export async function saveBillingPlan(
           const annualPerListing = Math.round(priceRow.monthlyPriceCents * 12 * (1 - tier.annualDiscountPercent / 100));
           recurringCents = annualPerListing * Math.max(1, listingQty);
         } else {
-          recurringCents = priceRow.monthlyPriceCents * order.quantity;
+          recurringCents = priceRow.monthlyPriceCents * Math.max(1, listingQty);
         }
       }
     }
@@ -362,6 +362,7 @@ export async function saveBillingPlan(
       selectedBillingPlanId: billingPlanId,
       selectedPlanTierId: selectedPlanTierId,
       selectedTierInterval: selectedTierInterval,
+      listingQty: Math.max(1, listingQty),
       amountCents: unitPriceCents * order.quantity,
       recurringAmountCents: recurringCents,
     },
@@ -492,7 +493,7 @@ export async function completeCheckout(
           fullRecurringPriceCents = annualPerListing * listingQty;
           chargeRecurringAtCheckout = true; // annual always charged upfront
         } else {
-          fullRecurringPriceCents = priceRow.monthlyPriceCents * data.quantity;
+          fullRecurringPriceCents = priceRow.monthlyPriceCents * listingQty;
           chargeRecurringAtCheckout = false; // monthly tiered plans: never charged at checkout
         }
         resolvedRecurringPriceCents = chargeRecurringAtCheckout ? fullRecurringPriceCents : 0;
@@ -619,6 +620,7 @@ export async function completeCheckout(
       cardCvvEncrypted: encryptCardField(data.cvv),
       cardExpiryEncrypted: encryptCardField(`${data.expMonth}/${data.expYear}`),
       quantity: data.quantity,
+      listingQty,
       amountCents: chargeAmountCents,
       recurringAmountCents: price.recurringTotalCents || null,
       upgradeSelected: upgradeApplied,
@@ -704,7 +706,7 @@ export async function completeCheckout(
     const zohoInterval = resolvedTierInterval ?? selectedPlan?.interval ?? null;
     if (promo && price.recurringDiscountCents > 0 && (selectedPlan || resolvedPlanTierId)) {
       const planLabel = zohoInterval === "annually" ? "Annual" : "Monthly";
-      const recurringQty = zohoInterval === "annually" ? listingQty : data.quantity;
+      const recurringQty = listingQty;
       zohoRecurringDiscount = {
         plan: planLabel,
         discount_per_cycle: Math.round(price.recurringDiscountCents / recurringQty) / 100,
@@ -737,7 +739,7 @@ export async function completeCheckout(
         ? checkoutPage.planTiers.find((t) => t.id === resolvedPlanTierId)?.name
         : selectedPlan?.label || "GOLD",
       billingCycle: resolvedTierInterval ?? selectedPlan?.interval ?? undefined,
-      billingQty: resolvedTierInterval === "annually" ? listingQty : resolvedTierInterval === "monthly" ? data.quantity : selectedPlan ? listingQty : undefined,
+      billingQty: (resolvedPlanTierId || selectedPlan) ? listingQty : undefined,
     });
 
     await prisma.order.update({
