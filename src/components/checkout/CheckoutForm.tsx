@@ -695,7 +695,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
             <p className="font-bold text-zinc-800">How it works:</p>
             <ul className="mt-0.5 list-disc space-y-0 pl-3 sm:space-y-0.5 sm:pl-4">
               <li>1 <span className="font-bold text-zinc-800">Property</span> = one rental home, unit, or listing.</li>
-              <li>Each TV needs one <span className="font-bold text-zinc-800">GuestBox</span> device.</li>
               <li>Multiple properties? Add more devices now or later.</li>
               <li>Extra devices are {formatWholeDollars(promoUnitPrice)} each.</li>
             </ul>
@@ -1221,6 +1220,23 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
                 ? "✓ Annual plans are billed upfront to secure the discounted rates."
                 : "✓ Your first month is FREE!"}
             </span>
+          </div>
+
+          {/* Skip plan selection */}
+          <div className="rounded-2xl border border-white/20 bg-blue-900/80 backdrop-blur-md shadow-lg px-5 py-4 text-center space-y-3">
+            <p className="text-sm sm:text-base font-semibold text-white/90">
+              Not sure which plan is right for you? Skip this for now — you can always choose or change your plan later.
+            </p>
+            <button
+              type="button"
+              onClick={async () => {
+                if (orderId) await saveBillingPlan(orderId, null, listingQty, selectedTierId, selectedTierInterval);
+                setWizardStep(3);
+              }}
+              className="rounded-full bg-white/20 border border-white/30 px-6 py-2 text-sm font-bold text-white transition hover:bg-white/30"
+            >
+              Skip & Continue
+            </button>
           </div>
 
           <div className="flex gap-3 pt-2">
