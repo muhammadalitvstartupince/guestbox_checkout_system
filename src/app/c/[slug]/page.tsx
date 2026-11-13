@@ -78,6 +78,10 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
 
   const landingUrl = await buildLandingUrl(slug, resolvedSearchParams);
 
+  // Pre-fill quantities from ?prop=N&gb=N query params
+  const initialPropQty = Math.max(1, parseInt(String(resolvedSearchParams.prop ?? ""), 10) || 1);
+  const initialGbQty = Math.max(initialPropQty, parseInt(String(resolvedSearchParams.gb ?? ""), 10) || initialPropQty);
+
   // Check for an active limited-time promotion on this checkout page
   const now = new Date();
   const activePromoRow = await prisma.promotion.findFirst({
@@ -130,6 +134,8 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
     <CheckoutForm
       landingUrl={landingUrl}
       activePromotion={activePromotion}
+      initialPropQty={initialPropQty}
+      initialGbQty={initialGbQty}
       checkoutPage={{
         slug: checkoutPage.slug,
         type: checkoutPage.type,
