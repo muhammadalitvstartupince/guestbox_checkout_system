@@ -178,7 +178,7 @@ function getTierMonthlyPrice(tier: PlanTierView, qty: number): number {
   return tier.prices[0]?.monthlyPriceCents ?? 0;
 }
 
-export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null }) {
+export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1 }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number }) {
   const boundInitiate = initiateOrder.bind(null, checkoutPage.slug);
   const [initState, initFormAction, initPending] = useActionState(boundInitiate, initialInitiateOrderState);
 
@@ -273,10 +273,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null 
 
   // --- Form state ---
   const isPromoActive = activePromotion != null;
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(initialGbQty);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [upgradeSelected, setUpgradeSelected] = useState(false);
-  const [listingQty, setListingQtyRaw] = useState(1);
+  const [listingQty, setListingQtyRaw] = useState(initialPropQty);
   const setListingQty = (updater: number | ((prev: number) => number)) => {
     setListingQtyRaw((prev) => {
       const next = typeof updater === "function" ? updater(prev) : updater;
