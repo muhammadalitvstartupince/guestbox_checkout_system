@@ -3,19 +3,34 @@ import { verifyAdminSession } from "@/lib/auth/dal";
 import { prisma } from "@/lib/db/client";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
 
+const PAGE_SIZE = 50;
+
 function formatCents(cents: number | null) {
   if (cents == null) return "—";
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-export default async function AdminOrdersPage() {
+export default async function AdminOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   await verifyAdminSession();
 
-  const orders = await prisma.order.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 100,
-    include: { checkoutPage: { select: { title: true } } },
-  });
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+
+  const [orders, totalCount] = await Promise.all([
+    prisma.order.findMany({
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: { checkoutPage: { select: { title: true } } },
+    }),
+    prisma.order.count(),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   return (
     <div>
@@ -73,6 +88,44 @@ export default async function AdminOrdersPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between px-1">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, totalCount)} of {totalCount} orders
+          </p>
+          <div className="flex items-center gap-2">
+            {page > 1 ? (
+              <Link
+                href={`/admin/orders?page=${page - 1}`}
+                className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                Previous
+              </Link>
+            ) : (
+              <span className="rounded-lg border border-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-300 dark:border-zinc-800 dark:text-zinc-600">
+                Previous
+              </span>
+            )}
+            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+              Page {page} of {totalPages}
+            </span>
+            {page < totalPages ? (
+              <Link
+                href={`/admin/orders?page=${page + 1}`}
+                className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                Next
+              </Link>
+            ) : (
+              <span className="rounded-lg border border-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-300 dark:border-zinc-800 dark:text-zinc-600">
+                Next
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
