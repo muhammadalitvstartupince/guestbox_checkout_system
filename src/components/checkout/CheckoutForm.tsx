@@ -1820,14 +1820,14 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
                       <span>{formatCents(displaySubtotal)}</span>
                     </div>
                   )}
-                  {isPromoActive && (
+                  {/* {isPromoActive && (
                     <div className="flex justify-between text-emerald-400">
                       <span className="flex items-center gap-1">
                         <Ticket className="h-3.5 w-3.5" /> Promotion savings
                       </span>
                       <span className="font-semibold">-{formatCents(promoSavingsCents)}</span>
                     </div>
-                  )}
+                  )} */}
                   {(estimate.discountCents > 0 || (chargeRecurringNow && estimate.recurringDiscountCents > 0)) && (
                     <div className="flex justify-between">
                       <span className="flex items-center gap-1 opacity-90">
