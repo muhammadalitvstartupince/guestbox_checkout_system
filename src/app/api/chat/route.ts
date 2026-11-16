@@ -98,12 +98,21 @@ interface ChatRequestBody {
     planTiers: { id: string; name: string; prices: { minQty: number; maxQty: number | null; monthlyPriceCents: number }[] }[];
     addons: { id: string; name: string; priceCents: number }[];
   };
+  formState?: {
+    step: number;
+    subStep: string;
+    quantity: number;
+    listingQty: number;
+    hasOrder: boolean;
+    profileFilled: boolean;
+    addressFilled: boolean;
+  };
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as ChatRequestBody;
-    const { conversationId, message, checkoutContext } = body;
+    const { conversationId, message, checkoutContext, formState } = body;
 
     if (!conversationId || !message?.trim()) {
       return NextResponse.json({ error: "Missing conversationId or message" }, { status: 400 });
@@ -152,6 +161,17 @@ export async function POST(req: NextRequest) {
 - Billing plans: ${planStr}
 - Add-ons: ${addonStr}
 - Shipping: Free domestic (USA). International calculated at checkout.`;
+    }
+
+    if (formState) {
+      const stepNames = ["", "QTY (quantity selection)", "DETAILS (personal info, address, billing)", "PAYMENT (card, addons, promo, submit)"];
+      systemPrompt += `\n\nCURRENT FORM STATE:
+- Current step: ${stepNames[formState.step] ?? formState.step}${formState.step === 2 ? ` → ${formState.subStep}` : ""}
+- Quantity: ${formState.quantity} devices, ${formState.listingQty} properties
+- Order started: ${formState.hasOrder ? "yes" : "no"}
+- Personal info filled: ${formState.profileFilled ? "yes" : "not yet"}
+- Address filled: ${formState.addressFilled ? "yes" : "not yet"}
+Use this to avoid asking for info the customer has already provided. Guide them to the next unfilled step.`;
     }
 
     const response = await anthropic.messages.create({

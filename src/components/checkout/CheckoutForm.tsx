@@ -19,7 +19,7 @@ import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
 import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone, Home } from "lucide-react";
-import { registerChatBridge, unregisterChatBridge } from "@/components/checkout/ChatBridge";
+import { registerChatBridge, unregisterChatBridge, getChatConversationId } from "@/components/checkout/ChatBridge";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
   switch (brand) {
@@ -361,9 +361,16 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   // Register the chat bridge so ChatWidget can read/write form state
   useEffect(() => {
     registerChatBridge({
-      wizardStep, quantity, listingQty,
+      wizardStep, detailsSubStep, quantity, listingQty,
       selectedPlanId, selectedTierId, selectedTierInterval,
       selectedAddonIds, upgradeSelected, orderId,
+      profileForm: {
+        firstName: profileForm.firstName,
+        lastName: profileForm.lastName,
+        email: profileForm.email,
+        phone: profileForm.phoneNumber,
+      },
+      addressFilled: !!(billingForm.addressLine1 && billingForm.city && billingForm.zip),
       setWizardStep, setQuantity, setListingQty,
       setSelectedPlanId: (id: string) => setSelectedPlanId(id),
       setSelectedTierId: (id: string) => setSelectedTierId(id),
@@ -1522,6 +1529,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
           {hasTieredPlans && selectedTierId && <input type="hidden" name="planTierId" value={selectedTierId} />}
           {hasTieredPlans && <input type="hidden" name="tierInterval" value={selectedTierInterval} />}
           {!hasTieredPlans && selectedPlanId && <input type="hidden" name="billingPlanId" value={selectedPlanId} />}
+          <input type="hidden" name="chatConversationId" value={getChatConversationId() ?? ""} />
 
           <section className="space-y-3">
             <Field

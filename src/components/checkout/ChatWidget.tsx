@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
-import { getChatBridge } from "@/components/checkout/ChatBridge";
+import { getChatBridge, setChatConversationId } from "@/components/checkout/ChatBridge";
 
 interface Message {
   role: "user" | "assistant";
@@ -137,6 +137,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
       const data = await res.json();
       if (data.conversationId) {
         setConversationId(data.conversationId);
+        setChatConversationId(data.conversationId);
         setMessages([{ role: "assistant", content: data.greeting }]);
       }
     } catch {
@@ -156,7 +157,24 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId, message: text, checkoutContext }),
+        body: JSON.stringify({
+          conversationId,
+          message: text,
+          checkoutContext,
+          formState: (() => {
+            const b = getChatBridge();
+            if (!b) return undefined;
+            return {
+              step: b.wizardStep,
+              subStep: b.detailsSubStep,
+              quantity: b.quantity,
+              listingQty: b.listingQty,
+              hasOrder: !!b.orderId,
+              profileFilled: !!(b.profileForm.firstName && b.profileForm.email),
+              addressFilled: b.addressFilled,
+            };
+          })(),
+        }),
       });
       const data = await res.json();
       if (data.reply) {

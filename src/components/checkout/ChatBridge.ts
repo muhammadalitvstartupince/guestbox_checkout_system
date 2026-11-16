@@ -10,6 +10,7 @@
 export interface ChatBridgeState {
   // Read-only form state
   wizardStep: 1 | 2 | 3;
+  detailsSubStep: "personal" | "address" | "billing-cycle";
   quantity: number;
   listingQty: number;
   selectedPlanId: string;
@@ -18,6 +19,9 @@ export interface ChatBridgeState {
   selectedAddonIds: string[];
   upgradeSelected: boolean;
   orderId: string | null;
+  // Profile/address info the user has filled (read-only for bot context)
+  profileForm: { firstName: string; lastName: string; email: string; phone: string };
+  addressFilled: boolean;
 
   // Setters
   setWizardStep: (step: 1 | 2 | 3) => void;
@@ -33,6 +37,8 @@ export interface ChatBridgeState {
 
 // Global mutable ref — only one checkout form exists at a time
 let bridge: ChatBridgeState | null = null;
+// Chat conversation ID — set by ChatWidget, read by CheckoutForm
+let chatConversationId: string | null = null;
 
 export function registerChatBridge(state: ChatBridgeState) {
   bridge = state;
@@ -44,4 +50,12 @@ export function unregisterChatBridge() {
 
 export function getChatBridge(): ChatBridgeState | null {
   return bridge;
+}
+
+export function setChatConversationId(id: string | null) {
+  chatConversationId = id;
+}
+
+export function getChatConversationId(): string | null {
+  return chatConversationId;
 }
