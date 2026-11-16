@@ -1922,6 +1922,36 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
       {wizardStep === 1 && renderQtyStep()}
       {wizardStep === 2 && renderDetailsStep()}
       {wizardStep === 3 && renderPaymentStep()}
+
+      {/* 30-Day Money-Back Guarantee — 3D gold pill with shimmer */}
+      <div className="mt-6 flex justify-center">
+        <div
+          className="relative inline-flex items-center gap-2 overflow-hidden rounded-full px-5 py-2 sm:gap-2.5 sm:px-7 sm:py-2.5"
+          style={{
+            background: "linear-gradient(180deg, #e8c547 0%, #d4a832 40%, #b8922a 70%, #9a7a22 100%)",
+            border: "2px solid #8b6914",
+            boxShadow: "inset 0 2px 3px rgba(255,255,220,0.5), inset 0 -3px 5px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.4)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+          <span
+            className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+            style={{
+              background: "linear-gradient(180deg, #5a4a1a 0%, #3d3210 100%)",
+              border: "2px solid #2a2208",
+              boxShadow: "inset 0 1px 2px rgba(255,255,200,0.2)",
+            }}
+          >
+            <Check className="h-3 w-3 text-amber-300" />
+          </span>
+          <span
+            className="relative text-xs font-black tracking-[0.15em] uppercase sm:text-sm"
+            style={{ color: "#2a1f00", textShadow: "0 1px 0 rgba(255,255,200,0.4)" }}
+          >
+            30-Day Money-Back Guarantee
+          </span>
+        </div>
+      </div>
     </>
   );
 
@@ -1967,22 +1997,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         ) : (
           <span className="text-lg font-bold text-white sm:text-xl">GuestBox</span>
         )}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 backdrop-blur-sm sm:gap-3 sm:px-5 sm:py-2.5">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 sm:h-7 sm:w-7">
-              <Check className="h-3 w-3 text-white sm:h-4 sm:w-4" />
-            </span>
-            <div className="leading-tight">
-              <div className="text-[10px] font-semibold text-white sm:text-sm"><span className="sm:hidden">30-Day Money-Back</span><span className="hidden sm:inline">30-Day Money-Back Guarantee</span></div>
-              <div className="text-[8px] text-emerald-400 sm:text-xs"><span className="sm:hidden">Try GuestBox risk-free.</span><span className="hidden sm:inline">Try GuestBox risk-free.</span></div>
-            </div>
-          </div>
-          <div className="hidden shrink-0 items-center gap-3 rounded-lg border border-white/20 bg-white/5 px-5 py-2.5 backdrop-blur-sm sm:flex">
-            <ShieldCheck className="h-7 w-7 text-white" />
-            <div className="leading-tight">
-              <div className="text-sm font-semibold text-white">Secure Checkout</div>
-              <div className="text-xs text-cyan-400">Encrypted &amp; Safe</div>
-            </div>
+        <div className="flex shrink-0 items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 backdrop-blur-sm sm:gap-3 sm:px-5 sm:py-2.5">
+          <ShieldCheck className="h-5 w-5 text-white sm:h-7 sm:w-7" />
+          <div className="leading-tight">
+            <div className="text-xs font-semibold text-white sm:text-sm">Secure Checkout</div>
+            <div className="text-[10px] text-cyan-400 sm:text-xs">Encrypted &amp; Safe</div>
           </div>
         </div>
       </div>
