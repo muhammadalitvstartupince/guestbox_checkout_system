@@ -72,7 +72,7 @@ export default async function AdminPromotionsPage() {
               <th className="px-5 py-3 font-medium">Promo Code</th>
               <th className="px-5 py-3 font-medium">Original → Final</th>
               <th className="px-5 py-3 font-medium">Pages</th>
-              <th className="px-5 py-3 font-medium text-center">Auto-Apply</th>
+              <th className="px-5 py-3 font-medium text-center">Bulk Dis. Apply</th>
               <th className="px-5 py-3 font-medium">Starts</th>
               <th className="px-5 py-3 font-medium">Ends</th>
               <th className="px-5 py-3" />
@@ -112,7 +112,7 @@ export default async function AdminPromotionsPage() {
                       <button
                         type="submit"
                         className={`inline-flex h-6 w-11 items-center rounded-full transition-colors ${promo.autoApply ? "bg-emerald-500" : "bg-zinc-300 dark:bg-zinc-600"}`}
-                        title={promo.autoApply ? "Auto-apply is ON — banner + code shown on checkout" : "Auto-apply is OFF — customer must enter code manually"}
+                        title={promo.autoApply ? "Bulk discount ON — qty tiers can override promo price" : "Bulk discount OFF — promo price locked for all quantities"}
                       >
                         <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${promo.autoApply ? "translate-x-6" : "translate-x-1"}`} />
                       </button>

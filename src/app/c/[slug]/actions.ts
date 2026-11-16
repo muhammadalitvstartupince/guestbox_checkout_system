@@ -62,13 +62,12 @@ export async function initiateOrder(
 
   const quantity = Math.max(1, Math.min(10, Number(formData.get("quantity")) || 1));
 
-  // Resolve unit price: always check tier pricing, then use min(promo, tier)
+  // Resolve unit price: autoApply ON = min(promo, tier), OFF = locked promo price
   let unitPriceCents = checkoutPage.basePriceCents;
   const now = new Date();
   const activePromo = await prisma.promotion.findFirst({
     where: {
       isActive: true,
-      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -78,26 +77,43 @@ export async function initiateOrder(
     include: { priceTier: true, promoCode: { select: { discountType: true, discountValue: true } } },
   });
 
-  // Always resolve tier price for the given quantity
-  const priceTiers = await prisma.priceTier.findMany({
-    where: { checkoutPageId: checkoutPage.id },
-    orderBy: { sortOrder: "asc" },
-  });
-  if (priceTiers.length > 0) {
-    const matchedTier = priceTiers.find(
-      (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
-    );
-    if (matchedTier) unitPriceCents = matchedTier.priceCents;
-  }
-
   if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
     const promoDiscount = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
     const promoPriceCents = Math.max(0, origPrice - promoDiscount);
-    // Use whichever is lower: promo price or qty-based tier price
-    unitPriceCents = Math.min(unitPriceCents, promoPriceCents);
+
+    if (activePromo.autoApply) {
+      // ON: use tier price if lower than promo price
+      const priceTiers = await prisma.priceTier.findMany({
+        where: { checkoutPageId: checkoutPage.id },
+        orderBy: { sortOrder: "asc" },
+      });
+      let tierPrice = promoPriceCents;
+      if (priceTiers.length > 0) {
+        const matchedTier = priceTiers.find(
+          (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
+        );
+        if (matchedTier) tierPrice = matchedTier.priceCents;
+      }
+      unitPriceCents = Math.min(promoPriceCents, tierPrice);
+    } else {
+      // OFF: locked promo price, no tier discounts
+      unitPriceCents = promoPriceCents;
+    }
+  } else {
+    // No promotion — use tier pricing normally
+    const priceTiers = await prisma.priceTier.findMany({
+      where: { checkoutPageId: checkoutPage.id },
+      orderBy: { sortOrder: "asc" },
+    });
+    if (priceTiers.length > 0) {
+      const matchedTier = priceTiers.find(
+        (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
+      );
+      if (matchedTier) unitPriceCents = matchedTier.priceCents;
+    }
   }
 
   const order = await prisma.order.create({
@@ -307,13 +323,12 @@ export async function saveBillingPlan(
 
   const checkoutPage = order.checkoutPage;
 
-  // Resolve unit price: always check tier, then min(promo, tier)
+  // Resolve unit price: autoApply ON = min(promo, tier), OFF = locked promo price
   let unitPriceCents = checkoutPage.basePriceCents;
   const now = new Date();
   const activePromo = await prisma.promotion.findFirst({
     where: {
       isActive: true,
-      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -323,20 +338,31 @@ export async function saveBillingPlan(
     include: { priceTier: true, promoCode: { select: { discountType: true, discountValue: true } } },
   });
 
-  if (checkoutPage.priceTiers.length > 0) {
-    const matchedTier = checkoutPage.priceTiers.find(
-      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
-    );
-    if (matchedTier) unitPriceCents = matchedTier.priceCents;
-  }
-
   if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
     const promoDiscount = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
     const promoPriceCents = Math.max(0, origPrice - promoDiscount);
-    unitPriceCents = Math.min(unitPriceCents, promoPriceCents);
+
+    if (activePromo.autoApply) {
+      // ON: use tier price if lower
+      if (checkoutPage.priceTiers.length > 0) {
+        const matchedTier = checkoutPage.priceTiers.find(
+          (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
+        );
+        if (matchedTier) unitPriceCents = matchedTier.priceCents;
+      }
+      unitPriceCents = Math.min(promoPriceCents, unitPriceCents);
+    } else {
+      // OFF: locked promo price
+      unitPriceCents = promoPriceCents;
+    }
+  } else if (checkoutPage.priceTiers.length > 0) {
+    const matchedTier = checkoutPage.priceTiers.find(
+      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
+    );
+    if (matchedTier) unitPriceCents = matchedTier.priceCents;
   }
 
   // Resolve recurring from tiered plan or billing plan
@@ -428,12 +454,11 @@ export async function completeCheckout(
   }
   const data = parsed.data;
 
-  // Check for an active auto-apply promotion on this checkout page
+  // Check for an active promotion on this checkout page
   const now = new Date();
   const activePromo = await prisma.promotion.findFirst({
     where: {
       isActive: true,
-      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -443,29 +468,11 @@ export async function completeCheckout(
     include: { priceTier: true, promoCode: { select: { id: true, discountType: true, discountValue: true } } },
   });
 
-  // Resolve tier-based pricing: always check qty tiers, then min(promo, tier)
+  // Resolve pricing: autoApply ON = min(promo, tier), OFF = locked promo price
   let resolvedBasePriceCents = checkoutPage.basePriceCents;
   let resolvedZohoItemId = checkoutPage.zohoItemId;
   let tierDiscountPerUnitCents = 0;
   const baseTier = checkoutPage.priceTiers.find((t) => t.isBase) ?? null;
-
-  // Always resolve qty-based tier price first
-  let tierPriceCents: number | null = null;
-  if (checkoutPage.priceTiers.length > 0) {
-    const matchedTier = checkoutPage.priceTiers.find(
-      (t) => data.quantity >= t.minQty && (t.maxQty == null || data.quantity <= t.maxQty),
-    );
-    if (matchedTier) {
-      tierPriceCents = matchedTier.priceCents;
-      resolvedBasePriceCents = matchedTier.priceCents;
-      if (baseTier) {
-        resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
-        tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - matchedTier.priceCents);
-      } else if (matchedTier.zohoItemId) {
-        resolvedZohoItemId = matchedTier.zohoItemId;
-      }
-    }
-  }
 
   let promoWonOverTier = false;
   if (activePromo) {
@@ -474,11 +481,40 @@ export async function completeCheckout(
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
     const promoPriceCents = Math.max(0, origPrice - promoDiscount);
-    // Use whichever is lower: promo price or qty-based tier price
-    if (promoPriceCents < resolvedBasePriceCents) {
+
+    if (activePromo.autoApply) {
+      // ON: resolve tier price first, then min(promo, tier)
+      let tierPriceCents: number | null = null;
+      if (checkoutPage.priceTiers.length > 0) {
+        const matchedTier = checkoutPage.priceTiers.find(
+          (t) => data.quantity >= t.minQty && (t.maxQty == null || data.quantity <= t.maxQty),
+        );
+        if (matchedTier) {
+          tierPriceCents = matchedTier.priceCents;
+          resolvedBasePriceCents = matchedTier.priceCents;
+          if (baseTier) {
+            resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
+            tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - matchedTier.priceCents);
+          } else if (matchedTier.zohoItemId) {
+            resolvedZohoItemId = matchedTier.zohoItemId;
+          }
+        }
+      }
+      // If promo price is lower than tier, use promo
+      if (promoPriceCents < resolvedBasePriceCents) {
+        promoWonOverTier = true;
+        resolvedBasePriceCents = promoPriceCents;
+        if (baseTier) {
+          resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
+          tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - promoPriceCents);
+        } else if (activePromo.priceTier.zohoItemId) {
+          resolvedZohoItemId = activePromo.priceTier.zohoItemId;
+        }
+      }
+    } else {
+      // OFF: locked promo price, no tier discounts
       promoWonOverTier = true;
       resolvedBasePriceCents = promoPriceCents;
-      // Recalculate tier discount: base tier vs effective promo price
       if (baseTier) {
         resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
         tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - promoPriceCents);
@@ -486,7 +522,20 @@ export async function completeCheckout(
         resolvedZohoItemId = activePromo.priceTier.zohoItemId;
       }
     }
-    // If tier price was already lower, keep it (already set above)
+  } else if (checkoutPage.priceTiers.length > 0) {
+    // No promotion — normal tier pricing
+    const matchedTier = checkoutPage.priceTiers.find(
+      (t) => data.quantity >= t.minQty && (t.maxQty == null || data.quantity <= t.maxQty),
+    );
+    if (matchedTier) {
+      resolvedBasePriceCents = matchedTier.priceCents;
+      if (baseTier) {
+        resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
+        tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - matchedTier.priceCents);
+      } else if (matchedTier.zohoItemId) {
+        resolvedZohoItemId = matchedTier.zohoItemId;
+      }
+    }
   }
 
   // Resolve billing plan or tiered plan
