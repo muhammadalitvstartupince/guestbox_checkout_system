@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Save the initial greeting as an assistant message
-    const greeting = `Thanks, ${firstName.trim()}! How can I help you today? I can answer questions about GuestBox or help you with your order.`;
+    const greeting = `Hey ${firstName.trim()}! 👋 How can I help you today? I can answer questions about GuestBox or help you with your order.`;
     await prisma.chatMessage.create({
       data: { conversationId: conversation.id, role: "assistant", content: greeting },
     });

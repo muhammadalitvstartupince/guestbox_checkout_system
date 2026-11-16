@@ -30,41 +30,41 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
   // Greeting — show main CTAs
   if (isGreeting) {
     return [
-      { label: "What is GuestBox?", text: "What is GuestBox?" },
-      { label: "Pricing & Plans", text: "What are the pricing options and plans?" },
-      { label: "Help me order", text: "Help me place my order" },
+      { label: "📦 What is GuestBox?", text: "What is GuestBox?" },
+      { label: "💰 Pricing & Plans", text: "What are the pricing options and plans?" },
+      { label: "🛒 Help me order", text: "Help me place my order" },
     ];
   }
 
   // Asking about number of properties
   if (lower.includes("how many properties") || lower.includes("how many locations") || (lower.includes("propert") && lower.includes("?"))) {
     return [
-      { label: "1 property", text: "1 property" },
-      { label: "2 properties", text: "2 properties" },
-      { label: "3 properties", text: "3 properties" },
-      { label: "5+", text: "5 properties" },
+      { label: "🏠 1 property", text: "1 property" },
+      { label: "🏘️ 2 properties", text: "2 properties" },
+      { label: "🏘️ 3 properties", text: "3 properties" },
+      { label: "🏙️ 5+", text: "5 properties" },
     ];
   }
 
   // Asking about number of devices / TVs / GuestBoxes
   if (lower.includes("how many devices") || lower.includes("how many guestbox") || lower.includes("how many tv")) {
     return [
-      { label: "1", text: "1 device" },
-      { label: "2", text: "2 devices" },
-      { label: "5", text: "5 devices" },
-      { label: "10", text: "10 devices" },
+      { label: "📺 1", text: "1 device" },
+      { label: "📺 2", text: "2 devices" },
+      { label: "📺 5", text: "5 devices" },
+      { label: "📺 10", text: "10 devices" },
     ];
   }
 
   // Asking about plan choice (Gold/Platinum/Diamond or monthly/annual)
   if (lower.includes("which plan") || lower.includes("gold") || lower.includes("platinum") || lower.includes("diamond") || lower.includes("monthly or annual")) {
     const replies: { label: string; text: string }[] = [];
-    if (lower.includes("gold") || lower.includes("which plan")) replies.push({ label: "Gold", text: "Gold plan" });
-    if (lower.includes("platinum") || lower.includes("which plan")) replies.push({ label: "Platinum", text: "Platinum plan" });
-    if (lower.includes("diamond") || lower.includes("which plan")) replies.push({ label: "Diamond", text: "Diamond plan" });
+    if (lower.includes("gold") || lower.includes("which plan")) replies.push({ label: "🥇 Gold", text: "Gold plan" });
+    if (lower.includes("platinum") || lower.includes("which plan")) replies.push({ label: "🥈 Platinum", text: "Platinum plan" });
+    if (lower.includes("diamond") || lower.includes("which plan")) replies.push({ label: "💎 Diamond", text: "Diamond plan" });
     if (lower.includes("monthly") || lower.includes("annual")) {
-      replies.push({ label: "Monthly", text: "Monthly billing" });
-      replies.push({ label: "Annual (save more)", text: "Annual billing" });
+      replies.push({ label: "📅 Monthly", text: "Monthly billing" });
+      replies.push({ label: "💰 Annual (save more)", text: "Annual billing" });
     }
     return replies;
   }
@@ -72,17 +72,17 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
   // Yes/No questions
   if (lower.includes("would you like") || lower.includes("ready to") || lower.includes("shall i") || lower.includes("do you want")) {
     return [
-      { label: "Yes", text: "Yes" },
-      { label: "No thanks", text: "No thanks" },
+      { label: "✅ Yes", text: "Yes" },
+      { label: "❌ No thanks", text: "No thanks" },
     ];
   }
 
   // Asking if they have questions or need help
   if (lower.includes("any questions") || lower.includes("anything else") || lower.includes("can i help")) {
     return [
-      { label: "Tell me about plans", text: "Tell me about the plans" },
-      { label: "How does shipping work?", text: "How does shipping work?" },
-      { label: "I'm ready to order", text: "Help me place my order" },
+      { label: "📋 Tell me about plans", text: "Tell me about the plans" },
+      { label: "🚚 How does shipping work?", text: "How does shipping work?" },
+      { label: "🛒 I'm ready to order", text: "Help me place my order" },
     ];
   }
 
@@ -308,7 +308,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
           className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-lg transition hover:bg-cyan-700 hover:shadow-xl"
           aria-label="Open chat"
         >
-          <MessageCircle className="h-6 w-6" />
+          <span className="text-2xl">💬</span>
         </button>
       )}
 
@@ -318,7 +318,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
           {/* Header */}
           <div className="flex items-center justify-between bg-cyan-600 px-4 py-3 text-white">
             <div className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
+              <span className="text-lg">🤖</span>
               <span className="text-sm font-semibold">GuestBox Assistant</span>
             </div>
             <button onClick={() => setOpen(false)} className="rounded p-1 hover:bg-white/20" aria-label="Close chat">
@@ -330,7 +330,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
             /* Lead gate form */
             <form onSubmit={handleLeadSubmit} className="flex flex-1 flex-col gap-3 p-4">
               <p className="text-sm text-zinc-600">
-                Hi! I'd love to help you with your GuestBox order. Let me get your details so I can assist you best.
+                👋 Hi! I'd love to help you with your GuestBox order. Let me get your details so I can assist you best.
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <input
