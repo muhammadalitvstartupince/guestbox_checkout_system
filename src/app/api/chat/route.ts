@@ -27,6 +27,7 @@ BEHAVIOR RULES:
 - If you don't know something: "Great question! For specifics on that, reach out to support@guestbox.tv or visit help.guestbox.net."
 - NEVER ask for or accept credit card information in chat. Direct users to the secure payment form.
 - Keep responses short — 2-3 sentences max unless the user asks for detail.
+- Use **bold** for key terms and - bullet lists for features/steps. Keep formatting clean and readable.
 - When helping with an order, use the provided tools to fill form fields and navigate checkout steps.
 - For payment: direct the user to enter card details in the secure form. Never collect card info in chat.`;
 

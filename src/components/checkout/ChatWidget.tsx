@@ -23,6 +23,44 @@ interface CheckoutContext {
   addons: { id: string; name: string; priceCents: number }[];
 }
 
+/** Simple markdown-to-JSX: **bold**, - lists, newlines */
+function formatMessage(text: string) {
+  const lines = text.split("\n");
+  const elements: React.ReactNode[] = [];
+  let listItems: string[] = [];
+
+  function flushList() {
+    if (listItems.length === 0) return;
+    elements.push(
+      <ul key={`ul-${elements.length}`} className="ml-4 list-disc space-y-0.5">
+        {listItems.map((item, i) => <li key={i}>{parseBold(item)}</li>)}
+      </ul>
+    );
+    listItems = [];
+  }
+
+  function parseBold(str: string): React.ReactNode {
+    const parts = str.split(/\*\*(.*?)\*\*/g);
+    if (parts.length === 1) return str;
+    return parts.map((part, i) => i % 2 === 1 ? <strong key={i}>{part}</strong> : part);
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
+      listItems.push(trimmed.slice(2));
+    } else {
+      flushList();
+      if (trimmed) {
+        elements.push(<p key={`p-${elements.length}`}>{parseBold(trimmed)}</p>);
+      }
+    }
+  }
+  flushList();
+
+  return <div className="space-y-1.5">{elements}</div>;
+}
+
 function executeToolCalls(toolCalls: ToolCall[]) {
   const bridge = getChatBridge();
   if (!bridge) return;
@@ -271,16 +309,37 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
               <div className="flex-1 overflow-y-auto p-4">
                 <div className="space-y-3">
                   {messages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div
-                        className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
-                          msg.role === "user"
-                            ? "bg-cyan-600 text-white"
-                            : "bg-zinc-100 text-zinc-800"
-                        }`}
-                      >
-                        {msg.content}
+                    <div key={i}>
+                      <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                        <div
+                          className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
+                            msg.role === "user"
+                              ? "bg-cyan-600 text-white"
+                              : "bg-zinc-100 text-zinc-800"
+                          }`}
+                        >
+                          {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
+                        </div>
                       </div>
+                      {/* CTA buttons after first assistant message (greeting) */}
+                      {msg.role === "assistant" && i === 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {[
+                            { label: "What is GuestBox?", text: "What is GuestBox?" },
+                            { label: "Pricing & Plans", text: "What are the pricing options and plans?" },
+                            { label: "Help me order", text: "Help me place my order" },
+                          ].map((cta) => (
+                            <button
+                              key={cta.label}
+                              type="button"
+                              onClick={() => { setInput(cta.text); }}
+                              className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100"
+                            >
+                              {cta.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                   {sending && (
