@@ -62,12 +62,13 @@ export async function initiateOrder(
 
   const quantity = Math.max(1, Math.min(10, Number(formData.get("quantity")) || 1));
 
-  // Resolve unit price: promotion → tier → base
+  // Resolve unit price: always check tier pricing, then use min(promo, tier)
   let unitPriceCents = checkoutPage.basePriceCents;
   const now = new Date();
   const activePromo = await prisma.promotion.findFirst({
     where: {
       isActive: true,
+      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -76,23 +77,27 @@ export async function initiateOrder(
     },
     include: { priceTier: true, promoCode: { select: { discountType: true, discountValue: true } } },
   });
+
+  // Always resolve tier price for the given quantity
+  const priceTiers = await prisma.priceTier.findMany({
+    where: { checkoutPageId: checkoutPage.id },
+    orderBy: { sortOrder: "asc" },
+  });
+  if (priceTiers.length > 0) {
+    const matchedTier = priceTiers.find(
+      (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
+    );
+    if (matchedTier) unitPriceCents = matchedTier.priceCents;
+  }
+
   if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
     const promoDiscount = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
-    unitPriceCents = Math.max(0, origPrice - promoDiscount);
-  } else {
-    const priceTiers = await prisma.priceTier.findMany({
-      where: { checkoutPageId: checkoutPage.id },
-      orderBy: { sortOrder: "asc" },
-    });
-    if (priceTiers.length > 0) {
-      const matchedTier = priceTiers.find(
-        (t) => quantity >= t.minQty && (t.maxQty == null || quantity <= t.maxQty),
-      );
-      if (matchedTier) unitPriceCents = matchedTier.priceCents;
-    }
+    const promoPriceCents = Math.max(0, origPrice - promoDiscount);
+    // Use whichever is lower: promo price or qty-based tier price
+    unitPriceCents = Math.min(unitPriceCents, promoPriceCents);
   }
 
   const order = await prisma.order.create({
@@ -302,12 +307,13 @@ export async function saveBillingPlan(
 
   const checkoutPage = order.checkoutPage;
 
-  // Resolve unit price: promotion → tier → base
+  // Resolve unit price: always check tier, then min(promo, tier)
   let unitPriceCents = checkoutPage.basePriceCents;
   const now = new Date();
   const activePromo = await prisma.promotion.findFirst({
     where: {
       isActive: true,
+      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -316,17 +322,21 @@ export async function saveBillingPlan(
     },
     include: { priceTier: true, promoCode: { select: { discountType: true, discountValue: true } } },
   });
+
+  if (checkoutPage.priceTiers.length > 0) {
+    const matchedTier = checkoutPage.priceTiers.find(
+      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
+    );
+    if (matchedTier) unitPriceCents = matchedTier.priceCents;
+  }
+
   if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
     const promoDiscount = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
-    unitPriceCents = Math.max(0, origPrice - promoDiscount);
-  } else if (checkoutPage.priceTiers.length > 0) {
-    const matchedTier = checkoutPage.priceTiers.find(
-      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
-    );
-    if (matchedTier) unitPriceCents = matchedTier.priceCents;
+    const promoPriceCents = Math.max(0, origPrice - promoDiscount);
+    unitPriceCents = Math.min(unitPriceCents, promoPriceCents);
   }
 
   // Resolve recurring from tiered plan or billing plan
@@ -418,11 +428,12 @@ export async function completeCheckout(
   }
   const data = parsed.data;
 
-  // Check for an active promotion on this checkout page
+  // Check for an active auto-apply promotion on this checkout page
   const now = new Date();
   const activePromo = await prisma.promotion.findFirst({
     where: {
       isActive: true,
+      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -432,38 +443,50 @@ export async function completeCheckout(
     include: { priceTier: true, promoCode: { select: { id: true, discountType: true, discountValue: true } } },
   });
 
-  // Resolve tier-based pricing: promotion uses promo price as base (discount baked in)
+  // Resolve tier-based pricing: always check qty tiers, then min(promo, tier)
   let resolvedBasePriceCents = checkoutPage.basePriceCents;
   let resolvedZohoItemId = checkoutPage.zohoItemId;
   let tierDiscountPerUnitCents = 0;
   const baseTier = checkoutPage.priceTiers.find((t) => t.isBase) ?? null;
-  if (activePromo) {
-    // Calculate the promo price (original tier price minus promo code discount)
-    const origPrice = activePromo.priceTier.priceCents;
-    const promoDiscount = activePromo.promoCode.discountType === "percent"
-      ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
-      : activePromo.promoCode.discountValue;
-    resolvedBasePriceCents = Math.max(0, origPrice - promoDiscount);
-    // Use base tier's Zoho item if available, otherwise fall back to promo tier's
-    if (baseTier?.zohoItemId) {
-      resolvedZohoItemId = baseTier.zohoItemId;
-    } else if (activePromo.priceTier.zohoItemId) {
-      resolvedZohoItemId = activePromo.priceTier.zohoItemId;
-    }
-  } else if (checkoutPage.priceTiers.length > 0) {
+
+  // Always resolve qty-based tier price first
+  let tierPriceCents: number | null = null;
+  if (checkoutPage.priceTiers.length > 0) {
     const matchedTier = checkoutPage.priceTiers.find(
       (t) => data.quantity >= t.minQty && (t.maxQty == null || data.quantity <= t.maxQty),
     );
     if (matchedTier) {
+      tierPriceCents = matchedTier.priceCents;
       resolvedBasePriceCents = matchedTier.priceCents;
       if (baseTier) {
-        // Always send the base tier's Zoho item — tier discount handles the price difference
         resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
         tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - matchedTier.priceCents);
       } else if (matchedTier.zohoItemId) {
         resolvedZohoItemId = matchedTier.zohoItemId;
       }
     }
+  }
+
+  let promoWonOverTier = false;
+  if (activePromo) {
+    const origPrice = activePromo.priceTier.priceCents;
+    const promoDiscount = activePromo.promoCode.discountType === "percent"
+      ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
+      : activePromo.promoCode.discountValue;
+    const promoPriceCents = Math.max(0, origPrice - promoDiscount);
+    // Use whichever is lower: promo price or qty-based tier price
+    if (promoPriceCents < resolvedBasePriceCents) {
+      promoWonOverTier = true;
+      resolvedBasePriceCents = promoPriceCents;
+      // Recalculate tier discount: base tier vs effective promo price
+      if (baseTier) {
+        resolvedZohoItemId = baseTier.zohoItemId ?? resolvedZohoItemId;
+        tierDiscountPerUnitCents = Math.max(0, baseTier.priceCents - promoPriceCents);
+      } else if (activePromo.priceTier.zohoItemId) {
+        resolvedZohoItemId = activePromo.priceTier.zohoItemId;
+      }
+    }
+    // If tier price was already lower, keep it (already set above)
   }
 
   // Resolve billing plan or tiered plan
@@ -683,12 +706,13 @@ export async function completeCheckout(
 
     // Compute discount in dollars for Zoho (final total, not per-unit)
     let zohoDiscountDollars = 0;
-    // Tier discount: difference between base tier price and matched tier price
+    // Tier discount already includes promo savings when promo won (tierDiscountPerUnitCents
+    // was recalculated to baseTier→promoPriceCents). Only add promo savings separately
+    // when there's no baseTier and the promo provided the effective price.
     if (tierDiscountPerUnitCents > 0) {
       zohoDiscountDollars += (tierDiscountPerUnitCents * data.quantity) / 100;
     }
-    if (activePromo) {
-      // Promotion: per-unit savings × quantity
+    if (activePromo && promoWonOverTier && !baseTier) {
       const perUnitSavingsCents = activePromo.priceTier.priceCents - resolvedBasePriceCents;
       zohoDiscountDollars += (perUnitSavingsCents * data.quantity) / 100;
     }
@@ -788,7 +812,7 @@ export async function completeCheckout(
       : "—";
     const promoText = promo && data.promoCode ? data.promoCode.toUpperCase() : "—";
     const discountParts: string[] = [];
-    if (activePromo) {
+    if (activePromo && promoWonOverTier) {
       const perUnitSavings = activePromo.priceTier.priceCents - resolvedBasePriceCents;
       discountParts.push(`Promotion: −${fmtDollars(perUnitSavings * data.quantity)} (${fmtDollars(perUnitSavings)}/ea × ${data.quantity})`);
     }
@@ -806,7 +830,7 @@ export async function completeCheckout(
   <tr><td colspan="2" style="padding:8px 0;font-weight:bold;font-size:16px;border-bottom:2px solid #e5e7eb">Order Summary</td></tr>
   <tr><td style="padding:6px 0;color:#666">Product</td><td style="padding:6px 0;text-align:right">${product.title}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Quantity</td><td style="padding:6px 0;text-align:right">${data.quantity}</td></tr>
-  <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}${activePromo ? ` (was ${fmtDollars(activePromo.priceTier.priceCents)}/ea — promo)` : ""}</td></tr>
+  <tr><td style="padding:6px 0;color:#666">Unit price</td><td style="padding:6px 0;text-align:right">${fmtDollars(resolvedBasePriceCents)} × ${data.quantity} = ${fmtDollars(unitSubtotal)}${activePromo && promoWonOverTier ? ` (was ${fmtDollars(activePromo.priceTier.priceCents)}/ea — promo)` : ""}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Billing type</td><td style="padding:6px 0;text-align:right">${planLabel}</td></tr>
   <tr><td style="padding:6px 0;color:#666">Plan price</td><td style="padding:6px 0;text-align:right">${planPrice}</td></tr>
   <tr><td style="padding:6px 0;color:#666">${(resolvedTierInterval ?? selectedBillingPlan?.interval) === "annually" ? "Annual" : "Monthly"} total</td><td style="padding:6px 0;text-align:right">${price.recurringTotalCents ? `${fmtDollars(price.recurringTotalCents - price.recurringDiscountCents)}${price.recurringDiscountCents > 0 ? ` (was ${fmtDollars(price.recurringTotalCents)})` : ""}` : "—"}</td></tr>

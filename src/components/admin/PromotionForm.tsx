@@ -38,6 +38,7 @@ export interface PromotionDefaults {
   timezone: string;
   startsAt: string; // datetime-local string (in promotion's tz)
   endsAt: string;
+  autoApply: boolean;
   badgeText: string;
   urgencyText: string;
 }
@@ -242,6 +243,23 @@ export function PromotionForm({
           <input type="datetime-local" name="endsAt" defaultValue={defaults?.endsAt ?? ""} className={`${inputClass} dark:[color-scheme:dark]`} />
         </div>
       </div>
+
+      {/* Auto-Apply toggle */}
+      <label className="flex items-center gap-3 text-sm text-zinc-700 dark:text-zinc-300">
+        <input
+          type="checkbox"
+          name="autoApply"
+          value="on"
+          defaultChecked={defaults?.autoApply ?? false}
+          className="rounded border-zinc-300 dark:border-zinc-600"
+        />
+        <span>
+          <span className="font-medium">Auto-apply on checkout page</span>
+          <span className="ml-1 text-xs text-zinc-500 dark:text-zinc-400">
+            — When on, the promo banner + code appear automatically. When off, the customer must enter the code manually.
+          </span>
+        </span>
+      </label>
 
       {/* Row 5: Display Text (optional overrides) */}
       <div className="grid grid-cols-2 gap-3">

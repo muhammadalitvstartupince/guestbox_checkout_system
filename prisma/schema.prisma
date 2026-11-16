@@ -496,12 +496,14 @@ model CardAccessAuditLog {
   @@map("card_access_audit_log")
 }
 
-// Limited-time promotion — locks a checkout page to a single price tier
-// with an auto-applied promo code, hiding the normal qty/tier selector.
+// Limited-time promotion — applies a promo code discount on a checkout page.
+// When autoApply is true the banner + promo code appear automatically;
+// otherwise the customer must enter the code manually.
 model Promotion {
   id          String    @id @default(uuid()) @db.Uuid
   name        String
   isActive    Boolean   @default(false) @map("is_active")
+  autoApply   Boolean   @default(false) @map("auto_apply")
   startsAt    DateTime? @map("starts_at")
   endsAt      DateTime? @map("ends_at")
   badgeText   String    @default("Limited Time") @map("badge_text")

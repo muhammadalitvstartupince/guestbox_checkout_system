@@ -288,10 +288,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
   const hasTiers = checkoutPage.priceTiers.length > 0;
   const baseTierPrice = hasTiers ? checkoutPage.priceTiers[0].priceCents : checkoutPage.basePriceCents;
-  // When a promotion is active, lock to the promotion tier's price
+  const tierPrice = hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
+  // When a promotion is active, use the lower of promo price and tier price
   const unitPrice = isPromoActive
-    ? activePromotion.originalPriceCents
-    : hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
+    ? Math.min(activePromotion.promoPriceCents, tierPrice)
+    : tierPrice;
 
   const defaultPlan = checkoutPage.billingPlans.find((p) => p.isDefault) ?? checkoutPage.billingPlans[0];
   const [selectedPlanId, setSelectedPlanId] = useState(defaultPlan?.id ?? "");
@@ -396,10 +397,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   }, [searchParams, checkoutPage.slug]);
 
   const effectiveTitle = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.title : checkoutPage.productName;
-  // During promotion: use promo price directly as base (discount is baked in)
-  const effectiveBasePriceCents = isPromoActive
-    ? activePromotion.promoPriceCents
-    : upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
+  // During promotion: use min(promo, tier) — already computed in unitPrice
+  const effectiveBasePriceCents = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
   // Tiered plan pricing
   const tierMonthlyPriceCents = hasTieredPlans && selectedTier ? getTierMonthlyPrice(selectedTier, quantity) : 0;
   const tierAnnualPerListing = hasTieredPlans && selectedTier
@@ -495,7 +494,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   // STEP 1: QTY
   // =====================================================================
   function renderQtyStep() {
-    const promoUnitPrice = isPromoActive ? activePromotion.promoPriceCents : unitPrice;
+    // unitPrice already accounts for min(promo, tier)
+    const promoUnitPrice = unitPrice;
     const orderTotal = promoUnitPrice * quantity;
     return (
       <div className="space-y-6">
@@ -503,7 +503,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
         {/* Limited Time Promotion banner — replaces tier badges */}
         {isPromoActive && (() => {
-          const savePercent = Math.round(((activePromotion.originalPriceCents - activePromotion.promoPriceCents) / activePromotion.originalPriceCents) * 100);
+          const effectivePromoPriceCents = Math.min(activePromotion.promoPriceCents, tierPrice);
+          const savePercent = Math.round(((activePromotion.originalPriceCents - effectivePromoPriceCents) / activePromotion.originalPriceCents) * 100);
           return (
             <div className="relative overflow-hidden rounded-xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-3 pb-3 pt-6 text-center shadow-lg sm:rounded-2xl sm:px-5 sm:pb-5 sm:pt-8">
               {/* Animated shimmer overlay */}
@@ -532,7 +533,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
                   {formatWholeDollars(activePromotion.originalPriceCents)}
                 </span>
                 <span className="text-3xl font-black text-zinc-900 sm:text-5xl">
-                  {formatWholeDollars(activePromotion.promoPriceCents)}
+                  {formatWholeDollars(effectivePromoPriceCents)}
                 </span>
                 <span className="text-xs font-medium text-zinc-500 sm:text-sm">/each</span>
               </div>
@@ -708,7 +709,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         </div>
         <p className="-mt-4 text-center text-sm text-zinc-500">
           {formatWholeDollars(promoUnitPrice)} per device
-          {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
+          {isPromoActive && promoUnitPrice < activePromotion.originalPriceCents && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
           {hasTieredPlans
             ? " | First Month FREE"
             : selectedPlan ? (selectedPlan.interval === "monthly" ? " | First Month FREE" : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per property`) : ""}
@@ -1693,7 +1694,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
                       </span>
                       <Check className="h-4 w-4 shrink-0 text-amber-600" />
                     </div>
-                    <div className="text-xs font-medium text-amber-700">Promotion applied — saving {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}</div>
+                    <div className="text-xs font-medium text-amber-700">Promotion applied — saving {formatCents((activePromotion.originalPriceCents - unitPrice) * quantity)}</div>
                   </div>
                 </div>
               )}
@@ -1768,12 +1769,12 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
             <div className="mb-2 text-sm font-semibold tracking-wide uppercase opacity-90">Order Summary</div>
             <div className="space-y-1 text-sm opacity-90">
               {/* Device line */}
-              {isPromoActive ? (
+              {isPromoActive && unitPrice < activePromotion.originalPriceCents ? (
                 <div className="flex items-baseline justify-between">
-                  <span>{quantity}× {effectiveTitle} @ {formatWholeDollars(activePromotion.promoPriceCents)}/ea</span>
+                  <span>{quantity}× {effectiveTitle} @ {formatWholeDollars(unitPrice)}/ea</span>
                   <div className="ml-2 flex items-baseline gap-2">
                     <span className="text-xs text-white/50 line-through">{formatCents(activePromotion.originalPriceCents * quantity)}</span>
-                    <span className="font-medium">{formatCents(activePromotion.promoPriceCents * quantity)}</span>
+                    <span className="font-medium">{formatCents(unitPrice * quantity)}</span>
                   </div>
                 </div>
               ) : (
@@ -1807,7 +1808,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
             </div>
             {(isPromoActive || estimate.discountCents > 0 || (chargeRecurringNow && estimate.recurringDiscountCents > 0)) ? (() => {
               const promoSavingsCents = isPromoActive
-                ? (activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity
+                ? (activePromotion.originalPriceCents - unitPrice) * quantity
                 : 0;
               const displaySubtotal = chargeRecurringNow
                 ? estimate.subtotalCents + estimate.recurringTotalCents
@@ -1966,11 +1967,22 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         ) : (
           <span className="text-lg font-bold text-white sm:text-xl">GuestBox</span>
         )}
-        <div className="flex shrink-0 items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 backdrop-blur-sm sm:gap-3 sm:px-5 sm:py-2.5">
-          <ShieldCheck className="h-5 w-5 text-white sm:h-7 sm:w-7" />
-          <div className="leading-tight">
-            <div className="text-xs font-semibold text-white sm:text-sm">Secure Checkout</div>
-            <div className="text-[10px] text-cyan-400 sm:text-xs">Encrypted &amp; Safe</div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 backdrop-blur-sm sm:gap-3 sm:px-5 sm:py-2.5">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 sm:h-7 sm:w-7">
+              <Check className="h-3 w-3 text-white sm:h-4 sm:w-4" />
+            </span>
+            <div className="leading-tight">
+              <div className="text-[10px] font-semibold text-white sm:text-sm"><span className="sm:hidden">30-Day Money-Back</span><span className="hidden sm:inline">30-Day Money-Back Guarantee</span></div>
+              <div className="text-[8px] text-emerald-400 sm:text-xs"><span className="sm:hidden">Try GuestBox risk-free.</span><span className="hidden sm:inline">Try GuestBox risk-free.</span></div>
+            </div>
+          </div>
+          <div className="hidden shrink-0 items-center gap-3 rounded-lg border border-white/20 bg-white/5 px-5 py-2.5 backdrop-blur-sm sm:flex">
+            <ShieldCheck className="h-7 w-7 text-white" />
+            <div className="leading-tight">
+              <div className="text-sm font-semibold text-white">Secure Checkout</div>
+              <div className="text-xs text-cyan-400">Encrypted &amp; Safe</div>
+            </div>
           </div>
         </div>
       </div>

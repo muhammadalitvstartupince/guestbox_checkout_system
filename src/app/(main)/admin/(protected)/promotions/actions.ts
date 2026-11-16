@@ -86,6 +86,7 @@ export async function createPromotion(
       endsAt: data.endsAt ? localToUtc(data.endsAt, data.timezone) : null,
       ...(data.badgeText ? { badgeText: data.badgeText } : {}),
       ...(data.urgencyText ? { urgencyText: data.urgencyText } : {}),
+      autoApply: formData.get("autoApply") === "on",
       isActive: false,
       checkoutPages: {
         create: data.checkoutPageIds.map((cpId) => ({ checkoutPageId: cpId })),
@@ -142,6 +143,7 @@ export async function updatePromotion(
         endsAt: data.endsAt ? localToUtc(data.endsAt, data.timezone) : null,
         ...(data.badgeText ? { badgeText: data.badgeText } : {}),
         ...(data.urgencyText ? { urgencyText: data.urgencyText } : {}),
+        autoApply: formData.get("autoApply") === "on",
         checkoutPages: {
           create: data.checkoutPageIds.map((cpId) => ({ checkoutPageId: cpId })),
         },
@@ -163,6 +165,20 @@ export async function togglePromotion(promotionId: string): Promise<void> {
   await prisma.promotion.update({
     where: { id: promotionId },
     data: { isActive: !promo.isActive },
+  });
+  revalidatePath("/admin/promotions");
+}
+
+export async function toggleAutoApply(promotionId: string): Promise<void> {
+  await verifyAdminSession();
+  const promo = await prisma.promotion.findUnique({
+    where: { id: promotionId },
+    select: { autoApply: true },
+  });
+  if (!promo) return;
+  await prisma.promotion.update({
+    where: { id: promotionId },
+    data: { autoApply: !promo.autoApply },
   });
   revalidatePath("/admin/promotions");
 }
