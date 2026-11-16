@@ -23,6 +23,72 @@ interface CheckoutContext {
   addons: { id: string; name: string; priceCents: number }[];
 }
 
+/** Detect context from bot message and return quick-reply buttons */
+function getQuickReplies(content: string, isGreeting: boolean): { label: string; text: string }[] {
+  const lower = content.toLowerCase();
+
+  // Greeting — show main CTAs
+  if (isGreeting) {
+    return [
+      { label: "What is GuestBox?", text: "What is GuestBox?" },
+      { label: "Pricing & Plans", text: "What are the pricing options and plans?" },
+      { label: "Help me order", text: "Help me place my order" },
+    ];
+  }
+
+  // Asking about number of properties
+  if (lower.includes("how many properties") || lower.includes("how many locations") || (lower.includes("propert") && lower.includes("?"))) {
+    return [
+      { label: "1 property", text: "1 property" },
+      { label: "2 properties", text: "2 properties" },
+      { label: "3 properties", text: "3 properties" },
+      { label: "5+", text: "5 properties" },
+    ];
+  }
+
+  // Asking about number of devices / TVs / GuestBoxes
+  if (lower.includes("how many devices") || lower.includes("how many guestbox") || lower.includes("how many tv")) {
+    return [
+      { label: "1", text: "1 device" },
+      { label: "2", text: "2 devices" },
+      { label: "5", text: "5 devices" },
+      { label: "10", text: "10 devices" },
+    ];
+  }
+
+  // Asking about plan choice (Gold/Platinum/Diamond or monthly/annual)
+  if (lower.includes("which plan") || lower.includes("gold") || lower.includes("platinum") || lower.includes("diamond") || lower.includes("monthly or annual")) {
+    const replies: { label: string; text: string }[] = [];
+    if (lower.includes("gold") || lower.includes("which plan")) replies.push({ label: "Gold", text: "Gold plan" });
+    if (lower.includes("platinum") || lower.includes("which plan")) replies.push({ label: "Platinum", text: "Platinum plan" });
+    if (lower.includes("diamond") || lower.includes("which plan")) replies.push({ label: "Diamond", text: "Diamond plan" });
+    if (lower.includes("monthly") || lower.includes("annual")) {
+      replies.push({ label: "Monthly", text: "Monthly billing" });
+      replies.push({ label: "Annual (save more)", text: "Annual billing" });
+    }
+    return replies;
+  }
+
+  // Yes/No questions
+  if (lower.includes("would you like") || lower.includes("ready to") || lower.includes("shall i") || lower.includes("do you want")) {
+    return [
+      { label: "Yes", text: "Yes" },
+      { label: "No thanks", text: "No thanks" },
+    ];
+  }
+
+  // Asking if they have questions or need help
+  if (lower.includes("any questions") || lower.includes("anything else") || lower.includes("can i help")) {
+    return [
+      { label: "Tell me about plans", text: "Tell me about the plans" },
+      { label: "How does shipping work?", text: "How does shipping work?" },
+      { label: "I'm ready to order", text: "Help me place my order" },
+    ];
+  }
+
+  return [];
+}
+
 /** Simple markdown-to-JSX: **bold**, - lists, newlines */
 function formatMessage(text: string) {
   const lines = text.split("\n");
@@ -308,40 +374,39 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
             <>
               <div className="flex-1 overflow-y-auto p-4">
                 <div className="space-y-3">
-                  {messages.map((msg, i) => (
-                    <div key={i}>
-                      <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                        <div
-                          className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
-                            msg.role === "user"
-                              ? "bg-cyan-600 text-white"
-                              : "bg-zinc-100 text-zinc-800"
-                          }`}
-                        >
-                          {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
+                  {messages.map((msg, i) => {
+                    const isLast = msg.role === "assistant" && i === messages.length - 1 && !sending;
+                    const quickReplies = isLast ? getQuickReplies(msg.content, i === 0) : [];
+                    return (
+                      <div key={i}>
+                        <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                          <div
+                            className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
+                              msg.role === "user"
+                                ? "bg-cyan-600 text-white"
+                                : "bg-zinc-100 text-zinc-800"
+                            }`}
+                          >
+                            {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
+                          </div>
                         </div>
+                        {quickReplies.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {quickReplies.map((cta) => (
+                              <button
+                                key={cta.label}
+                                type="button"
+                                onClick={() => { setInput(cta.text); }}
+                                className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100"
+                              >
+                                {cta.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      {/* CTA buttons after first assistant message (greeting) */}
-                      {msg.role === "assistant" && i === 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {[
-                            { label: "What is GuestBox?", text: "What is GuestBox?" },
-                            { label: "Pricing & Plans", text: "What are the pricing options and plans?" },
-                            { label: "Help me order", text: "Help me place my order" },
-                          ].map((cta) => (
-                            <button
-                              key={cta.label}
-                              type="button"
-                              onClick={() => { setInput(cta.text); }}
-                              className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100"
-                            >
-                              {cta.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                   {sending && (
                     <div className="flex justify-start">
                       <div className="rounded-xl bg-zinc-100 px-3 py-2">
