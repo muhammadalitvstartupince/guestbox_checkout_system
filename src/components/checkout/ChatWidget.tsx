@@ -84,6 +84,46 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
   useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
   useEffect(() => { if (open && conversationId) inputRef.current?.focus(); }, [open, conversationId]);
 
+  // --- Abandonment detection ---
+  const lastActivityRef = useRef(Date.now());
+  const nudgeSentRef = useRef(false);
+
+  // Reset activity timer on every message or input
+  useEffect(() => { lastActivityRef.current = Date.now(); nudgeSentRef.current = false; }, [messages, input]);
+
+  // beforeunload: mark abandoned when user leaves the page
+  useEffect(() => {
+    if (!conversationId) return;
+    const handleUnload = () => {
+      navigator.sendBeacon("/api/chat/abandon", JSON.stringify({ conversationId }));
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, [conversationId]);
+
+  // Idle timer: nudge at 3 min, mark abandoned at 10 min
+  useEffect(() => {
+    if (!conversationId) return;
+    const interval = setInterval(() => {
+      const idleMs = Date.now() - lastActivityRef.current;
+      // 3 min nudge
+      if (idleMs >= 3 * 60 * 1000 && !nudgeSentRef.current) {
+        nudgeSentRef.current = true;
+        setMessages((prev) => [...prev, { role: "assistant", content: "Still there? Happy to help finish your order!" }]);
+      }
+      // 10 min abandon
+      if (idleMs >= 10 * 60 * 1000) {
+        fetch("/api/chat/abandon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ conversationId }),
+        }).catch(() => {});
+        clearInterval(interval);
+      }
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, [conversationId]);
+
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!leadForm.firstName || !leadForm.lastName || !leadForm.email || !leadForm.phone) return;
