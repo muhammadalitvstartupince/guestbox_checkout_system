@@ -101,6 +101,7 @@ export interface ActivePromotionView {
   endsAt: string | null;
   badgeText: string;
   urgencyText: string;
+  autoApply: boolean;
 }
 
 export interface CheckoutPageView {
@@ -289,9 +290,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   const hasTiers = checkoutPage.priceTiers.length > 0;
   const baseTierPrice = hasTiers ? checkoutPage.priceTiers[0].priceCents : checkoutPage.basePriceCents;
   const tierPrice = hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
-  // When a promotion is active, use the lower of promo price and tier price
+  // autoApply ON: min(promo, tier) — bulk discounts can kick in
+  // autoApply OFF: locked promo price — no bulk discounts
   const unitPrice = isPromoActive
-    ? Math.min(activePromotion.promoPriceCents, tierPrice)
+    ? (activePromotion.autoApply ? Math.min(activePromotion.promoPriceCents, tierPrice) : activePromotion.promoPriceCents)
     : tierPrice;
 
   const defaultPlan = checkoutPage.billingPlans.find((p) => p.isDefault) ?? checkoutPage.billingPlans[0];
@@ -503,7 +505,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
         {/* Limited Time Promotion banner — replaces tier badges */}
         {isPromoActive && (() => {
-          const effectivePromoPriceCents = Math.min(activePromotion.promoPriceCents, tierPrice);
+          const effectivePromoPriceCents = activePromotion.autoApply ? Math.min(activePromotion.promoPriceCents, tierPrice) : activePromotion.promoPriceCents;
           const savePercent = Math.round(((activePromotion.originalPriceCents - effectivePromoPriceCents) / activePromotion.originalPriceCents) * 100);
           return (
             <div className="relative overflow-hidden rounded-xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-3 pb-3 pt-6 text-center shadow-lg sm:rounded-2xl sm:px-5 sm:pb-5 sm:pt-8">

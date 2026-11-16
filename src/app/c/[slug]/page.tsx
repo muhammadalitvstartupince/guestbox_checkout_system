@@ -82,12 +82,11 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
   const initialPropQty = Math.max(1, parseInt(String(resolvedSearchParams.prop ?? ""), 10) || 1);
   const initialGbQty = Math.max(initialPropQty, parseInt(String(resolvedSearchParams.gb ?? ""), 10) || initialPropQty);
 
-  // Check for an active auto-apply promotion on this checkout page
+  // Check for an active promotion on this checkout page
   const now = new Date();
   const activePromoRow = await prisma.promotion.findFirst({
     where: {
       isActive: true,
-      autoApply: true,
       checkoutPages: { some: { checkoutPageId: checkoutPage.id } },
       AND: [
         { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
@@ -109,6 +108,7 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
     endsAt: string | null;
     badgeText: string;
     urgencyText: string;
+    autoApply: boolean;
   } | null = null;
 
   if (activePromoRow) {
@@ -128,6 +128,7 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
       endsAt: activePromoRow.endsAt ? activePromoRow.endsAt.toISOString() : null,
       badgeText: activePromoRow.badgeText,
       urgencyText: activePromoRow.urgencyText,
+      autoApply: activePromoRow.autoApply,
     };
   }
 

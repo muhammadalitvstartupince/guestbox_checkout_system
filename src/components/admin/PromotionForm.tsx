@@ -254,9 +254,9 @@ export function PromotionForm({
           className="rounded border-zinc-300 dark:border-zinc-600"
         />
         <span>
-          <span className="font-medium">Auto-apply on checkout page</span>
+          <span className="font-medium">Bulk discount apply</span>
           <span className="ml-1 text-xs text-zinc-500 dark:text-zinc-400">
-            — When on, the promo banner + code appear automatically. When off, the customer must enter the code manually.
+            — When on, qty-based tier discounts can override the promo price if lower. When off, promo price is locked for all quantities.
           </span>
         </span>
       </label>

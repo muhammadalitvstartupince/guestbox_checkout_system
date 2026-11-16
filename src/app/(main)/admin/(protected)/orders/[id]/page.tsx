@@ -46,23 +46,17 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   const activePromo = order.promotionId
     ? await prisma.promotion.findUnique({
         where: { id: order.promotionId },
-        include: {
+        select: {
+          autoApply: true,
           priceTier: { select: { priceCents: true } },
           promoCode: { select: { code: true, discountType: true, discountValue: true } },
         },
       })
     : null;
 
-  // Resolve per-unit device price — always check tier, then min(promo, tier)
+  // Resolve per-unit device price: autoApply ON = min(promo, tier), OFF = locked promo
   let unitPriceCents = order.checkoutPage.basePriceCents;
   let promoOriginalPriceCents: number | null = null;
-
-  if (order.checkoutPage.priceTiers.length > 0) {
-    const matchedTier = order.checkoutPage.priceTiers.find(
-      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
-    );
-    if (matchedTier) unitPriceCents = matchedTier.priceCents;
-  }
 
   if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
@@ -70,11 +64,29 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
     const promoPriceCents = Math.max(0, origPrice - disc);
-    if (promoPriceCents < unitPriceCents) {
+
+    if (activePromo.autoApply) {
+      // ON: check tier first, then min
+      if (order.checkoutPage.priceTiers.length > 0) {
+        const matchedTier = order.checkoutPage.priceTiers.find(
+          (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
+        );
+        if (matchedTier) unitPriceCents = matchedTier.priceCents;
+      }
+      if (promoPriceCents < unitPriceCents) {
+        unitPriceCents = promoPriceCents;
+        promoOriginalPriceCents = origPrice;
+      }
+    } else {
+      // OFF: locked promo price
       unitPriceCents = promoPriceCents;
       promoOriginalPriceCents = origPrice;
     }
-    // If tier price was already lower, no promo savings to show
+  } else if (order.checkoutPage.priceTiers.length > 0) {
+    const matchedTier = order.checkoutPage.priceTiers.find(
+      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
+    );
+    if (matchedTier) unitPriceCents = matchedTier.priceCents;
   }
 
   const productName = order.upgradeSelected && order.checkoutPage.upgradeTitle
