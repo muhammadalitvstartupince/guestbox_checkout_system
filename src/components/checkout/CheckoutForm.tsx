@@ -19,6 +19,7 @@ import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
 import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone, Home } from "lucide-react";
+import { registerChatBridge, unregisterChatBridge } from "@/components/checkout/ChatBridge";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
   switch (brand) {
@@ -356,6 +357,21 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
     };
     appliedCode?: string;
   }>({ status: "idle" });
+
+  // Register the chat bridge so ChatWidget can read/write form state
+  useEffect(() => {
+    registerChatBridge({
+      wizardStep, quantity, listingQty,
+      selectedPlanId, selectedTierId, selectedTierInterval,
+      selectedAddonIds, upgradeSelected, orderId,
+      setWizardStep, setQuantity, setListingQty,
+      setSelectedPlanId: (id: string) => setSelectedPlanId(id),
+      setSelectedTierId: (id: string) => setSelectedTierId(id),
+      setSelectedTierInterval: (interval: string) => setSelectedTierInterval(interval as "monthly" | "annually"),
+      setSelectedAddonIds, setUpgradeSelected, setDetailsSubStep,
+    });
+    return () => unregisterChatBridge();
+  });
 
   async function handleValidatePromo() {
     const code = paymentForm.promoCode.trim();

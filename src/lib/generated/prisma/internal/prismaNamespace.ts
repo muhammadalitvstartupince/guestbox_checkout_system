@@ -419,7 +419,9 @@ export const ModelName = {
   ShippingPackageTier: 'ShippingPackageTier',
   ShippingWeightEntry: 'ShippingWeightEntry',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
-  ShippingRateLog: 'ShippingRateLog'
+  ShippingRateLog: 'ShippingRateLog',
+  ChatConversation: 'ChatConversation',
+  ChatMessage: 'ChatMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -435,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings" | "shippingRateLog"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatConversation" | "chatMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2141,6 +2143,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChatConversation: {
+      payload: Prisma.$ChatConversationPayload<ExtArgs>
+      fields: Prisma.ChatConversationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatConversationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatConversationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>
+        }
+        findFirst: {
+          args: Prisma.ChatConversationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatConversationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>
+        }
+        findMany: {
+          args: Prisma.ChatConversationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>[]
+        }
+        create: {
+          args: Prisma.ChatConversationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>
+        }
+        createMany: {
+          args: Prisma.ChatConversationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChatConversationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>[]
+        }
+        delete: {
+          args: Prisma.ChatConversationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>
+        }
+        update: {
+          args: Prisma.ChatConversationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatConversationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatConversationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChatConversationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChatConversationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatConversationPayload>
+        }
+        aggregate: {
+          args: Prisma.ChatConversationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatConversation>
+        }
+        groupBy: {
+          args: Prisma.ChatConversationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatConversationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatConversationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatConversationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChatMessage: {
+      payload: Prisma.$ChatMessagePayload<ExtArgs>
+      fields: Prisma.ChatMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.ChatMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        findMany: {
+          args: Prisma.ChatMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        create: {
+          args: Prisma.ChatMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        createMany: {
+          args: Prisma.ChatMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChatMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.ChatMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        update: {
+          args: Prisma.ChatMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChatMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChatMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.ChatMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatMessage>
+        }
+        groupBy: {
+          args: Prisma.ChatMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatMessageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2234,7 +2384,9 @@ export const CheckoutPageScalarFieldEnum = {
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  tieredPlansEnabled: 'tieredPlansEnabled'
+  tieredPlansEnabled: 'tieredPlansEnabled',
+  chatEnabled: 'chatEnabled',
+  chatLayout: 'chatLayout'
 } as const
 
 export type CheckoutPageScalarFieldEnum = (typeof CheckoutPageScalarFieldEnum)[keyof typeof CheckoutPageScalarFieldEnum]
@@ -2559,6 +2711,40 @@ export const ShippingRateLogScalarFieldEnum = {
 export type ShippingRateLogScalarFieldEnum = (typeof ShippingRateLogScalarFieldEnum)[keyof typeof ShippingRateLogScalarFieldEnum]
 
 
+export const ChatConversationScalarFieldEnum = {
+  id: 'id',
+  checkoutPageId: 'checkoutPageId',
+  orderId: 'orderId',
+  sessionId: 'sessionId',
+  status: 'status',
+  outcome: 'outcome',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  collectedData: 'collectedData',
+  metadata: 'metadata',
+  startedAt: 'startedAt',
+  lastMessageAt: 'lastMessageAt',
+  abandonedAt: 'abandonedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type ChatConversationScalarFieldEnum = (typeof ChatConversationScalarFieldEnum)[keyof typeof ChatConversationScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  role: 'role',
+  content: 'content',
+  toolCalls: 'toolCalls',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2733,6 +2919,20 @@ export type ListEnumCheckoutPageStatusFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
+ * Reference to a field of type 'ChatLayout'
+ */
+export type EnumChatLayoutFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatLayout'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatLayout[]'
+ */
+export type ListEnumChatLayoutFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatLayout[]'>
+    
+
+
+/**
  * Reference to a field of type 'DiscountType'
  */
 export type EnumDiscountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscountType'>
@@ -2799,6 +2999,48 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatConversationStatus'
+ */
+export type EnumChatConversationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatConversationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatConversationStatus[]'
+ */
+export type ListEnumChatConversationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatConversationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatOutcome'
+ */
+export type EnumChatOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatOutcome'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatOutcome[]'
+ */
+export type ListEnumChatOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatOutcome[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatMessageRole'
+ */
+export type EnumChatMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatMessageRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatMessageRole[]'
+ */
+export type ListEnumChatMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatMessageRole[]'>
     
 
 
@@ -2989,6 +3231,8 @@ export type GlobalOmitConfig = {
   shippingWeightEntry?: Prisma.ShippingWeightEntryOmit
   abandonedCheckoutSettings?: Prisma.AbandonedCheckoutSettingsOmit
   shippingRateLog?: Prisma.ShippingRateLogOmit
+  chatConversation?: Prisma.ChatConversationOmit
+  chatMessage?: Prisma.ChatMessageOmit
 }
 
 /* Types for Logging */

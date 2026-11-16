@@ -132,3 +132,13 @@ export type AbandonedCheckoutSettings = Prisma.AbandonedCheckoutSettingsModel
  * 
  */
 export type ShippingRateLog = Prisma.ShippingRateLogModel
+/**
+ * Model ChatConversation
+ * 
+ */
+export type ChatConversation = Prisma.ChatConversationModel
+/**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel

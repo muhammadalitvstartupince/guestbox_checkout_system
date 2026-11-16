@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db/client";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
+import { ChatWidget } from "@/components/checkout/ChatWidget";
 import { hasUpgradeOffer } from "@/lib/checkout/select-product";
 import { calculateOrderPrice } from "@/lib/pricing/calculate";
 
@@ -133,6 +134,7 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
   }
 
   return (
+    <>
     <CheckoutForm
       landingUrl={landingUrl}
       activePromotion={activePromotion}
@@ -202,5 +204,19 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
         })),
       }}
     />
+    {checkoutPage.chatEnabled && (
+      <ChatWidget
+        checkoutPageId={checkoutPage.id}
+        checkoutContext={{
+          productName: checkoutPage.productName ?? checkoutPage.title,
+          basePriceCents: checkoutPage.basePriceCents,
+          priceTiers: checkoutPage.priceTiers.map((t) => ({ minQty: t.minQty, maxQty: t.maxQty, priceCents: t.priceCents })),
+          billingPlans: checkoutPage.billingPlans.map((p) => ({ id: p.id, label: p.label, interval: p.interval, priceCents: p.priceCents })),
+          planTiers: checkoutPage.planTiers.map((t) => ({ id: t.id, name: t.name, prices: t.prices.map((p) => ({ minQty: p.minQty, maxQty: p.maxQty, monthlyPriceCents: p.monthlyPriceCents })) })),
+          addons: checkoutPage.addonLinks.map((l) => ({ id: l.addon.id, name: l.addon.name, priceCents: l.addon.priceCents })),
+        }}
+      />
+    )}
+    </>
   );
 }

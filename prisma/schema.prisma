@@ -63,6 +63,38 @@ enum DiscountMode {
   @@map("discount_mode")
 }
 
+enum ChatLayout {
+  floating
+  side
+
+  @@map("chat_layout")
+}
+
+enum ChatConversationStatus {
+  active
+  completed
+  abandoned
+
+  @@map("chat_conversation_status")
+}
+
+enum ChatOutcome {
+  order_completed
+  abandoned_with_info
+  abandoned_no_info
+  questions_only
+
+  @@map("chat_outcome")
+}
+
+enum ChatMessageRole {
+  user
+  assistant
+  system
+
+  @@map("chat_message_role")
+}
+
 enum OrderStatus {
   pending
   paid
@@ -181,14 +213,18 @@ model CheckoutPage {
 
   tieredPlansEnabled Boolean @default(false) @map("tiered_plans_enabled")
 
-  addonLinks      CheckoutPageAddon[]
-  promoCodes      PromoCode[]
-  orders          Order[]
-  priceTiers      PriceTier[]
-  billingPlans    BillingPlan[]
-  planTiers       PlanTier[]
-  logs            CheckoutPageLog[]
-  promotionLinks  PromotionCheckoutPage[]
+  chatEnabled Boolean    @default(false) @map("chat_enabled")
+  chatLayout  ChatLayout @default(floating) @map("chat_layout")
+
+  addonLinks         CheckoutPageAddon[]
+  promoCodes         PromoCode[]
+  orders             Order[]
+  priceTiers         PriceTier[]
+  billingPlans       BillingPlan[]
+  planTiers          PlanTier[]
+  logs               CheckoutPageLog[]
+  promotionLinks     PromotionCheckoutPage[]
+  chatConversations  ChatConversation[]
 
   @@map("checkout_pages")
 }
@@ -451,7 +487,8 @@ model Order {
   orderAddons      OrderAddon[]
   cardAccessLogs   CardAccessAuditLog[]
   events           OrderEvent[]
-  shippingRateLogs ShippingRateLog[]
+  shippingRateLogs    ShippingRateLog[]
+  chatConversations   ChatConversation[]
 
   abandonedNotifiedAt DateTime? @map("abandoned_notified_at")
 
@@ -624,4 +661,46 @@ model ShippingRateLog {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("shipping_rate_logs")
+}
+
+// Chat conversations on checkout pages — lead gate collects contact info
+// before chat starts, so every conversation has name/email/phone.
+model ChatConversation {
+  id              String                  @id @default(uuid()) @db.Uuid
+  checkoutPageId  String                  @map("checkout_page_id") @db.Uuid
+  checkoutPage    CheckoutPage            @relation(fields: [checkoutPageId], references: [id], onDelete: Cascade)
+  orderId         String?                 @map("order_id") @db.Uuid
+  order           Order?                  @relation(fields: [orderId], references: [id])
+  sessionId       String                  @map("session_id")
+  status          ChatConversationStatus  @default(active)
+  outcome         ChatOutcome?
+
+  firstName       String                  @map("first_name")
+  lastName        String                  @map("last_name")
+  email           String
+  phone           String
+
+  collectedData   Json?                   @map("collected_data")
+  metadata        Json?
+
+  startedAt       DateTime                @default(now()) @map("started_at")
+  lastMessageAt   DateTime                @default(now()) @map("last_message_at")
+  abandonedAt     DateTime?               @map("abandoned_at")
+  completedAt     DateTime?               @map("completed_at")
+
+  messages        ChatMessage[]
+
+  @@map("chat_conversations")
+}
+
+model ChatMessage {
+  id              String              @id @default(uuid()) @db.Uuid
+  conversationId  String              @map("conversation_id") @db.Uuid
+  conversation    ChatConversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role            ChatMessageRole
+  content         String
+  toolCalls       Json?               @map("tool_calls")
+  createdAt       DateTime            @default(now()) @map("created_at")
+
+  @@map("chat_messages")
 }
