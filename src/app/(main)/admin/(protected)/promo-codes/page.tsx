@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { verifyAdminSession } from "@/lib/auth/dal";
 import { prisma } from "@/lib/db/client";
 import { PromoCodeForm } from "@/components/admin/PromoCodeForm";
@@ -106,6 +107,12 @@ export default async function AdminPromoCodesPage() {
                 <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">{promo.isActive ? "Yes" : "No"}</td>
                 <td className="px-5 py-3 text-right">
                   <div className="flex items-center justify-end gap-3">
+                    <Link
+                      href={`/admin/promo-codes/${promo.id}`}
+                      className="text-sm font-medium text-zinc-600 hover:underline dark:text-zinc-400"
+                    >
+                      Edit
+                    </Link>
                     <PromoLinkButton
                       code={promo.code}
                       boundPageSlug={promo.appliesToCheckoutPage?.slug}

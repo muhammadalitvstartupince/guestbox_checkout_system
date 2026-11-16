@@ -288,10 +288,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
   const hasTiers = checkoutPage.priceTiers.length > 0;
   const baseTierPrice = hasTiers ? checkoutPage.priceTiers[0].priceCents : checkoutPage.basePriceCents;
-  // When a promotion is active, lock to the promotion tier's price
+  const tierPrice = hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
+  // When a promotion is active, use the lower of promo price and tier price
   const unitPrice = isPromoActive
-    ? activePromotion.originalPriceCents
-    : hasTiers ? getUnitPrice(checkoutPage.priceTiers, quantity, checkoutPage.basePriceCents) : checkoutPage.basePriceCents;
+    ? Math.min(activePromotion.promoPriceCents, tierPrice)
+    : tierPrice;
 
   const defaultPlan = checkoutPage.billingPlans.find((p) => p.isDefault) ?? checkoutPage.billingPlans[0];
   const [selectedPlanId, setSelectedPlanId] = useState(defaultPlan?.id ?? "");
@@ -396,10 +397,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   }, [searchParams, checkoutPage.slug]);
 
   const effectiveTitle = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.title : checkoutPage.productName;
-  // During promotion: use promo price directly as base (discount is baked in)
-  const effectiveBasePriceCents = isPromoActive
-    ? activePromotion.promoPriceCents
-    : upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
+  // During promotion: use min(promo, tier) — already computed in unitPrice
+  const effectiveBasePriceCents = upgradeSelected && checkoutPage.upgrade ? checkoutPage.upgrade.priceCents : unitPrice;
   // Tiered plan pricing
   const tierMonthlyPriceCents = hasTieredPlans && selectedTier ? getTierMonthlyPrice(selectedTier, quantity) : 0;
   const tierAnnualPerListing = hasTieredPlans && selectedTier
@@ -495,7 +494,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   // STEP 1: QTY
   // =====================================================================
   function renderQtyStep() {
-    const promoUnitPrice = isPromoActive ? activePromotion.promoPriceCents : unitPrice;
+    // unitPrice already accounts for min(promo, tier)
+    const promoUnitPrice = unitPrice;
     const orderTotal = promoUnitPrice * quantity;
     return (
       <div className="space-y-6">
@@ -503,7 +503,8 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
         {/* Limited Time Promotion banner — replaces tier badges */}
         {isPromoActive && (() => {
-          const savePercent = Math.round(((activePromotion.originalPriceCents - activePromotion.promoPriceCents) / activePromotion.originalPriceCents) * 100);
+          const effectivePromoPriceCents = Math.min(activePromotion.promoPriceCents, tierPrice);
+          const savePercent = Math.round(((activePromotion.originalPriceCents - effectivePromoPriceCents) / activePromotion.originalPriceCents) * 100);
           return (
             <div className="relative overflow-hidden rounded-xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 px-3 pb-3 pt-6 text-center shadow-lg sm:rounded-2xl sm:px-5 sm:pb-5 sm:pt-8">
               {/* Animated shimmer overlay */}
@@ -532,7 +533,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
                   {formatWholeDollars(activePromotion.originalPriceCents)}
                 </span>
                 <span className="text-3xl font-black text-zinc-900 sm:text-5xl">
-                  {formatWholeDollars(activePromotion.promoPriceCents)}
+                  {formatWholeDollars(effectivePromoPriceCents)}
                 </span>
                 <span className="text-xs font-medium text-zinc-500 sm:text-sm">/each</span>
               </div>
@@ -708,7 +709,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         </div>
         <p className="-mt-4 text-center text-sm text-zinc-500">
           {formatWholeDollars(promoUnitPrice)} per device
-          {isPromoActive && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
+          {isPromoActive && promoUnitPrice < activePromotion.originalPriceCents && <span className="ml-1 text-zinc-400 line-through">{formatWholeDollars(activePromotion.originalPriceCents)}</span>}
           {hasTieredPlans
             ? " | First Month FREE"
             : selectedPlan ? (selectedPlan.interval === "monthly" ? " | First Month FREE" : ` | ${formatWholeDollars(selectedPlan.priceCents)}/${recurringLabel} per property`) : ""}
@@ -728,6 +729,36 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
             <ShieldCheck className="h-4 w-4" />
             <span className="text-[10px] font-extrabold leading-tight tracking-wide">NO EXTRA FEES</span>
           </span>
+        </div>
+
+        {/* 30-Day Money-Back Guarantee — 3D gold pill with shimmer */}
+        <div className="flex justify-center">
+          <div
+            className="relative inline-flex items-center gap-2 overflow-hidden rounded-full px-5 py-2 sm:gap-2.5 sm:px-7 sm:py-2.5"
+            style={{
+              background: "linear-gradient(180deg, #e8c547 0%, #d4a832 40%, #b8922a 70%, #9a7a22 100%)",
+              border: "2px solid #8b6914",
+              boxShadow: "inset 0 2px 3px rgba(255,255,220,0.5), inset 0 -3px 5px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.3)",
+            }}
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.4)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+            <span
+              className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+              style={{
+                background: "linear-gradient(180deg, #5a4a1a 0%, #3d3210 100%)",
+                border: "2px solid #2a2208",
+                boxShadow: "inset 0 1px 2px rgba(255,255,200,0.2)",
+              }}
+            >
+              <Check className="h-3 w-3 text-amber-300" />
+            </span>
+            <span
+              className="relative text-xs font-black tracking-[0.15em] uppercase sm:text-sm"
+              style={{ color: "#2a1f00", textShadow: "0 1px 0 rgba(255,255,200,0.4)" }}
+            >
+              30-Day Money-Back Guarantee
+            </span>
+          </div>
         </div>
 
         {/* Next button */}
@@ -1693,7 +1724,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
                       </span>
                       <Check className="h-4 w-4 shrink-0 text-amber-600" />
                     </div>
-                    <div className="text-xs font-medium text-amber-700">Promotion applied — saving {formatCents((activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity)}</div>
+                    <div className="text-xs font-medium text-amber-700">Promotion applied — saving {formatCents((activePromotion.originalPriceCents - unitPrice) * quantity)}</div>
                   </div>
                 </div>
               )}
@@ -1768,12 +1799,12 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
             <div className="mb-2 text-sm font-semibold tracking-wide uppercase opacity-90">Order Summary</div>
             <div className="space-y-1 text-sm opacity-90">
               {/* Device line */}
-              {isPromoActive ? (
+              {isPromoActive && unitPrice < activePromotion.originalPriceCents ? (
                 <div className="flex items-baseline justify-between">
-                  <span>{quantity}× {effectiveTitle} @ {formatWholeDollars(activePromotion.promoPriceCents)}/ea</span>
+                  <span>{quantity}× {effectiveTitle} @ {formatWholeDollars(unitPrice)}/ea</span>
                   <div className="ml-2 flex items-baseline gap-2">
                     <span className="text-xs text-white/50 line-through">{formatCents(activePromotion.originalPriceCents * quantity)}</span>
-                    <span className="font-medium">{formatCents(activePromotion.promoPriceCents * quantity)}</span>
+                    <span className="font-medium">{formatCents(unitPrice * quantity)}</span>
                   </div>
                 </div>
               ) : (
@@ -1807,7 +1838,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
             </div>
             {(isPromoActive || estimate.discountCents > 0 || (chargeRecurringNow && estimate.recurringDiscountCents > 0)) ? (() => {
               const promoSavingsCents = isPromoActive
-                ? (activePromotion.originalPriceCents - activePromotion.promoPriceCents) * quantity
+                ? (activePromotion.originalPriceCents - unitPrice) * quantity
                 : 0;
               const displaySubtotal = chargeRecurringNow
                 ? estimate.subtotalCents + estimate.recurringTotalCents
@@ -1921,6 +1952,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
       {wizardStep === 1 && renderQtyStep()}
       {wizardStep === 2 && renderDetailsStep()}
       {wizardStep === 3 && renderPaymentStep()}
+
     </>
   );
 

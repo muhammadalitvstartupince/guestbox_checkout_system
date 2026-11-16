@@ -2,7 +2,7 @@ import Link from "next/link";
 import { verifyAdminSession } from "@/lib/auth/dal";
 import { prisma } from "@/lib/db/client";
 import { PromotionForm } from "@/components/admin/PromotionForm";
-import { togglePromotion } from "./actions";
+import { togglePromotion, toggleAutoApply } from "./actions";
 
 function formatCents(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -72,6 +72,7 @@ export default async function AdminPromotionsPage() {
               <th className="px-5 py-3 font-medium">Promo Code</th>
               <th className="px-5 py-3 font-medium">Original → Final</th>
               <th className="px-5 py-3 font-medium">Pages</th>
+              <th className="px-5 py-3 font-medium text-center">Auto-Apply</th>
               <th className="px-5 py-3 font-medium">Starts</th>
               <th className="px-5 py-3 font-medium">Ends</th>
               <th className="px-5 py-3" />
@@ -106,6 +107,17 @@ export default async function AdminPromotionsPage() {
                   <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
                     {promo.checkoutPages.map((cp) => cp.checkoutPage.title).join(", ")}
                   </td>
+                  <td className="px-5 py-3 text-center">
+                    <form action={toggleAutoApply.bind(null, promo.id)}>
+                      <button
+                        type="submit"
+                        className={`inline-flex h-6 w-11 items-center rounded-full transition-colors ${promo.autoApply ? "bg-emerald-500" : "bg-zinc-300 dark:bg-zinc-600"}`}
+                        title={promo.autoApply ? "Auto-apply is ON — banner + code shown on checkout" : "Auto-apply is OFF — customer must enter code manually"}
+                      >
+                        <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${promo.autoApply ? "translate-x-6" : "translate-x-1"}`} />
+                      </button>
+                    </form>
+                  </td>
                   <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
                     {promo.startsAt ? utcToLocal(promo.startsAt, promo.timezone) : "—"}
                   </td>
@@ -135,7 +147,7 @@ export default async function AdminPromotionsPage() {
             })}
             {promotions.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-5 py-10 text-center text-zinc-400 dark:text-zinc-500">
+                <td colSpan={9} className="px-5 py-10 text-center text-zinc-400 dark:text-zinc-500">
                   No promotions yet.
                 </td>
               </tr>

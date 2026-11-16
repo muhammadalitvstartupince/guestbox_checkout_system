@@ -2454,6 +2454,7 @@ export const PromotionScalarFieldEnum = {
   id: 'id',
   name: 'name',
   isActive: 'isActive',
+  autoApply: 'autoApply',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
   badgeText: 'badgeText',

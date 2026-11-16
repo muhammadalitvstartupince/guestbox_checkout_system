@@ -53,21 +53,28 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       })
     : null;
 
-  // Resolve per-unit device price — use promo price when a promotion was applied
+  // Resolve per-unit device price — always check tier, then min(promo, tier)
   let unitPriceCents = order.checkoutPage.basePriceCents;
   let promoOriginalPriceCents: number | null = null;
+
+  if (order.checkoutPage.priceTiers.length > 0) {
+    const matchedTier = order.checkoutPage.priceTiers.find(
+      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
+    );
+    if (matchedTier) unitPriceCents = matchedTier.priceCents;
+  }
+
   if (activePromo) {
     const origPrice = activePromo.priceTier.priceCents;
     const disc = activePromo.promoCode.discountType === "percent"
       ? Math.round((origPrice * activePromo.promoCode.discountValue) / 100)
       : activePromo.promoCode.discountValue;
-    unitPriceCents = Math.max(0, origPrice - disc);
-    promoOriginalPriceCents = origPrice;
-  } else if (order.checkoutPage.priceTiers.length > 0) {
-    const matchedTier = order.checkoutPage.priceTiers.find(
-      (t) => order.quantity >= t.minQty && (t.maxQty == null || order.quantity <= t.maxQty),
-    );
-    if (matchedTier) unitPriceCents = matchedTier.priceCents;
+    const promoPriceCents = Math.max(0, origPrice - disc);
+    if (promoPriceCents < unitPriceCents) {
+      unitPriceCents = promoPriceCents;
+      promoOriginalPriceCents = origPrice;
+    }
+    // If tier price was already lower, no promo savings to show
   }
 
   const productName = order.upgradeSelected && order.checkoutPage.upgradeTitle

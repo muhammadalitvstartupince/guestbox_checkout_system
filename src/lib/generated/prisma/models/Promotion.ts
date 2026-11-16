@@ -28,6 +28,7 @@ export type PromotionMinAggregateOutputType = {
   id: string | null
   name: string | null
   isActive: boolean | null
+  autoApply: boolean | null
   startsAt: Date | null
   endsAt: Date | null
   badgeText: string | null
@@ -43,6 +44,7 @@ export type PromotionMaxAggregateOutputType = {
   id: string | null
   name: string | null
   isActive: boolean | null
+  autoApply: boolean | null
   startsAt: Date | null
   endsAt: Date | null
   badgeText: string | null
@@ -58,6 +60,7 @@ export type PromotionCountAggregateOutputType = {
   id: number
   name: number
   isActive: number
+  autoApply: number
   startsAt: number
   endsAt: number
   badgeText: number
@@ -75,6 +78,7 @@ export type PromotionMinAggregateInputType = {
   id?: true
   name?: true
   isActive?: true
+  autoApply?: true
   startsAt?: true
   endsAt?: true
   badgeText?: true
@@ -90,6 +94,7 @@ export type PromotionMaxAggregateInputType = {
   id?: true
   name?: true
   isActive?: true
+  autoApply?: true
   startsAt?: true
   endsAt?: true
   badgeText?: true
@@ -105,6 +110,7 @@ export type PromotionCountAggregateInputType = {
   id?: true
   name?: true
   isActive?: true
+  autoApply?: true
   startsAt?: true
   endsAt?: true
   badgeText?: true
@@ -193,6 +199,7 @@ export type PromotionGroupByOutputType = {
   id: string
   name: string
   isActive: boolean
+  autoApply: boolean
   startsAt: Date | null
   endsAt: Date | null
   badgeText: string
@@ -229,6 +236,7 @@ export type PromotionWhereInput = {
   id?: Prisma.UuidFilter<"Promotion"> | string
   name?: Prisma.StringFilter<"Promotion"> | string
   isActive?: Prisma.BoolFilter<"Promotion"> | boolean
+  autoApply?: Prisma.BoolFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   badgeText?: Prisma.StringFilter<"Promotion"> | string
@@ -248,6 +256,7 @@ export type PromotionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  autoApply?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   badgeText?: Prisma.SortOrder
@@ -270,6 +279,7 @@ export type PromotionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PromotionWhereInput | Prisma.PromotionWhereInput[]
   name?: Prisma.StringFilter<"Promotion"> | string
   isActive?: Prisma.BoolFilter<"Promotion"> | boolean
+  autoApply?: Prisma.BoolFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   badgeText?: Prisma.StringFilter<"Promotion"> | string
@@ -289,6 +299,7 @@ export type PromotionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  autoApply?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   badgeText?: Prisma.SortOrder
@@ -310,6 +321,7 @@ export type PromotionScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Promotion"> | string
   name?: Prisma.StringWithAggregatesFilter<"Promotion"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"Promotion"> | boolean
+  autoApply?: Prisma.BoolWithAggregatesFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Promotion"> | Date | string | null
   badgeText?: Prisma.StringWithAggregatesFilter<"Promotion"> | string
@@ -325,6 +337,7 @@ export type PromotionCreateInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -342,6 +355,7 @@ export type PromotionUncheckedCreateInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -359,6 +373,7 @@ export type PromotionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -376,6 +391,7 @@ export type PromotionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -393,6 +409,7 @@ export type PromotionCreateManyInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -408,6 +425,7 @@ export type PromotionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -421,6 +439,7 @@ export type PromotionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -451,6 +470,7 @@ export type PromotionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  autoApply?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   badgeText?: Prisma.SortOrder
@@ -466,6 +486,7 @@ export type PromotionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  autoApply?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   badgeText?: Prisma.SortOrder
@@ -481,6 +502,7 @@ export type PromotionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  autoApply?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   badgeText?: Prisma.SortOrder
@@ -615,6 +637,7 @@ export type PromotionCreateWithoutPriceTierInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -631,6 +654,7 @@ export type PromotionUncheckedCreateWithoutPriceTierInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -676,6 +700,7 @@ export type PromotionScalarWhereInput = {
   id?: Prisma.UuidFilter<"Promotion"> | string
   name?: Prisma.StringFilter<"Promotion"> | string
   isActive?: Prisma.BoolFilter<"Promotion"> | boolean
+  autoApply?: Prisma.BoolFilter<"Promotion"> | boolean
   startsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Promotion"> | Date | string | null
   badgeText?: Prisma.StringFilter<"Promotion"> | string
@@ -691,6 +716,7 @@ export type PromotionCreateWithoutPromoCodeInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -707,6 +733,7 @@ export type PromotionUncheckedCreateWithoutPromoCodeInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -749,6 +776,7 @@ export type PromotionCreateWithoutOrdersInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -765,6 +793,7 @@ export type PromotionUncheckedCreateWithoutOrdersInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -797,6 +826,7 @@ export type PromotionUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -813,6 +843,7 @@ export type PromotionUncheckedUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -829,6 +860,7 @@ export type PromotionCreateWithoutCheckoutPagesInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -845,6 +877,7 @@ export type PromotionUncheckedCreateWithoutCheckoutPagesInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -877,6 +910,7 @@ export type PromotionUpdateWithoutCheckoutPagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -893,6 +927,7 @@ export type PromotionUncheckedUpdateWithoutCheckoutPagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -909,6 +944,7 @@ export type PromotionCreateManyPriceTierInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -923,6 +959,7 @@ export type PromotionUpdateWithoutPriceTierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -939,6 +976,7 @@ export type PromotionUncheckedUpdateWithoutPriceTierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -955,6 +993,7 @@ export type PromotionUncheckedUpdateManyWithoutPriceTierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -969,6 +1008,7 @@ export type PromotionCreateManyPromoCodeInput = {
   id?: string
   name: string
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: Date | string | null
   endsAt?: Date | string | null
   badgeText?: string
@@ -983,6 +1023,7 @@ export type PromotionUpdateWithoutPromoCodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -999,6 +1040,7 @@ export type PromotionUncheckedUpdateWithoutPromoCodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1015,6 +1057,7 @@ export type PromotionUncheckedUpdateManyWithoutPromoCodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApply?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   badgeText?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1069,6 +1112,7 @@ export type PromotionSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   name?: boolean
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: boolean
   endsAt?: boolean
   badgeText?: boolean
@@ -1089,6 +1133,7 @@ export type PromotionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: boolean
   endsAt?: boolean
   badgeText?: boolean
@@ -1106,6 +1151,7 @@ export type PromotionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: boolean
   endsAt?: boolean
   badgeText?: boolean
@@ -1123,6 +1169,7 @@ export type PromotionSelectScalar = {
   id?: boolean
   name?: boolean
   isActive?: boolean
+  autoApply?: boolean
   startsAt?: boolean
   endsAt?: boolean
   badgeText?: boolean
@@ -1134,7 +1181,7 @@ export type PromotionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PromotionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "startsAt" | "endsAt" | "badgeText" | "urgencyText" | "timezone" | "promoCodeId" | "priceTierId" | "createdAt" | "updatedAt", ExtArgs["result"]["promotion"]>
+export type PromotionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "autoApply" | "startsAt" | "endsAt" | "badgeText" | "urgencyText" | "timezone" | "promoCodeId" | "priceTierId" | "createdAt" | "updatedAt", ExtArgs["result"]["promotion"]>
 export type PromotionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   promoCode?: boolean | Prisma.PromoCodeDefaultArgs<ExtArgs>
   priceTier?: boolean | Prisma.PriceTierDefaultArgs<ExtArgs>
@@ -1163,6 +1210,7 @@ export type $PromotionPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: string
     name: string
     isActive: boolean
+    autoApply: boolean
     startsAt: Date | null
     endsAt: Date | null
     badgeText: string
@@ -1602,6 +1650,7 @@ export interface PromotionFieldRefs {
   readonly id: Prisma.FieldRef<"Promotion", 'String'>
   readonly name: Prisma.FieldRef<"Promotion", 'String'>
   readonly isActive: Prisma.FieldRef<"Promotion", 'Boolean'>
+  readonly autoApply: Prisma.FieldRef<"Promotion", 'Boolean'>
   readonly startsAt: Prisma.FieldRef<"Promotion", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Promotion", 'DateTime'>
   readonly badgeText: Prisma.FieldRef<"Promotion", 'String'>

@@ -168,6 +168,111 @@ export async function createPromoCode(
   return { status: "idle", message: `Promo code ${base.code} created.` };
 }
 
+export async function updatePromoCode(
+  promoCodeId: string,
+  _prevState: PromoCodeFormState,
+  formData: FormData,
+): Promise<PromoCodeFormState> {
+  await verifyAdminSession();
+
+  const discountMode = formData.get("discountMode")?.toString() || "single";
+  const perDevice = formData.get("perDevice") === "true";
+
+  const baseParsed = baseFields.safeParse({
+    code: formData.get("code"),
+    discountMode,
+    appliesToCheckoutPageId: formData.get("appliesToCheckoutPageId") || undefined,
+    maxRedemptions: (() => { const v = formData.get("maxRedemptions")?.toString().trim(); return v ? Number(v) : null; })(),
+    expiresAt: formData.get("expiresAt")?.toString().trim() || undefined,
+    timezone: formData.get("timezone")?.toString().trim() || "UTC",
+  });
+
+  if (!baseParsed.success) {
+    return { status: "error", message: "Please fix the highlighted fields.", fieldErrors: baseParsed.error.flatten().fieldErrors };
+  }
+  const base = baseParsed.data;
+
+  // Check code uniqueness — but allow keeping the same code
+  const existing = await prisma.promoCode.findUnique({ where: { code: base.code } });
+  if (existing && existing.id !== promoCodeId) {
+    return { status: "error", message: "That code already exists.", fieldErrors: { code: ["Already in use"] } };
+  }
+
+  if (base.discountMode === "split") {
+    const deviceSlot = parseSlotFromForm(formData, "device");
+    const monthlySlot = parseSlotFromForm(formData, "monthly");
+    const annualSlot = parseSlotFromForm(formData, "annual");
+
+    if (!deviceSlot && !monthlySlot && !annualSlot) {
+      return { status: "error", message: "At least one discount slot (device, monthly, or annual) is required." };
+    }
+
+    await prisma.promoCode.update({
+      where: { id: promoCodeId },
+      data: {
+        code: base.code,
+        discountMode: "split",
+        discountType: "fixed",
+        discountValue: 0,
+        appliesTo: "device",
+        perDevice,
+        deviceDiscountType: deviceSlot?.type ?? null,
+        deviceDiscountValue: deviceSlot?.value ?? null,
+        monthlyDiscountType: monthlySlot?.type ?? null,
+        monthlyDiscountValue: monthlySlot?.value ?? null,
+        annualDiscountType: annualSlot?.type ?? null,
+        annualDiscountValue: annualSlot?.value ?? null,
+        appliesToCheckoutPageId: base.appliesToCheckoutPageId || null,
+        maxRedemptions: base.maxRedemptions,
+        expiresAt: base.expiresAt ? localToUtc(base.expiresAt, base.timezone) : null,
+        timezone: base.timezone,
+      },
+    });
+
+    return { status: "idle", message: `Promo code ${base.code} updated.` };
+  }
+
+  // Single mode
+  const discountType = formData.get("discountType")?.toString();
+  const discountValueRaw = Number(formData.get("discountValue"));
+  const discountValue = discountType === "fixed" ? Math.round(discountValueRaw * 100) : Math.round(discountValueRaw);
+
+  const singleParsed = singleFields.safeParse({
+    discountType,
+    discountValue,
+    appliesTo: formData.get("appliesTo") || "device",
+  });
+
+  if (!singleParsed.success) {
+    return { status: "error", message: "Please fix the highlighted fields.", fieldErrors: singleParsed.error.flatten().fieldErrors };
+  }
+  const single = singleParsed.data;
+
+  await prisma.promoCode.update({
+    where: { id: promoCodeId },
+    data: {
+      code: base.code,
+      discountMode: "single",
+      discountType: single.discountType,
+      discountValue: single.discountValue,
+      appliesTo: single.appliesTo,
+      perDevice,
+      deviceDiscountType: null,
+      deviceDiscountValue: null,
+      monthlyDiscountType: null,
+      monthlyDiscountValue: null,
+      annualDiscountType: null,
+      annualDiscountValue: null,
+      appliesToCheckoutPageId: base.appliesToCheckoutPageId || null,
+      maxRedemptions: base.maxRedemptions,
+      expiresAt: base.expiresAt ? localToUtc(base.expiresAt, base.timezone) : null,
+      timezone: base.timezone,
+    },
+  });
+
+  return { status: "idle", message: `Promo code ${base.code} updated.` };
+}
+
 export async function togglePromoCode(promoCodeId: string): Promise<void> {
   await verifyAdminSession();
   const promo = await prisma.promoCode.findUnique({ where: { id: promoCodeId }, select: { isActive: true } });

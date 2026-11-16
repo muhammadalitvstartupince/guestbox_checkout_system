@@ -58,6 +58,7 @@ export default async function EditPromotionPage({ params }: { params: Promise<{ 
     timezone: promotion.timezone,
     startsAt: promotion.startsAt ? utcToLocalDatetimeString(promotion.startsAt, promotion.timezone) : "",
     endsAt: promotion.endsAt ? utcToLocalDatetimeString(promotion.endsAt, promotion.timezone) : "",
+    autoApply: promotion.autoApply,
     badgeText: promotion.badgeText,
     urgencyText: promotion.urgencyText,
   };
