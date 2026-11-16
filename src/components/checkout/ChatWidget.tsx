@@ -251,8 +251,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
     }
   }
 
-  async function handleSend() {
-    const text = input.trim();
+  async function sendMessage(text: string) {
     if (!text || !conversationId || sending) return;
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: text }]);
@@ -292,6 +291,10 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
     } finally {
       setSending(false);
     }
+  }
+
+  function handleSend() {
+    sendMessage(input.trim());
   }
 
   const inputClass = "w-full rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500";
@@ -396,7 +399,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
                               <button
                                 key={cta.label}
                                 type="button"
-                                onClick={() => { setInput(cta.text); }}
+                                onClick={() => sendMessage(cta.text)}
                                 className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100"
                               >
                                 {cta.label}
