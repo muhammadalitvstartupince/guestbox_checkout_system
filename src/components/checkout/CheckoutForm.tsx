@@ -731,6 +731,36 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
           </span>
         </div>
 
+        {/* 30-Day Money-Back Guarantee — 3D gold pill with shimmer */}
+        <div className="flex justify-center">
+          <div
+            className="relative inline-flex items-center gap-2 overflow-hidden rounded-full px-5 py-2 sm:gap-2.5 sm:px-7 sm:py-2.5"
+            style={{
+              background: "linear-gradient(180deg, #e8c547 0%, #d4a832 40%, #b8922a 70%, #9a7a22 100%)",
+              border: "2px solid #8b6914",
+              boxShadow: "inset 0 2px 3px rgba(255,255,220,0.5), inset 0 -3px 5px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.3)",
+            }}
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.4)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+            <span
+              className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+              style={{
+                background: "linear-gradient(180deg, #5a4a1a 0%, #3d3210 100%)",
+                border: "2px solid #2a2208",
+                boxShadow: "inset 0 1px 2px rgba(255,255,200,0.2)",
+              }}
+            >
+              <Check className="h-3 w-3 text-amber-300" />
+            </span>
+            <span
+              className="relative text-xs font-black tracking-[0.15em] uppercase sm:text-sm"
+              style={{ color: "#2a1f00", textShadow: "0 1px 0 rgba(255,255,200,0.4)" }}
+            >
+              30-Day Money-Back Guarantee
+            </span>
+          </div>
+        </div>
+
         {/* Next button */}
         <button
           type="button"
@@ -1923,35 +1953,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
       {wizardStep === 2 && renderDetailsStep()}
       {wizardStep === 3 && renderPaymentStep()}
 
-      {/* 30-Day Money-Back Guarantee — 3D gold pill with shimmer */}
-      <div className="mt-6 flex justify-center">
-        <div
-          className="relative inline-flex items-center gap-2 overflow-hidden rounded-full px-5 py-2 sm:gap-2.5 sm:px-7 sm:py-2.5"
-          style={{
-            background: "linear-gradient(180deg, #e8c547 0%, #d4a832 40%, #b8922a 70%, #9a7a22 100%)",
-            border: "2px solid #8b6914",
-            boxShadow: "inset 0 2px 3px rgba(255,255,220,0.5), inset 0 -3px 5px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.4)_50%,transparent_75%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
-          <span
-            className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-            style={{
-              background: "linear-gradient(180deg, #5a4a1a 0%, #3d3210 100%)",
-              border: "2px solid #2a2208",
-              boxShadow: "inset 0 1px 2px rgba(255,255,200,0.2)",
-            }}
-          >
-            <Check className="h-3 w-3 text-amber-300" />
-          </span>
-          <span
-            className="relative text-xs font-black tracking-[0.15em] uppercase sm:text-sm"
-            style={{ color: "#2a1f00", textShadow: "0 1px 0 rgba(255,255,200,0.4)" }}
-          >
-            30-Day Money-Back Guarantee
-          </span>
-        </div>
-      </div>
     </>
   );
 
