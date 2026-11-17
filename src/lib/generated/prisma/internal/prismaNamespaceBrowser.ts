@@ -73,7 +73,10 @@ export const ModelName = {
   ShippingPackageTier: 'ShippingPackageTier',
   ShippingWeightEntry: 'ShippingWeightEntry',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
-  ShippingRateLog: 'ShippingRateLog'
+  ShippingRateLog: 'ShippingRateLog',
+  ChatbotSettings: 'ChatbotSettings',
+  ChatConversation: 'ChatConversation',
+  ChatMessage: 'ChatMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -146,7 +149,9 @@ export const CheckoutPageScalarFieldEnum = {
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  tieredPlansEnabled: 'tieredPlansEnabled'
+  tieredPlansEnabled: 'tieredPlansEnabled',
+  chatEnabled: 'chatEnabled',
+  chatLayout: 'chatLayout'
 } as const
 
 export type CheckoutPageScalarFieldEnum = (typeof CheckoutPageScalarFieldEnum)[keyof typeof CheckoutPageScalarFieldEnum]
@@ -469,6 +474,55 @@ export const ShippingRateLogScalarFieldEnum = {
 } as const
 
 export type ShippingRateLogScalarFieldEnum = (typeof ShippingRateLogScalarFieldEnum)[keyof typeof ShippingRateLogScalarFieldEnum]
+
+
+export const ChatbotSettingsScalarFieldEnum = {
+  id: 'id',
+  systemPrompt: 'systemPrompt',
+  webhookChatStarted: 'webhookChatStarted',
+  webhookChatAbandoned: 'webhookChatAbandoned',
+  maxMessages: 'maxMessages',
+  chatModel: 'chatModel',
+  summarizerModel: 'summarizerModel',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatbotSettingsScalarFieldEnum = (typeof ChatbotSettingsScalarFieldEnum)[keyof typeof ChatbotSettingsScalarFieldEnum]
+
+
+export const ChatConversationScalarFieldEnum = {
+  id: 'id',
+  checkoutPageId: 'checkoutPageId',
+  orderId: 'orderId',
+  sessionId: 'sessionId',
+  status: 'status',
+  outcome: 'outcome',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  collectedData: 'collectedData',
+  metadata: 'metadata',
+  startedAt: 'startedAt',
+  lastMessageAt: 'lastMessageAt',
+  abandonedAt: 'abandonedAt',
+  abandonedNotifiedAt: 'abandonedNotifiedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type ChatConversationScalarFieldEnum = (typeof ChatConversationScalarFieldEnum)[keyof typeof ChatConversationScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  role: 'role',
+  content: 'content',
+  toolCalls: 'toolCalls',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
 export const SortOrder = {

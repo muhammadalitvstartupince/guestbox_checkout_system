@@ -64,6 +64,42 @@ export const DiscountMode = {
 export type DiscountMode = (typeof DiscountMode)[keyof typeof DiscountMode]
 
 
+export const ChatLayout = {
+  floating: 'floating',
+  side: 'side'
+} as const
+
+export type ChatLayout = (typeof ChatLayout)[keyof typeof ChatLayout]
+
+
+export const ChatConversationStatus = {
+  active: 'active',
+  completed: 'completed',
+  abandoned: 'abandoned'
+} as const
+
+export type ChatConversationStatus = (typeof ChatConversationStatus)[keyof typeof ChatConversationStatus]
+
+
+export const ChatOutcome = {
+  order_completed: 'order_completed',
+  abandoned_with_info: 'abandoned_with_info',
+  abandoned_no_info: 'abandoned_no_info',
+  questions_only: 'questions_only'
+} as const
+
+export type ChatOutcome = (typeof ChatOutcome)[keyof typeof ChatOutcome]
+
+
+export const ChatMessageRole = {
+  user: 'user',
+  assistant: 'assistant',
+  system: 'system'
+} as const
+
+export type ChatMessageRole = (typeof ChatMessageRole)[keyof typeof ChatMessageRole]
+
+
 export const OrderStatus = {
   pending: 'pending',
   paid: 'paid',

@@ -114,8 +114,10 @@ function parseTiersAndPlans(formData: FormData) {
   } catch { /* ignore malformed JSON */ }
 
   const tieredPlansEnabled = formData.get("tieredPlansEnabled") === "on";
+  const chatEnabled = formData.get("chatEnabled") === "on";
+  const chatLayout = formData.get("chatLayout") === "side" ? "side" as const : "floating" as const;
 
-  return { priceTiers, billingPlans, planTiers, tieredPlansEnabled };
+  return { priceTiers, billingPlans, planTiers, tieredPlansEnabled, chatEnabled, chatLayout };
 }
 
 const checkoutPageSchema = z.object({
@@ -231,7 +233,7 @@ export async function createCheckoutPage(
   }
 
   const selectedAddonIds = formData.getAll("addonIds").map((v) => v.toString());
-  const { priceTiers, billingPlans, planTiers, tieredPlansEnabled } = parseTiersAndPlans(formData);
+  const { priceTiers, billingPlans, planTiers, tieredPlansEnabled, chatEnabled, chatLayout } = parseTiersAndPlans(formData);
 
   const page = await prisma.checkoutPage.create({
     data: {
@@ -249,6 +251,8 @@ export async function createCheckoutPage(
       recurringPriceCents: data.recurringPriceCents,
       billingInterval: data.billingInterval,
       tieredPlansEnabled,
+      chatEnabled,
+      chatLayout,
       showPromoCode: data.showPromoCode,
       successRedirectUrl: data.successRedirectUrl,
       failRedirectUrl: data.failRedirectUrl,
@@ -313,7 +317,7 @@ export async function updateCheckoutPage(
     return { status: "error", message: "That slug is already in use.", fieldErrors: { slug: ["Already in use"] } };
   }
 
-  const { priceTiers, billingPlans, planTiers, tieredPlansEnabled } = parseTiersAndPlans(formData);
+  const { priceTiers, billingPlans, planTiers, tieredPlansEnabled, chatEnabled, chatLayout } = parseTiersAndPlans(formData);
 
   // Find tiers that have promotions linked — these can't be deleted (FK constraint).
   // Match them to incoming tiers by sortOrder position and update in place.
@@ -356,6 +360,8 @@ export async function updateCheckoutPage(
         recurringPriceCents: data.recurringPriceCents,
         billingInterval: data.billingInterval,
         tieredPlansEnabled,
+        chatEnabled,
+        chatLayout,
         showPromoCode: data.showPromoCode,
         successRedirectUrl: data.successRedirectUrl,
         failRedirectUrl: data.failRedirectUrl,
@@ -442,6 +448,8 @@ export async function duplicateCheckoutPage(checkoutPageId: string): Promise<voi
       recurringPriceCents: source.recurringPriceCents,
       billingInterval: source.billingInterval,
       tieredPlansEnabled: source.tieredPlansEnabled,
+      chatEnabled: source.chatEnabled,
+      chatLayout: source.chatLayout,
       headline: source.headline,
       originalPriceCents: source.originalPriceCents,
       mockupImageUrl: source.mockupImageUrl,

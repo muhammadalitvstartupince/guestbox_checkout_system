@@ -82,6 +82,8 @@ export default async function EditCheckoutPagePage({ params }: { params: Promise
       isDefault: p.isDefault,
     })),
     tieredPlansEnabled: page.tieredPlansEnabled,
+    chatEnabled: page.chatEnabled,
+    chatLayout: page.chatLayout,
     planTiers: page.planTiers.map((t) => ({
       name: t.name,
       annualDiscountPercent: String(t.annualDiscountPercent),

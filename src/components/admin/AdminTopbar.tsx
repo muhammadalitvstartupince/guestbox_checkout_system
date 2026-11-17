@@ -10,6 +10,7 @@ const TITLES: { prefix: string; title: string }[] = [
   { prefix: "/admin/checkout-pages", title: "Checkout Pages" },
   { prefix: "/admin/addons", title: "Add-ons" },
   { prefix: "/admin/promo-codes", title: "Promo Codes" },
+  { prefix: "/admin/settings/chatbot", title: "Chatbot Settings" },
   { prefix: "/admin/settings/email", title: "Email Settings" },
   { prefix: "/admin/admin-users", title: "Admin Users" },
   { prefix: "/admin", title: "Dashboard" },

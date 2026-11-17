@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/abandoned-checkouts",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/abandoned-chats",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

@@ -66,6 +66,8 @@ export interface CheckoutPageFormDefaults {
   billingPlans: BillingPlanDefault[];
   tieredPlansEnabled: boolean;
   planTiers: PlanTierDefault[];
+  chatEnabled: boolean;
+  chatLayout: "floating" | "side";
 }
 
 export const emptyCheckoutPageDefaults: CheckoutPageFormDefaults = {
@@ -97,6 +99,8 @@ export const emptyCheckoutPageDefaults: CheckoutPageFormDefaults = {
   billingPlans: [],
   tieredPlansEnabled: false,
   planTiers: [],
+  chatEnabled: false,
+  chatLayout: "floating",
 };
 
 type BoundAction = (state: CheckoutPageFormState, formData: FormData) => Promise<CheckoutPageFormState>;
@@ -821,6 +825,28 @@ export function CheckoutPageForm({
         <input type="checkbox" name="showPromoCode" defaultChecked={defaults.showPromoCode} />
         Show promo code field at checkout
       </label>
+
+      {/* Chat Assistant */}
+      <fieldset className="space-y-3 rounded-xl border border-zinc-200 p-5 dark:border-zinc-700">
+        <legend className="px-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          Chat Assistant
+        </legend>
+        <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <input type="checkbox" name="chatEnabled" defaultChecked={defaults.chatEnabled} />
+          Enable chat assistant on this page
+        </label>
+        <div>
+          <label className="mb-1 block text-xs text-zinc-500 dark:text-zinc-400">Layout</label>
+          <select
+            name="chatLayout"
+            defaultValue={defaults.chatLayout}
+            className="w-full rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          >
+            <option value="floating">Floating bubble — chat opens as a popup over the form</option>
+            <option value="side">Side-by-side — chat and form shown as two columns</option>
+          </select>
+        </div>
+      </fieldset>
 
       <button
         type="submit"

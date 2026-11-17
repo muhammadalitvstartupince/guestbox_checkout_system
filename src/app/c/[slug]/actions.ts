@@ -720,6 +720,15 @@ export async function completeCheckout(
   // Post-payment side effects (Zoho, email, promo redemption count) must
   // never block or fail the checkout — the card has already been charged.
   try {
+    // Link chat conversation to this order if one exists
+    const chatConversationId = formData.get("chatConversationId")?.toString().trim() || null;
+    if (chatConversationId) {
+      await prisma.chatConversation.updateMany({
+        where: { id: chatConversationId, status: "active" },
+        data: { orderId: order.id, status: "completed", outcome: "order_completed", completedAt: new Date() },
+      }).catch(() => {});
+    }
+
     if (promo) {
       await prisma.promoCode.update({
         where: { id: promo.id },
