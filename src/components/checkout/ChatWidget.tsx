@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import { getChatBridge, setChatConversationId } from "@/components/checkout/ChatBridge";
+import { PhoneNumberField } from "@/components/checkout/PhoneNumberField";
+import { DEFAULT_COUNTRY_CODE } from "@/lib/checkout/countries";
 
 interface Message {
   role: "user" | "assistant";
@@ -228,7 +230,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Lead gate form state
-  const [leadForm, setLeadForm] = useState({ firstName: "", lastName: "", email: "", phone: "" });
+  const [leadForm, setLeadForm] = useState({ firstName: "", lastName: "", email: "", phoneCountry: DEFAULT_COUNTRY_CODE, phoneNumber: "" });
   const [leadSubmitting, setLeadSubmitting] = useState(false);
 
   const scrollToBottom = useCallback(() => {
@@ -280,13 +282,13 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
 
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!leadForm.firstName || !leadForm.lastName || !leadForm.email || !leadForm.phone) return;
+    if (!leadForm.firstName || !leadForm.lastName || !leadForm.email || !leadForm.phoneNumber) return;
     setLeadSubmitting(true);
     try {
       const res = await fetch("/api/chat/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ checkoutPageId, sessionId, ...leadForm }),
+        body: JSON.stringify({ checkoutPageId, sessionId, firstName: leadForm.firstName, lastName: leadForm.lastName, email: leadForm.email, phone: leadForm.phoneNumber }),
       });
       const data = await res.json();
       if (data.conversationId) {
@@ -299,7 +301,8 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
           bridge.setProfileField("firstName", leadForm.firstName);
           bridge.setProfileField("lastName", leadForm.lastName);
           bridge.setProfileField("email", leadForm.email);
-          bridge.setProfileField("phoneNumber", leadForm.phone);
+          bridge.setProfileField("phoneCountry", leadForm.phoneCountry);
+          bridge.setProfileField("phoneNumber", leadForm.phoneNumber);
         }
       }
     } catch {
@@ -335,7 +338,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
               profileFirstName: b.profileForm.firstName || leadForm.firstName,
               profileLastName: b.profileForm.lastName || leadForm.lastName,
               profileEmail: b.profileForm.email || leadForm.email,
-              profilePhone: b.profileForm.phone || leadForm.phone,
+              profilePhone: b.profileForm.phone || leadForm.phoneNumber,
               addressFilled: b.addressFilled,
               unitPriceCents: b.unitPriceCents,
               totalCents: b.estimateTotalCents,
@@ -423,13 +426,11 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
                 onChange={(e) => setLeadForm((f) => ({ ...f, email: e.target.value }))}
                 required
               />
-              <input
-                className={inputClass}
-                type="tel"
-                placeholder="Phone"
-                value={leadForm.phone}
-                onChange={(e) => setLeadForm((f) => ({ ...f, phone: e.target.value }))}
-                required
+              <PhoneNumberField
+                country={leadForm.phoneCountry}
+                onCountryChange={(code) => setLeadForm((f) => ({ ...f, phoneCountry: code }))}
+                number={leadForm.phoneNumber}
+                onNumberChange={(val) => setLeadForm((f) => ({ ...f, phoneNumber: val }))}
               />
               <button
                 type="submit"
