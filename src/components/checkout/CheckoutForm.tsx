@@ -1995,20 +1995,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
     </>
   );
 
-  // Side-by-side layout: compact form only — no hero, header, or features
-  if (sideLayout) {
-    return (
-      <div className={`${montserrat.className} min-h-screen bg-white px-4 py-6 sm:px-8`}>
-        <StepIndicator step={wizardStep} accentColor={accentColor} />
-        <div className="mt-6">{stepContent}</div>
-        {completeState.status === "success" && completeState.redirectUrl && (
-          <OrderSuccessModal redirectUrl={completeState.redirectUrl} accentColor={accentColor} />
-        )}
-      </div>
-    );
-  }
-
-  if (!hasHero) {
+  if (!hasHero || sideLayout) {
     return (
       <div className={`${montserrat.className} mx-auto max-w-2xl px-4 py-10`}>
         <StepIndicator step={wizardStep} accentColor={accentColor} />
