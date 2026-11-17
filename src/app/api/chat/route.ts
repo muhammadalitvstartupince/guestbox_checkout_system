@@ -243,29 +243,53 @@ ${formState.promoApplied ? `- Promo applied: ${formState.promoCode} (saving ${fm
 Use this to avoid asking for info the customer has already provided. Use the REAL prices above when showing order summary — never guess prices.`;
     }
 
-    const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 512,
-      system: systemPrompt,
-      messages: history,
-      tools: TOOLS,
-    });
-
-    // Extract text and tool calls
+    // Tool-use loop: Claude may return tool calls, we send results back and let it continue
+    let currentMessages = history;
     let assistantText = "";
-    const toolCalls: { name: string; input: Record<string, unknown> }[] = [];
+    const allToolCalls: { name: string; input: Record<string, unknown> }[] = [];
+    let iterations = 0;
 
-    for (const block of response.content) {
-      if (block.type === "text") {
-        assistantText += block.text;
-      } else if (block.type === "tool_use") {
-        toolCalls.push({ name: block.name, input: block.input as Record<string, unknown> });
+    while (iterations < 5) {
+      iterations++;
+      const response = await anthropic.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: currentMessages,
+        tools: TOOLS,
+      });
+
+      // Collect text and tool calls from this response
+      const toolUseBlocks: { id: string; name: string; input: Record<string, unknown> }[] = [];
+      for (const block of response.content) {
+        if (block.type === "text") {
+          assistantText += block.text;
+        } else if (block.type === "tool_use") {
+          toolUseBlocks.push({ id: block.id, name: block.name, input: block.input as Record<string, unknown> });
+          allToolCalls.push({ name: block.name, input: block.input as Record<string, unknown> });
+        }
       }
+
+      // If no tool calls, we're done — Claude gave a final text response
+      if (response.stop_reason !== "tool_use" || toolUseBlocks.length === 0) break;
+
+      // Send tool results back so Claude can continue
+      currentMessages = [
+        ...currentMessages,
+        { role: "assistant" as const, content: response.content },
+        {
+          role: "user" as const,
+          content: toolUseBlocks.map((t) => ({
+            type: "tool_result" as const,
+            tool_use_id: t.id,
+            content: `Done — ${t.name} executed successfully.`,
+          })),
+        },
+      ];
     }
 
-    // If Claude only returned tool calls with no text, add a brief acknowledgment
-    if (!assistantText && toolCalls.length > 0) {
-      assistantText = "Done! I've updated your order.";
+    if (!assistantText) {
+      assistantText = "I've updated your order! What's next?";
     }
 
     // Save assistant message with tool calls
@@ -274,7 +298,7 @@ Use this to avoid asking for info the customer has already provided. Use the REA
         conversationId,
         role: "assistant",
         content: assistantText,
-        toolCalls: toolCalls.length > 0 ? JSON.parse(JSON.stringify(toolCalls)) : undefined,
+        toolCalls: allToolCalls.length > 0 ? JSON.parse(JSON.stringify(allToolCalls)) : undefined,
       },
     });
 
@@ -285,7 +309,7 @@ Use this to avoid asking for info the customer has already provided. Use the REA
 
     return NextResponse.json({
       reply: assistantText,
-      toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+      toolCalls: allToolCalls.length > 0 ? allToolCalls : undefined,
     });
   } catch (err) {
     console.error("Chat API error:", err);
