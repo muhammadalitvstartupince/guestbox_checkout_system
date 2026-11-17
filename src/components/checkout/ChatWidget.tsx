@@ -86,11 +86,19 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
     ];
   }
 
-  // Personal info — asking for name/email/phone
-  if (lower.includes("first name") || lower.includes("your name") || lower.includes("your details") || lower.includes("contact info")) {
+  // Confirming personal info from lead gate
+  if (lower.includes("is this correct") || lower.includes("would you like to change") || lower.includes("here's what i have")) {
     return [
-      { label: "📝 Enter my details", text: "Let me give you my details" },
+      { label: "✅ Looks good!", text: "Yes, that's correct" },
+      { label: "✏️ Change name", text: "I want to change my name" },
+      { label: "✏️ Change email", text: "I want to change my email" },
+      { label: "✏️ Change phone", text: "I want to change my phone number" },
     ];
+  }
+
+  // Asking for new personal info (user wants to change)
+  if (lower.includes("first name") || lower.includes("your name") || lower.includes("new name") || lower.includes("updated name")) {
+    return [];
   }
 
   // Address step — remind user to fill form
@@ -324,6 +332,10 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
               listingQty: b.listingQty,
               hasOrder: !!b.orderId,
               profileFilled: !!(b.profileForm.firstName && b.profileForm.email),
+              profileFirstName: b.profileForm.firstName || leadForm.firstName,
+              profileLastName: b.profileForm.lastName || leadForm.lastName,
+              profileEmail: b.profileForm.email || leadForm.email,
+              profilePhone: b.profileForm.phone || leadForm.phone,
               addressFilled: b.addressFilled,
               unitPriceCents: b.unitPriceCents,
               totalCents: b.estimateTotalCents,

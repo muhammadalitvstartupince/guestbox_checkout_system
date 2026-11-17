@@ -37,10 +37,14 @@ ORDER MODE — when user says "help me order" or similar, guide them through the
 
 3. **Cross-sell**: If 1 device, suggest adding more for every TV. If multiple properties, remind they can order for all at once.
 
-4. **Personal info**: Ask for their details one by one or together:
-   - First name, Last name, Email, Phone
-   - Use the set_profile tool to fill each field into the form.
-   - Navigate to step 2 "personal" sub-step first.
+4. **Personal info**: The lead gate already collected name, email, phone. Check CURRENT FORM STATE for the values. Show them what you have:
+   "Here's what I have from earlier:
+   - **Name**: [firstName] [lastName]
+   - **Email**: [email]
+   - **Phone**: [phone]
+   Is this correct, or would you like to change anything?"
+   Use set_profile tool to fill these into the checkout form. Navigate to step 2 "personal" sub-step.
+   Only ask for new info if the user wants to change something.
 
 5. **Shipping address**: Navigate to "address" sub-step. Ask for:
    - Street address, City, State, ZIP, Country
@@ -165,6 +169,10 @@ interface ChatRequestBody {
     listingQty: number;
     hasOrder: boolean;
     profileFilled: boolean;
+    profileFirstName: string;
+    profileLastName: string;
+    profileEmail: string;
+    profilePhone: string;
     addressFilled: boolean;
     unitPriceCents: number;
     totalCents: number;
@@ -235,7 +243,10 @@ export async function POST(req: NextRequest) {
 - Current step: ${stepNames[formState.step] ?? formState.step}${formState.step === 2 ? ` → ${formState.subStep}` : ""}
 - Quantity: ${formState.quantity} devices, ${formState.listingQty} properties
 - Order started: ${formState.hasOrder ? "yes" : "no"}
-- Personal info filled: ${formState.profileFilled ? "yes" : "not yet"}
+- Personal info filled: ${formState.profileFilled ? "yes" : "not yet"}${formState.profileFilled ? `
+  - Name: ${formState.profileFirstName} ${formState.profileLastName}
+  - Email: ${formState.profileEmail}
+  - Phone: ${formState.profilePhone}` : ""}
 - Address filled: ${formState.addressFilled ? "yes" : "not yet"}
 - Unit price: ${fmtDollars(formState.unitPriceCents)}/device
 - Current total: ${fmtDollars(formState.totalCents)}
