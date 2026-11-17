@@ -19,12 +19,22 @@ export interface ChatBridgeState {
   selectedAddonIds: string[];
   upgradeSelected: boolean;
   orderId: string | null;
-  // Profile/address info the user has filled (read-only for bot context)
+  // Profile/address info
   profileForm: { firstName: string; lastName: string; email: string; phone: string };
+  addressForm: { addressLine1: string; city: string; state: string; zip: string; country: string };
   addressFilled: boolean;
+  // Pricing info (read by ChatWidget to send to Claude)
+  unitPriceCents: number;
+  effectiveBasePriceCents: number;
+  estimateTotalCents: number;
+  promoApplied: boolean;
+  promoCode: string | null;
+  promoSavingsCents: number;
 
   // Setters
   setWizardStep: (step: 1 | 2 | 3) => void;
+  setProfileField: (field: string, value: string) => void;
+  setAddressField: (field: string, value: string) => void;
   setQuantity: (qty: number | ((prev: number) => number)) => void;
   setListingQty: (qty: number | ((prev: number) => number)) => void;
   setSelectedPlanId: (id: string) => void;

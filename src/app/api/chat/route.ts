@@ -29,30 +29,37 @@ BEHAVIOR RULES:
 - Keep responses short — 2-3 sentences max unless the user asks for detail.
 - Use **bold** for key terms and - bullet lists for features/steps. Keep formatting clean and readable.
 
-ORDER MODE — when user says "help me order" or similar, guide them through the FULL flow without stopping:
+ORDER MODE — when user says "help me order" or similar, guide them through the FULL flow:
 
-1. **Properties first**: Ask how many properties they manage. Explain: 1 property = 1 rental home/unit/listing.
+1. **Properties**: Ask how many properties they manage. 1 property = 1 rental home/unit/listing.
 
-2. **Devices next** (immediately after properties answer): Ask how many TVs they want to equip. Recommend: "Each TV needs its own GuestBox. If you have 3 TVs at your property, you'll need 3 devices." Use set_quantity and set_listing_qty tools to update the form.
+2. **Devices** (after properties answer): Ask how many TVs to equip. "Each TV needs its own GuestBox." Use set_quantity and set_listing_qty tools.
 
-3. **Cross-sell**: If they pick 1 device, suggest: "Most hosts add GuestBoxes to every TV — bedroom, living room, etc. Want to add more?" If they have multiple properties, remind them they can order devices for all properties at once.
+3. **Cross-sell**: If 1 device, suggest adding more for every TV. If multiple properties, remind they can order for all at once.
 
-4. **Confirm & move to details**: Summarize the order so far ("Got it — X devices for Y properties!") then say "Let me take you to the details step" and use navigate_step to go to step 2.
+4. **Personal info**: Ask for their details one by one or together:
+   - First name, Last name, Email, Phone
+   - Use the set_profile tool to fill each field into the form.
+   - Navigate to step 2 "personal" sub-step first.
 
-5. **Skip personal info**: The lead gate already collected name, email, phone. Tell the user: "I already have your contact info from earlier ✅" and navigate to the address sub-step.
+5. **Shipping address**: Navigate to "address" sub-step. Ask for:
+   - Street address, City, State, ZIP, Country
+   - Use set_address tool to fill the form.
 
-6. **Address**: Ask the user to fill in their shipping address in the form. Say "Please fill in your shipping address in the form on the left/above 📝"
+6. **Billing plan**: Navigate to "billing-cycle" sub-step. Explain available plans from the checkout context. Let them pick. Upsell annual: "Annual saves X% — want to switch?"
 
-7. **Billing plan**: After address, navigate to billing-cycle. Briefly explain the plan options available (use checkout context). Let them pick.
+7. **Order summary + payment**: Navigate to step 3. Show a summary using REAL prices from CURRENT FORM STATE:
 
-8. **Payment summary**: Once plan is selected, navigate to step 3 (payment). Show a summary in chat:
-   - Devices: X × $price
-   - Properties: Y
-   - Plan: [name] at $price/month
-   - Total: $amount
-   Then say: "Please enter your card details in the secure form to complete your order 🔒"
+   📋 **Order Summary**
+   - **Devices**: X × $price/ea = $total
+   - **Properties**: Y
+   - **Plan**: [name] ($price/month)
+   {if promo} - **Promo**: [code] — saving $amount
+   - **Total today**: $amount
 
-IMPORTANT: Do NOT ask one question and wait. Keep the flow moving. After each user response, immediately proceed to the next step. The user should feel guided through checkout, not interrogated.`;
+   Then say: "Click the button below to go to payment and enter your card details 🔒"
+
+IMPORTANT: After each user response, proceed to the next step immediately. Don't ask one question and wait. Keep momentum. Use tools to fill the form as you go — the user should see the form updating in real-time.`;
 
 const TOOLS: Anthropic.Tool[] = [
   {
@@ -109,6 +116,35 @@ const TOOLS: Anthropic.Tool[] = [
       required: ["addonId", "selected"],
     },
   },
+  {
+    name: "set_profile",
+    description: "Set a customer profile field (firstName, lastName, email, phoneNumber) in the checkout form.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        firstName: { type: "string" },
+        lastName: { type: "string" },
+        email: { type: "string" },
+        phoneNumber: { type: "string" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "set_address",
+    description: "Set shipping address fields in the checkout form.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        addressLine1: { type: "string" },
+        city: { type: "string" },
+        state: { type: "string" },
+        zip: { type: "string" },
+        country: { type: "string", description: "2-letter country code, e.g. US" },
+      },
+      required: [],
+    },
+  },
 ];
 
 interface ChatRequestBody {
@@ -130,6 +166,11 @@ interface ChatRequestBody {
     hasOrder: boolean;
     profileFilled: boolean;
     addressFilled: boolean;
+    unitPriceCents: number;
+    totalCents: number;
+    promoApplied: boolean;
+    promoCode: string | null;
+    promoSavingsCents: number;
   };
 }
 
@@ -189,13 +230,17 @@ export async function POST(req: NextRequest) {
 
     if (formState) {
       const stepNames = ["", "QTY (quantity selection)", "DETAILS (personal info, address, billing)", "PAYMENT (card, addons, promo, submit)"];
+      const fmtDollars = (c: number) => `$${(c / 100).toFixed(2)}`;
       systemPrompt += `\n\nCURRENT FORM STATE:
 - Current step: ${stepNames[formState.step] ?? formState.step}${formState.step === 2 ? ` → ${formState.subStep}` : ""}
 - Quantity: ${formState.quantity} devices, ${formState.listingQty} properties
 - Order started: ${formState.hasOrder ? "yes" : "no"}
 - Personal info filled: ${formState.profileFilled ? "yes" : "not yet"}
 - Address filled: ${formState.addressFilled ? "yes" : "not yet"}
-Use this to avoid asking for info the customer has already provided. Guide them to the next unfilled step.`;
+- Unit price: ${fmtDollars(formState.unitPriceCents)}/device
+- Current total: ${fmtDollars(formState.totalCents)}
+${formState.promoApplied ? `- Promo applied: ${formState.promoCode} (saving ${fmtDollars(formState.promoSavingsCents)})` : "- No promo applied"}
+Use this to avoid asking for info the customer has already provided. Use the REAL prices above when showing order summary — never guess prices.`;
     }
 
     const response = await anthropic.messages.create({

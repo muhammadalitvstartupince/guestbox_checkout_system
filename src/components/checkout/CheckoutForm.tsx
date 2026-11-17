@@ -370,8 +370,21 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         email: profileForm.email,
         phone: profileForm.phoneNumber,
       },
+      addressForm: billingForm,
       addressFilled: !!(billingForm.addressLine1 && billingForm.city && billingForm.zip),
+      unitPriceCents: unitPrice,
+      effectiveBasePriceCents,
+      estimateTotalCents: estimate.totalCents,
+      promoApplied: isPromoActive,
+      promoCode: activePromotion?.promoCode ?? null,
+      promoSavingsCents: isPromoActive ? (activePromotion.originalPriceCents - unitPrice) * quantity : 0,
       setWizardStep, setQuantity, setListingQty,
+      setProfileField: (field: string, value: string) => {
+        setProfileForm((prev) => ({ ...prev, [field]: value }));
+      },
+      setAddressField: (field: string, value: string) => {
+        setBillingForm((prev) => ({ ...prev, [field]: value }));
+      },
       setSelectedPlanId: (id: string) => setSelectedPlanId(id),
       setSelectedTierId: (id: string) => setSelectedTierId(id),
       setSelectedTierInterval: (interval: string) => setSelectedTierInterval(interval as "monthly" | "annually"),

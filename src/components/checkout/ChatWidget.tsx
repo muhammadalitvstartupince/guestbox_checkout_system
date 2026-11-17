@@ -86,8 +86,15 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
     ];
   }
 
+  // Personal info — asking for name/email/phone
+  if (lower.includes("first name") || lower.includes("your name") || lower.includes("your details") || lower.includes("contact info")) {
+    return [
+      { label: "📝 Enter my details", text: "Let me give you my details" },
+    ];
+  }
+
   // Address step — remind user to fill form
-  if (lower.includes("shipping address") || lower.includes("fill in your") || lower.includes("address in the form")) {
+  if (lower.includes("shipping address") || lower.includes("fill in your") || lower.includes("address in the form") || lower.includes("where should we ship")) {
     return [
       { label: "✅ Done, next step", text: "I've filled in my address, what's next?" },
     ];
@@ -189,10 +196,21 @@ function executeToolCalls(toolCalls: ToolCall[]) {
         break;
       }
       case "toggle_addon": {
-        const bridge2 = getChatBridge();
-        if (!bridge2) break;
-        // We don't have direct access to toggle, so we read current and set
-        // This is a simplification — the full addon toggle is in CheckoutForm
+        break;
+      }
+      case "set_profile": {
+        if (call.input.firstName) bridge.setProfileField("firstName", call.input.firstName as string);
+        if (call.input.lastName) bridge.setProfileField("lastName", call.input.lastName as string);
+        if (call.input.email) bridge.setProfileField("email", call.input.email as string);
+        if (call.input.phoneNumber) bridge.setProfileField("phoneNumber", call.input.phoneNumber as string);
+        break;
+      }
+      case "set_address": {
+        if (call.input.addressLine1) bridge.setAddressField("addressLine1", call.input.addressLine1 as string);
+        if (call.input.city) bridge.setAddressField("city", call.input.city as string);
+        if (call.input.state) bridge.setAddressField("state", call.input.state as string);
+        if (call.input.zip) bridge.setAddressField("zip", call.input.zip as string);
+        if (call.input.country) bridge.setAddressField("country", call.input.country as string);
         break;
       }
     }
@@ -307,6 +325,11 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
               hasOrder: !!b.orderId,
               profileFilled: !!(b.profileForm.firstName && b.profileForm.email),
               addressFilled: b.addressFilled,
+              unitPriceCents: b.unitPriceCents,
+              totalCents: b.estimateTotalCents,
+              promoApplied: b.promoApplied,
+              promoCode: b.promoCode,
+              promoSavingsCents: b.promoSavingsCents,
             };
           })(),
         }),
