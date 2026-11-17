@@ -180,7 +180,7 @@ function getTierMonthlyPrice(tier: PlanTierView, qty: number): number {
   return tier.prices[0]?.monthlyPriceCents ?? 0;
 }
 
-export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1, sideLayout = false }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number; sideLayout?: boolean }) {
+export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1 }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number }) {
   const boundInitiate = initiateOrder.bind(null, checkoutPage.slug);
   const [initState, initFormAction, initPending] = useActionState(boundInitiate, initialInitiateOrderState);
 
@@ -1995,7 +1995,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
     </>
   );
 
-  if (!hasHero || sideLayout) {
+  if (!hasHero) {
     return (
       <div className={`${montserrat.className} mx-auto max-w-2xl px-4 py-10`}>
         <StepIndicator step={wizardStep} accentColor={accentColor} />
