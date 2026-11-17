@@ -213,14 +213,6 @@ function executeToolCalls(toolCalls: ToolCall[]) {
         if (call.input.phoneNumber) bridge.setProfileField("phoneNumber", call.input.phoneNumber as string);
         break;
       }
-      case "set_address": {
-        if (call.input.addressLine1) bridge.setAddressField("addressLine1", call.input.addressLine1 as string);
-        if (call.input.city) bridge.setAddressField("city", call.input.city as string);
-        if (call.input.state) bridge.setAddressField("state", call.input.state as string);
-        if (call.input.zip) bridge.setAddressField("zip", call.input.zip as string);
-        if (call.input.country) bridge.setAddressField("country", call.input.country as string);
-        break;
-      }
     }
   }
 }
@@ -301,6 +293,14 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
         setConversationId(data.conversationId);
         setChatConversationId(data.conversationId);
         setMessages([{ role: "assistant", content: data.greeting }]);
+        // Push lead gate info into the checkout form
+        const bridge = getChatBridge();
+        if (bridge) {
+          bridge.setProfileField("firstName", leadForm.firstName);
+          bridge.setProfileField("lastName", leadForm.lastName);
+          bridge.setProfileField("email", leadForm.email);
+          bridge.setProfileField("phoneNumber", leadForm.phone);
+        }
       }
     } catch {
       // silently fail — user can retry

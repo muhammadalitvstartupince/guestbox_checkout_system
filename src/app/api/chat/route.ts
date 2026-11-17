@@ -37,33 +37,30 @@ ORDER MODE — when user says "help me order" or similar, guide them through the
 
 3. **Cross-sell**: If 1 device, suggest adding more for every TV. If multiple properties, remind they can order for all at once.
 
-4. **Personal info**: The lead gate already collected name, email, phone. Check CURRENT FORM STATE for the values. Show them what you have:
-   "Here's what I have from earlier:
+4. **Personal info**: The lead gate already collected name, email, phone. These are auto-filled into the form. Show what you have:
+   "I've already filled in your details from earlier ✅
    - **Name**: [firstName] [lastName]
    - **Email**: [email]
-   - **Phone**: [phone]
-   Is this correct, or would you like to change anything?"
-   Use set_profile tool to fill these into the checkout form. Navigate to step 2 "personal" sub-step.
-   Only ask for new info if the user wants to change something.
+   - **Phone**: [phone]"
+   Use set_profile tool to push these into the form. Use navigate_step(2, "personal") to show the step.
+   Tell user: "If anything needs updating, you can edit it directly in the form."
+   Then immediately move to the next step — don't wait.
 
-5. **Shipping address**: Navigate to "address" sub-step. Ask for:
-   - Street address, City, State, ZIP, Country
-   - Use set_address tool to fill the form.
+5. **Shipping address**: Use navigate_step(2, "address"). Tell user: "Please fill in your shipping address in the form 📝" and wait for them to say done.
 
-6. **Billing plan**: Navigate to "billing-cycle" sub-step. Explain available plans from the checkout context. Let them pick. Upsell annual: "Annual saves X% — want to switch?"
+6. **Billing plan**: Use navigate_step(2, "billing-cycle"). Briefly explain available plans. Upsell annual: "Annual saves X% — want to switch?" Let them pick in the form.
 
-7. **Order summary + payment**: Navigate to step 3. Show a summary using REAL prices from CURRENT FORM STATE:
+7. **Order summary + payment**: Use navigate_step(3). Show summary using REAL prices from CURRENT FORM STATE:
 
    📋 **Order Summary**
    - **Devices**: X × $price/ea = $total
    - **Properties**: Y
-   - **Plan**: [name] ($price/month)
    {if promo} - **Promo**: [code] — saving $amount
    - **Total today**: $amount
 
-   Then say: "Click the button below to go to payment and enter your card details 🔒"
+   Then say: "Enter your card details in the secure form to complete your order 🔒"
 
-IMPORTANT: After each user response, proceed to the next step immediately. Don't ask one question and wait. Keep momentum. Use tools to fill the form as you go — the user should see the form updating in real-time.`;
+IMPORTANT: After each user response, proceed to the next step. The bot GUIDES — the user fills the actual form. Don't collect addresses or card info in chat.`;
 
 const TOOLS: Anthropic.Tool[] = [
   {
@@ -130,21 +127,6 @@ const TOOLS: Anthropic.Tool[] = [
         lastName: { type: "string" },
         email: { type: "string" },
         phoneNumber: { type: "string" },
-      },
-      required: [],
-    },
-  },
-  {
-    name: "set_address",
-    description: "Set shipping address fields in the checkout form.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        addressLine1: { type: "string" },
-        city: { type: "string" },
-        state: { type: "string" },
-        zip: { type: "string" },
-        country: { type: "string", description: "2-letter country code, e.g. US" },
       },
       required: [],
     },
