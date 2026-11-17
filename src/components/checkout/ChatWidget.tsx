@@ -106,7 +106,7 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
   // Address step — remind user to fill form
   if (lower.includes("shipping address") || lower.includes("fill in your") || lower.includes("address in the form") || lower.includes("where should we ship")) {
     return [
-      { label: "✅ Done, next step", text: "I've filled in my address, what's next?" },
+      { label: "✅ Done, next step", text: "__check_address__" },
     ];
   }
 
@@ -314,6 +314,17 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
 
   async function sendMessage(text: string) {
     if (!text || !conversationId || sending) return;
+
+    // Intercept validation checks
+    if (text === "__check_address__") {
+      const b = getChatBridge();
+      if (b && !b.addressFilled) {
+        setMessages((prev) => [...prev, { role: "assistant", content: "Please fill in your shipping address in the form first — I need at least street address, city, and ZIP code 📝" }]);
+        return;
+      }
+      text = "I've filled in my address, what's next?";
+    }
+
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setSending(true);
