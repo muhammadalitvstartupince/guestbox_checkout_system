@@ -151,6 +151,7 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
       activePromotion={activePromotion}
       initialPropQty={initialPropQty}
       initialGbQty={initialGbQty}
+      sideLayout={isSideLayout}
       checkoutPage={{
         slug: checkoutPage.slug,
         type: checkoutPage.type,

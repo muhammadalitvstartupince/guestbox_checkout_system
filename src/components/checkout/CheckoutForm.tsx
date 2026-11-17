@@ -180,7 +180,7 @@ function getTierMonthlyPrice(tier: PlanTierView, qty: number): number {
   return tier.prices[0]?.monthlyPriceCents ?? 0;
 }
 
-export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1 }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number }) {
+export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1, sideLayout = false }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number; sideLayout?: boolean }) {
   const boundInitiate = initiateOrder.bind(null, checkoutPage.slug);
   const [initState, initFormAction, initPending] = useActionState(boundInitiate, initialInitiateOrderState);
 
@@ -1994,6 +1994,19 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
     </>
   );
+
+  // Side-by-side layout: compact form only — no hero, header, or features
+  if (sideLayout) {
+    return (
+      <div className={`${montserrat.className} min-h-screen bg-white px-4 py-6 sm:px-8`}>
+        <StepIndicator step={wizardStep} accentColor={accentColor} />
+        <div className="mt-6">{stepContent}</div>
+        {completeState.status === "success" && completeState.redirectUrl && (
+          <OrderSuccessModal redirectUrl={completeState.redirectUrl} accentColor={accentColor} />
+        )}
+      </div>
+    );
+  }
 
   if (!hasHero) {
     return (
