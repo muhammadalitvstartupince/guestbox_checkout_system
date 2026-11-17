@@ -77,6 +77,36 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
     ];
   }
 
+  // Payment / card entry — show "Go to Payment" action button
+  if (lower.includes("card details") || lower.includes("payment form") || lower.includes("secure form") || lower.includes("enter your card") || lower.includes("complete your order")) {
+    return [
+      { label: "💳 Go to Payment", text: "Take me to the payment step" },
+    ];
+  }
+
+  // Address step — remind user to fill form
+  if (lower.includes("shipping address") || lower.includes("fill in your") || lower.includes("address in the form")) {
+    return [
+      { label: "✅ Done, next step", text: "I've filled in my address, what's next?" },
+    ];
+  }
+
+  // Billing plan selection
+  if (lower.includes("billing") || lower.includes("plan option")) {
+    return [
+      { label: "📅 Monthly", text: "Monthly billing" },
+      { label: "💰 Annual (save more)", text: "Annual billing" },
+    ];
+  }
+
+  // Cross-sell — more devices
+  if (lower.includes("add more") || lower.includes("every tv") || lower.includes("want to add")) {
+    return [
+      { label: "📺 Add more devices", text: "Yes, let me add more devices" },
+      { label: "👍 I'm good", text: "No, that's enough" },
+    ];
+  }
+
   // Asking if they have questions or need help
   if (lower.includes("any questions") || lower.includes("anything else") || lower.includes("can i help")) {
     return [
