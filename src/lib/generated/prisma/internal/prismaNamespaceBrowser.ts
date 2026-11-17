@@ -74,6 +74,7 @@ export const ModelName = {
   ShippingWeightEntry: 'ShippingWeightEntry',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
   ShippingRateLog: 'ShippingRateLog',
+  ChatbotSettings: 'ChatbotSettings',
   ChatConversation: 'ChatConversation',
   ChatMessage: 'ChatMessage'
 } as const
@@ -475,6 +476,20 @@ export const ShippingRateLogScalarFieldEnum = {
 export type ShippingRateLogScalarFieldEnum = (typeof ShippingRateLogScalarFieldEnum)[keyof typeof ShippingRateLogScalarFieldEnum]
 
 
+export const ChatbotSettingsScalarFieldEnum = {
+  id: 'id',
+  systemPrompt: 'systemPrompt',
+  webhookChatStarted: 'webhookChatStarted',
+  webhookChatAbandoned: 'webhookChatAbandoned',
+  maxMessages: 'maxMessages',
+  chatModel: 'chatModel',
+  summarizerModel: 'summarizerModel',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatbotSettingsScalarFieldEnum = (typeof ChatbotSettingsScalarFieldEnum)[keyof typeof ChatbotSettingsScalarFieldEnum]
+
+
 export const ChatConversationScalarFieldEnum = {
   id: 'id',
   checkoutPageId: 'checkoutPageId',
@@ -491,6 +506,7 @@ export const ChatConversationScalarFieldEnum = {
   startedAt: 'startedAt',
   lastMessageAt: 'lastMessageAt',
   abandonedAt: 'abandonedAt',
+  abandonedNotifiedAt: 'abandonedNotifiedAt',
   completedAt: 'completedAt'
 } as const
 

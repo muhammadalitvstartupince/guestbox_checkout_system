@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { X, Send, Loader2, Package, DollarSign, ShoppingCart, Tv, Monitor, Home, Building2, Hotel, Award, Gem, Crown, CalendarDays, Banknote, Check, XCircle, CreditCard, PencilLine, MapPin, Truck, ClipboardList, ThumbsUp } from "lucide-react";
 import { getChatBridge, setChatConversationId } from "@/components/checkout/ChatBridge";
 import { PhoneNumberField } from "@/components/checkout/PhoneNumberField";
 import { DEFAULT_COUNTRY_CODE } from "@/lib/checkout/countries";
@@ -25,50 +25,58 @@ interface CheckoutContext {
   addons: { id: string; name: string; priceCents: number }[];
 }
 
+type QuickReply = { icon: React.ComponentType<{ className?: string }>; label: string; text: string };
+
 /** Detect context from bot message and return quick-reply buttons */
-function getQuickReplies(content: string, isGreeting: boolean): { label: string; text: string }[] {
+function getQuickReplies(content: string, isGreeting: boolean): QuickReply[] {
   const lower = content.toLowerCase();
 
   // Greeting — show main CTAs
   if (isGreeting) {
     return [
-      { label: "📦 What is GuestBox?", text: "What is GuestBox?" },
-      { label: "💰 Pricing & Plans", text: "What are the pricing options and plans?" },
-      { label: "🛒 Help me order", text: "Help me place my order" },
+      { icon: Package, label: "What is GuestBox?", text: "What is GuestBox?" },
+      { icon: DollarSign, label: "Pricing & Plans", text: "What are the pricing options and plans?" },
+      { icon: ShoppingCart, label: "Help me order", text: "Help me place my order" },
     ];
   }
 
   // Asking about number of devices / TVs / GuestBoxes — check BEFORE properties
-  // (bot often says "across those properties" which would false-match the property pattern)
   if (lower.includes("how many tv") || lower.includes("how many devices") || lower.includes("how many guestbox") || lower.includes("equip") || lower.includes("total do you")) {
+    const TvIcon = ({ count, className }: { count: number; className?: string }) => (
+      <span className={`inline-flex items-center gap-0.5 ${className ?? ""}`}>
+        {Array.from({ length: Math.min(count, 3) }, (_, i) => (
+          <Monitor key={i} className={`${count === 1 ? "h-5 w-5" : "h-4 w-4"} text-cyan-400`} />
+        ))}
+        {count > 3 && <span className="text-[9px] font-bold text-cyan-400">+</span>}
+      </span>
+    );
     return [
-      { label: "📺 1", text: "1 device" },
-      { label: "📺 2", text: "2 devices" },
-      { label: "📺 3", text: "3 devices" },
-      { label: "📺 5", text: "5 devices" },
-      { label: "📺 10", text: "10 devices" },
+      { icon: ({ className }: { className?: string }) => <TvIcon count={1} className={className} />, label: "1", text: "1 device" },
+      { icon: ({ className }: { className?: string }) => <TvIcon count={2} className={className} />, label: "2", text: "2 devices" },
+      { icon: ({ className }: { className?: string }) => <TvIcon count={3} className={className} />, label: "3", text: "3 devices" },
+      { icon: ({ className }: { className?: string }) => <TvIcon count={3} className={className} />, label: "5", text: "5 devices" },
+      { icon: ({ className }: { className?: string }) => <TvIcon count={3} className={className} />, label: "10", text: "10 devices" },
     ];
   }
 
   // Asking about number of properties
   if (lower.includes("how many properties") || lower.includes("how many locations") || lower.includes("do you manage")) {
     return [
-      { label: "🏠 1 property", text: "1 property" },
-      { label: "🏘️ 2 properties", text: "2 properties" },
-      { label: "🏘️ 3 properties", text: "3 properties" },
-      { label: "🏙️ 5+", text: "5 properties" },
+      { icon: Home, label: "1 Property", text: "1 property" },
+      { icon: Building2, label: "2-5 Properties", text: "2 properties" },
+      { icon: Hotel, label: "6+ Properties", text: "6 properties" },
     ];
   }
 
   // Asking about plan choice (Gold/Platinum/Diamond or monthly/annual)
   if (lower.includes("which plan") || lower.includes("gold") || lower.includes("platinum") || lower.includes("diamond") || lower.includes("monthly or annual")) {
-    const replies: { label: string; text: string }[] = [];
-    if (lower.includes("gold") || lower.includes("which plan")) replies.push({ label: "🥇 Gold", text: "Gold plan" });
-    if (lower.includes("platinum") || lower.includes("which plan")) replies.push({ label: "🥈 Platinum", text: "Platinum plan" });
-    if (lower.includes("diamond") || lower.includes("which plan")) replies.push({ label: "💎 Diamond", text: "Diamond plan" });
+    const replies: QuickReply[] = [];
+    if (lower.includes("gold") || lower.includes("which plan")) replies.push({ icon: Award, label: "Gold", text: "Gold plan" });
+    if (lower.includes("platinum") || lower.includes("which plan")) replies.push({ icon: Crown, label: "Platinum", text: "Platinum plan" });
+    if (lower.includes("diamond") || lower.includes("which plan")) replies.push({ icon: Gem, label: "Diamond", text: "Diamond plan" });
     if (lower.includes("monthly") || lower.includes("annual")) {
-      replies.push({ label: "📅 Monthly", text: "Monthly billing" });
-      replies.push({ label: "💰 Annual (save more)", text: "Annual billing" });
+      replies.push({ icon: CalendarDays, label: "Monthly", text: "Monthly billing" });
+      replies.push({ icon: Banknote, label: "Annual (save more)", text: "Annual billing" });
     }
     return replies;
   }
@@ -76,25 +84,25 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
   // Yes/No questions
   if (lower.includes("would you like") || lower.includes("ready to") || lower.includes("shall i") || lower.includes("do you want")) {
     return [
-      { label: "✅ Yes", text: "Yes" },
-      { label: "❌ No thanks", text: "No thanks" },
+      { icon: Check, label: "Yes", text: "Yes" },
+      { icon: XCircle, label: "No thanks", text: "No thanks" },
     ];
   }
 
-  // Payment / card entry — show "Go to Payment" action button
+  // Payment / card entry
   if (lower.includes("card details") || lower.includes("payment form") || lower.includes("secure form") || lower.includes("enter your card") || lower.includes("complete your order")) {
     return [
-      { label: "💳 Go to Payment", text: "Take me to the payment step" },
+      { icon: CreditCard, label: "Go to Payment", text: "Take me to the payment step" },
     ];
   }
 
   // Confirming personal info from lead gate
   if (lower.includes("is this correct") || lower.includes("would you like to change") || lower.includes("here's what i have")) {
     return [
-      { label: "✅ Looks good!", text: "Yes, that's correct" },
-      { label: "✏️ Change name", text: "I want to change my name" },
-      { label: "✏️ Change email", text: "I want to change my email" },
-      { label: "✏️ Change phone", text: "I want to change my phone number" },
+      { icon: Check, label: "Looks good!", text: "Yes, that's correct" },
+      { icon: PencilLine, label: "Change name", text: "I want to change my name" },
+      { icon: PencilLine, label: "Change email", text: "I want to change my email" },
+      { icon: PencilLine, label: "Change phone", text: "I want to change my phone number" },
     ];
   }
 
@@ -103,35 +111,45 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
     return [];
   }
 
-  // Address step — remind user to fill form
+  // Address step
   if (lower.includes("shipping address") || lower.includes("fill in your") || lower.includes("address in the form") || lower.includes("where should we ship")) {
     return [
-      { label: "✅ Done, next step", text: "__check_address__" },
+      { icon: MapPin, label: "Done, next step", text: "__check_address__" },
     ];
   }
 
   // Billing plan selection
   if (lower.includes("billing") || lower.includes("plan option")) {
     return [
-      { label: "📅 Monthly", text: "Monthly billing" },
-      { label: "💰 Annual (save more)", text: "Annual billing" },
+      { icon: CalendarDays, label: "Monthly", text: "Monthly billing" },
+      { icon: Banknote, label: "Annual (save more)", text: "Annual billing" },
     ];
   }
 
   // Cross-sell — more devices
   if (lower.includes("add more") || lower.includes("every tv") || lower.includes("want to add")) {
     return [
-      { label: "📺 Add more devices", text: "Yes, let me add more devices" },
-      { label: "👍 I'm good", text: "No, that's enough" },
+      { icon: Tv, label: "Add more devices", text: "Yes, let me add more devices" },
+      { icon: ThumbsUp, label: "I'm good", text: "No, that's enough" },
+    ];
+  }
+
+  // Idle nudge — "still there" re-engagement
+  if (lower.includes("still there") || lower.includes("before you check out")) {
+    return [
+      { icon: ShoppingCart, label: "Continue order", text: "Help me finish my order" },
+      { icon: DollarSign, label: "Any discounts?", text: "Are there any discounts or promo codes available?" },
+      { icon: Truck, label: "Shipping info", text: "How does shipping work?" },
+      { icon: ClipboardList, label: "Compare plans", text: "Tell me about the plans" },
     ];
   }
 
   // Asking if they have questions or need help
   if (lower.includes("any questions") || lower.includes("anything else") || lower.includes("can i help")) {
     return [
-      { label: "📋 Tell me about plans", text: "Tell me about the plans" },
-      { label: "🚚 How does shipping work?", text: "How does shipping work?" },
-      { label: "🛒 I'm ready to order", text: "Help me place my order" },
+      { icon: ClipboardList, label: "Tell me about plans", text: "Tell me about the plans" },
+      { icon: Truck, label: "How does shipping work?", text: "How does shipping work?" },
+      { icon: ShoppingCart, label: "I'm ready to order", text: "Help me place my order" },
     ];
   }
 
@@ -148,16 +166,23 @@ function formatMessage(text: string) {
     if (listItems.length === 0) return;
     elements.push(
       <ul key={`ul-${elements.length}`} className="ml-4 list-disc space-y-0.5">
-        {listItems.map((item, i) => <li key={i}>{parseBold(item)}</li>)}
+        {listItems.map((item, i) => <li key={i}>{parseInline(item)}</li>)}
       </ul>
     );
     listItems = [];
   }
 
-  function parseBold(str: string): React.ReactNode {
-    const parts = str.split(/\*\*(.*?)\*\*/g);
+  function parseInline(str: string): React.ReactNode {
+    // Handle **bold** and [text](url) links
+    const parts = str.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g);
     if (parts.length === 1) return str;
-    return parts.map((part, i) => i % 2 === 1 ? <strong key={i}>{part}</strong> : part);
+    return parts.map((part, i) => {
+      const boldMatch = part.match(/^\*\*(.*?)\*\*$/);
+      if (boldMatch) return <strong key={i}>{boldMatch[1]}</strong>;
+      const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+      if (linkMatch) return <a key={i} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" className="font-semibold text-cyan-600 underline hover:text-cyan-700">{linkMatch[1]}</a>;
+      return part;
+    });
   }
 
   for (const line of lines) {
@@ -167,7 +192,7 @@ function formatMessage(text: string) {
     } else {
       flushList();
       if (trimmed) {
-        elements.push(<p key={`p-${elements.length}`}>{parseBold(trimmed)}</p>);
+        elements.push(<p key={`p-${elements.length}`}>{parseInline(trimmed)}</p>);
       }
     }
   }
@@ -219,18 +244,47 @@ function executeToolCalls(toolCalls: ToolCall[]) {
   }
 }
 
-export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId: string; checkoutContext?: CheckoutContext }) {
-  const [open, setOpen] = useState(false);
+export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }: { checkoutPageId: string; checkoutContext?: CheckoutContext; embedded?: boolean }) {
+  const [open, setOpen] = useState(embedded);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [sessionId] = useState(() => typeof crypto !== "undefined" ? crypto.randomUUID() : Math.random().toString(36));
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [showBubbleMsg, setShowBubbleMsg] = useState(false);
 
-  // Lead gate form state
-  const [leadForm, setLeadForm] = useState({ firstName: "", lastName: "", email: "", phoneCountry: DEFAULT_COUNTRY_CODE, phoneNumber: "" });
+  // Show greeting bubble after 15s of TRUE inactivity (no clicks, typing, scrolling)
+  useEffect(() => {
+    if (embedded || open) return;
+    let timer = setTimeout(() => setShowBubbleMsg(true), 15_000);
+    const reset = () => { clearTimeout(timer); timer = setTimeout(() => setShowBubbleMsg(true), 15_000); };
+    window.addEventListener("click", reset, true);
+    window.addEventListener("keydown", reset, true);
+    window.addEventListener("scroll", reset, true);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("click", reset, true);
+      window.removeEventListener("keydown", reset, true);
+      window.removeEventListener("scroll", reset, true);
+    };
+  }, [embedded, open]);
+
+  // Lead gate form state — pre-fill from checkout form if user already typed info
+  const [leadForm, setLeadForm] = useState(() => {
+    const b = getChatBridge();
+    if (b?.profileForm) {
+      return {
+        firstName: b.profileForm.firstName || "",
+        lastName: b.profileForm.lastName || "",
+        email: b.profileForm.email || "",
+        phoneCountry: (b.profileForm as Record<string, string>).phoneCountry || DEFAULT_COUNTRY_CODE,
+        phoneNumber: b.profileForm.phone || "",
+      };
+    }
+    return { firstName: "", lastName: "", email: "", phoneCountry: DEFAULT_COUNTRY_CODE, phoneNumber: "" };
+  });
   const [leadSubmitting, setLeadSubmitting] = useState(false);
 
   const scrollToBottom = useCallback(() => {
@@ -265,7 +319,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
       // 3 min nudge
       if (idleMs >= 3 * 60 * 1000 && !nudgeSentRef.current) {
         nudgeSentRef.current = true;
-        setMessages((prev) => [...prev, { role: "assistant", content: "Still there? Happy to help finish your order!" }]);
+        setMessages((prev) => [...prev, { role: "assistant", content: "Hey! Still there? No worries — I'm here whenever you're ready. Need help with anything before you check out?" }]);
       }
       // 10 min abandon
       if (idleMs >= 10 * 60 * 1000) {
@@ -378,77 +432,143 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
     sendMessage(input.trim());
   }
 
-  const inputClass = "w-full rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500";
+  const inputClass = "w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 transition focus:border-cyan-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20";
+
+  const panelClasses = embedded
+    ? "flex h-full w-full flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-xl"
+    : "fixed bottom-5 right-5 z-50 flex h-[480px] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl sm:h-[520px]";
 
   return (
     <>
-      {/* Floating bubble */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-lg transition hover:bg-cyan-700 hover:shadow-xl"
-          aria-label="Open chat"
-        >
-          <span className="text-2xl">💬</span>
-        </button>
+      {/* Floating bubble + greeting — hidden in embedded mode */}
+      {!embedded && !open && (
+        <div className="fixed bottom-2 right-2 z-50 flex flex-col items-end gap-2">
+          <style>{`
+            @keyframes floatBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+            @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+          `}</style>
+          {showBubbleMsg && (
+            <div className="relative max-w-[180px] animate-[fadeSlideUp_0.4s_ease-out] rounded-xl bg-white px-3 py-2 text-sm font-medium text-zinc-800 shadow-lg">
+              <button onClick={(e) => { e.stopPropagation(); setShowBubbleMsg(false); }} className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-200 text-zinc-500 hover:bg-zinc-300 hover:text-zinc-700" aria-label="Dismiss"><X className="h-3 w-3" /></button>
+              Hi, I'm GuestBox Assistant. How may I help you?
+              <div className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 bg-white" />
+            </div>
+          )}
+          <button
+            onClick={() => {
+              const b = getChatBridge();
+              if (b?.profileForm && !conversationId) {
+                setLeadForm((prev) => ({
+                  firstName: prev.firstName || b.profileForm.firstName || "",
+                  lastName: prev.lastName || b.profileForm.lastName || "",
+                  email: prev.email || b.profileForm.email || "",
+                  phoneCountry: prev.phoneCountry || (b.profileForm as Record<string, string>).phoneCountry || DEFAULT_COUNTRY_CODE,
+                  phoneNumber: prev.phoneNumber || b.profileForm.phone || "",
+                }));
+              }
+              setOpen(true);
+            }}
+            className="h-16 w-16 overflow-hidden rounded-full shadow-lg transition hover:scale-110 hover:shadow-xl"
+            style={{ animation: "floatBounce 2s ease-in-out infinite" }}
+            aria-label="Open chat"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/pages_Images/robot.png" alt="Chat" className="h-full w-full object-cover" />
+          </button>
+        </div>
       )}
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-5 right-5 z-50 flex h-[480px] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl sm:h-[520px]">
-          {/* Header */}
-          <div className="flex items-center justify-between bg-cyan-600 px-4 py-3 text-white">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🤖</span>
-              <span className="text-sm font-semibold">GuestBox Assistant</span>
+        <div className={panelClasses}>
+          {/* Header banner */}
+          <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0c2d48 0%, #0a4d6e 50%, #0c2d48 100%)" }}>
+            {!embedded && (
+              <button onClick={() => setOpen(false)} className="absolute right-2 top-2 z-10 rounded p-1 text-white/70 hover:bg-white/20 hover:text-white" aria-label="Close chat">
+                <X className="h-4 w-4" />
+              </button>
+            )}
+            <style>{`
+              @keyframes bot-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+              @keyframes bubble-glow { 0%,100% { box-shadow: 0 0 8px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 18px rgba(6,182,212,0.5); } }
+              @keyframes wave { 0% { transform: rotate(0deg); } 15% { transform: rotate(14deg); } 30% { transform: rotate(-8deg); } 45% { transform: rotate(14deg); } 60% { transform: rotate(-4deg); } 75% { transform: rotate(10deg); } 100% { transform: rotate(0deg); } }
+            `}</style>
+            <div className="flex items-end gap-2 px-3 pt-2 sm:gap-3 sm:px-4 sm:pt-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/pages_Images/robot.png"
+                alt="GuestBox Bot"
+                className="h-14 w-14 shrink-0 object-contain sm:h-20 sm:w-20"
+                style={!conversationId ? { animation: "bot-bounce 2s ease-in-out infinite" } : undefined}
+              />
+              <div
+                className="mb-2 rounded-lg border border-cyan-500/30 bg-cyan-900/40 px-2.5 py-2 backdrop-blur-sm sm:mb-3 sm:rounded-xl sm:px-3.5 sm:py-2.5"
+                style={!conversationId ? { animation: "bubble-glow 2s ease-in-out infinite" } : undefined}
+              >
+                <p className="text-xs font-bold text-white sm:text-sm">
+                  <span style={!conversationId ? { display: "inline-block", animation: "wave 1.5s ease-in-out infinite", transformOrigin: "70% 70%" } : undefined}>👋</span>
+                  {" "}Hi! I'm the <span className="text-cyan-300">GuestBox Checkout Assistant.</span>
+                </p>
+                <p className="mt-0.5 text-[10px] leading-relaxed text-white sm:text-xs">I'll help you get the right setup, explain your options, and apply any coupon codes. It only takes a minute!</p>
+              </div>
             </div>
-            <button onClick={() => setOpen(false)} className="rounded p-1 hover:bg-white/20" aria-label="Close chat">
-              <X className="h-4 w-4" />
-            </button>
           </div>
 
           {!conversationId ? (
             /* Lead gate form */
-            <form onSubmit={handleLeadSubmit} className="flex flex-1 flex-col gap-3 p-4">
-              <p className="text-sm text-zinc-600">
-                👋 Hi! I'd love to help you with your GuestBox order. Let me get your details so I can assist you best.
-              </p>
-              <div className="grid grid-cols-2 gap-2">
+            <form onSubmit={handleLeadSubmit} className="flex flex-1 flex-col gap-4 p-5">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-zinc-500">First Name</label>
+                  <input
+                    className={inputClass}
+                    placeholder="John"
+                    value={leadForm.firstName}
+                    onChange={(e) => setLeadForm((f) => ({ ...f, firstName: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-zinc-500">Last Name</label>
+                  <input
+                    className={inputClass}
+                    placeholder="Doe"
+                    value={leadForm.lastName}
+                    onChange={(e) => setLeadForm((f) => ({ ...f, lastName: e.target.value }))}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-zinc-500">Email</label>
                 <input
                   className={inputClass}
-                  placeholder="First Name"
-                  value={leadForm.firstName}
-                  onChange={(e) => setLeadForm((f) => ({ ...f, firstName: e.target.value }))}
-                  required
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Last Name"
-                  value={leadForm.lastName}
-                  onChange={(e) => setLeadForm((f) => ({ ...f, lastName: e.target.value }))}
+                  type="email"
+                  placeholder="john@example.com"
+                  value={leadForm.email}
+                  onChange={(e) => setLeadForm((f) => ({ ...f, email: e.target.value }))}
                   required
                 />
               </div>
-              <input
-                className={inputClass}
-                type="email"
-                placeholder="Email"
-                value={leadForm.email}
-                onChange={(e) => setLeadForm((f) => ({ ...f, email: e.target.value }))}
-                required
-              />
-              <PhoneNumberField
-                country={leadForm.phoneCountry}
-                onCountryChange={(code) => setLeadForm((f) => ({ ...f, phoneCountry: code }))}
-                number={leadForm.phoneNumber}
-                onNumberChange={(val) => setLeadForm((f) => ({ ...f, phoneNumber: val }))}
-              />
+              <div>
+                <PhoneNumberField
+                  country={leadForm.phoneCountry}
+                  onCountryChange={(code) => setLeadForm((f) => ({ ...f, phoneCountry: code }))}
+                  number={leadForm.phoneNumber}
+                  onNumberChange={(val) => setLeadForm((f) => ({ ...f, phoneNumber: val }))}
+                />
+              </div>
               <button
                 type="submit"
                 disabled={leadSubmitting}
-                className="mt-auto rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700 disabled:opacity-60"
+                className={`mt-auto inline-flex w-full items-center justify-center gap-2 text-white transition disabled:opacity-60 ${
+                  embedded
+                    ? "rounded-full py-3.5 text-lg font-bold hover:brightness-110"
+                    : "rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-semibold hover:bg-cyan-700"
+                }`}
+                style={embedded ? { backgroundColor: "#0284C7" } : undefined}
               >
-                {leadSubmitting ? "Starting…" : "Start Chat →"}
+                {leadSubmitting ? "Starting…" : <><span>Start Chat</span><Send className="h-5 w-5" /></>}
               </button>
             </form>
           ) : (
@@ -461,7 +581,11 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
                     const quickReplies = isLast ? getQuickReplies(msg.content, i === 0) : [];
                     return (
                       <div key={i}>
-                        <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                        <div className={`flex ${msg.role === "user" ? "justify-end" : "items-start gap-2"}`}>
+                          {msg.role === "assistant" && (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src="/favicon.png" alt="" className="mt-1 h-6 w-6 shrink-0 rounded-full" />
+                          )}
                           <div
                             className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
                               msg.role === "user"
@@ -473,15 +597,16 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
                           </div>
                         </div>
                         {quickReplies.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
+                          <div className="ml-8 mt-2 flex flex-wrap gap-2">
                             {quickReplies.map((cta) => (
                               <button
                                 key={cta.label}
                                 type="button"
                                 onClick={() => sendMessage(cta.text)}
-                                className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100"
+                                className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white transition hover:border-cyan-400 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
                               >
-                                {cta.label}
+                                <cta.icon className="h-5 w-5 text-cyan-400" />
+                                <span className="text-[11px] font-semibold leading-tight">{cta.label}</span>
                               </button>
                             ))}
                           </div>
@@ -500,21 +625,22 @@ export function ChatWidget({ checkoutPageId, checkoutContext }: { checkoutPageId
                 </div>
               </div>
 
-              <div className="border-t border-zinc-200 p-3">
-                <div className="flex gap-2">
-                  <input
+              <div className="border-t border-zinc-200 bg-slate-900 p-3">
+                <div className="flex items-end gap-2">
+                  <textarea
                     ref={inputRef}
-                    className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                    rows={1}
+                    className="max-h-24 min-h-[38px] flex-1 resize-none rounded-xl border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                     placeholder="Type a message…"
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={(e) => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; }}
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                     disabled={sending}
                   />
                   <button
                     onClick={handleSend}
                     disabled={sending || !input.trim()}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cyan-600 text-white transition hover:bg-cyan-700 disabled:opacity-40"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-700/40 text-cyan-300 transition hover:bg-cyan-600 hover:text-white disabled:opacity-40"
                     aria-label="Send"
                   >
                     <Send className="h-4 w-4" />

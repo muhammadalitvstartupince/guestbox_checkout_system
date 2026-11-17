@@ -38,6 +38,7 @@ export type ChatConversationMinAggregateOutputType = {
   startedAt: Date | null
   lastMessageAt: Date | null
   abandonedAt: Date | null
+  abandonedNotifiedAt: Date | null
   completedAt: Date | null
 }
 
@@ -55,6 +56,7 @@ export type ChatConversationMaxAggregateOutputType = {
   startedAt: Date | null
   lastMessageAt: Date | null
   abandonedAt: Date | null
+  abandonedNotifiedAt: Date | null
   completedAt: Date | null
 }
 
@@ -74,6 +76,7 @@ export type ChatConversationCountAggregateOutputType = {
   startedAt: number
   lastMessageAt: number
   abandonedAt: number
+  abandonedNotifiedAt: number
   completedAt: number
   _all: number
 }
@@ -93,6 +96,7 @@ export type ChatConversationMinAggregateInputType = {
   startedAt?: true
   lastMessageAt?: true
   abandonedAt?: true
+  abandonedNotifiedAt?: true
   completedAt?: true
 }
 
@@ -110,6 +114,7 @@ export type ChatConversationMaxAggregateInputType = {
   startedAt?: true
   lastMessageAt?: true
   abandonedAt?: true
+  abandonedNotifiedAt?: true
   completedAt?: true
 }
 
@@ -129,6 +134,7 @@ export type ChatConversationCountAggregateInputType = {
   startedAt?: true
   lastMessageAt?: true
   abandonedAt?: true
+  abandonedNotifiedAt?: true
   completedAt?: true
   _all?: true
 }
@@ -221,6 +227,7 @@ export type ChatConversationGroupByOutputType = {
   startedAt: Date
   lastMessageAt: Date
   abandonedAt: Date | null
+  abandonedNotifiedAt: Date | null
   completedAt: Date | null
   _count: ChatConversationCountAggregateOutputType | null
   _min: ChatConversationMinAggregateOutputType | null
@@ -261,6 +268,7 @@ export type ChatConversationWhereInput = {
   startedAt?: Prisma.DateTimeFilter<"ChatConversation"> | Date | string
   lastMessageAt?: Prisma.DateTimeFilter<"ChatConversation"> | Date | string
   abandonedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
+  abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
@@ -283,6 +291,7 @@ export type ChatConversationOrderByWithRelationInput = {
   startedAt?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
   abandonedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkoutPage?: Prisma.CheckoutPageOrderByWithRelationInput
   order?: Prisma.OrderOrderByWithRelationInput
@@ -308,6 +317,7 @@ export type ChatConversationWhereUniqueInput = Prisma.AtLeast<{
   startedAt?: Prisma.DateTimeFilter<"ChatConversation"> | Date | string
   lastMessageAt?: Prisma.DateTimeFilter<"ChatConversation"> | Date | string
   abandonedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
+  abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
   checkoutPage?: Prisma.XOR<Prisma.CheckoutPageScalarRelationFilter, Prisma.CheckoutPageWhereInput>
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
@@ -330,6 +340,7 @@ export type ChatConversationOrderByWithAggregationInput = {
   startedAt?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
   abandonedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChatConversationCountOrderByAggregateInput
   _max?: Prisma.ChatConversationMaxOrderByAggregateInput
@@ -355,6 +366,7 @@ export type ChatConversationScalarWhereWithAggregatesInput = {
   startedAt?: Prisma.DateTimeWithAggregatesFilter<"ChatConversation"> | Date | string
   lastMessageAt?: Prisma.DateTimeWithAggregatesFilter<"ChatConversation"> | Date | string
   abandonedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatConversation"> | Date | string | null
+  abandonedNotifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatConversation"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatConversation"> | Date | string | null
 }
 
@@ -372,6 +384,7 @@ export type ChatConversationCreateInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutChatConversationsInput
   order?: Prisma.OrderCreateNestedOneWithoutChatConversationsInput
@@ -394,6 +407,7 @@ export type ChatConversationUncheckedCreateInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutConversationInput
 }
@@ -412,6 +426,7 @@ export type ChatConversationUpdateInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutChatConversationsNestedInput
   order?: Prisma.OrderUpdateOneWithoutChatConversationsNestedInput
@@ -434,6 +449,7 @@ export type ChatConversationUncheckedUpdateInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutConversationNestedInput
 }
@@ -454,6 +470,7 @@ export type ChatConversationCreateManyInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
 }
 
@@ -471,6 +488,7 @@ export type ChatConversationUpdateManyMutationInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -490,6 +508,7 @@ export type ChatConversationUncheckedUpdateManyInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -519,6 +538,7 @@ export type ChatConversationCountOrderByAggregateInput = {
   startedAt?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
   abandonedAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
 }
 
@@ -536,6 +556,7 @@ export type ChatConversationMaxOrderByAggregateInput = {
   startedAt?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
   abandonedAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
 }
 
@@ -553,6 +574,7 @@ export type ChatConversationMinOrderByAggregateInput = {
   startedAt?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
   abandonedAt?: Prisma.SortOrder
+  abandonedNotifiedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
 }
 
@@ -681,6 +703,7 @@ export type ChatConversationCreateWithoutCheckoutPageInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   order?: Prisma.OrderCreateNestedOneWithoutChatConversationsInput
   messages?: Prisma.ChatMessageCreateNestedManyWithoutConversationInput
@@ -701,6 +724,7 @@ export type ChatConversationUncheckedCreateWithoutCheckoutPageInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutConversationInput
 }
@@ -750,6 +774,7 @@ export type ChatConversationScalarWhereInput = {
   startedAt?: Prisma.DateTimeFilter<"ChatConversation"> | Date | string
   lastMessageAt?: Prisma.DateTimeFilter<"ChatConversation"> | Date | string
   abandonedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
+  abandonedNotifiedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"ChatConversation"> | Date | string | null
 }
 
@@ -767,6 +792,7 @@ export type ChatConversationCreateWithoutOrderInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutChatConversationsInput
   messages?: Prisma.ChatMessageCreateNestedManyWithoutConversationInput
@@ -787,6 +813,7 @@ export type ChatConversationUncheckedCreateWithoutOrderInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutConversationInput
 }
@@ -831,6 +858,7 @@ export type ChatConversationCreateWithoutMessagesInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
   checkoutPage: Prisma.CheckoutPageCreateNestedOneWithoutChatConversationsInput
   order?: Prisma.OrderCreateNestedOneWithoutChatConversationsInput
@@ -852,6 +880,7 @@ export type ChatConversationUncheckedCreateWithoutMessagesInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
 }
 
@@ -885,6 +914,7 @@ export type ChatConversationUpdateWithoutMessagesInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutChatConversationsNestedInput
   order?: Prisma.OrderUpdateOneWithoutChatConversationsNestedInput
@@ -906,6 +936,7 @@ export type ChatConversationUncheckedUpdateWithoutMessagesInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -924,6 +955,7 @@ export type ChatConversationCreateManyCheckoutPageInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
 }
 
@@ -941,6 +973,7 @@ export type ChatConversationUpdateWithoutCheckoutPageInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUpdateOneWithoutChatConversationsNestedInput
   messages?: Prisma.ChatMessageUpdateManyWithoutConversationNestedInput
@@ -961,6 +994,7 @@ export type ChatConversationUncheckedUpdateWithoutCheckoutPageInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutConversationNestedInput
 }
@@ -980,6 +1014,7 @@ export type ChatConversationUncheckedUpdateManyWithoutCheckoutPageInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -998,6 +1033,7 @@ export type ChatConversationCreateManyOrderInput = {
   startedAt?: Date | string
   lastMessageAt?: Date | string
   abandonedAt?: Date | string | null
+  abandonedNotifiedAt?: Date | string | null
   completedAt?: Date | string | null
 }
 
@@ -1015,6 +1051,7 @@ export type ChatConversationUpdateWithoutOrderInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkoutPage?: Prisma.CheckoutPageUpdateOneRequiredWithoutChatConversationsNestedInput
   messages?: Prisma.ChatMessageUpdateManyWithoutConversationNestedInput
@@ -1035,6 +1072,7 @@ export type ChatConversationUncheckedUpdateWithoutOrderInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutConversationNestedInput
 }
@@ -1054,6 +1092,7 @@ export type ChatConversationUncheckedUpdateManyWithoutOrderInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   abandonedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  abandonedNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -1104,6 +1143,7 @@ export type ChatConversationSelect<ExtArgs extends runtime.Types.Extensions.Inte
   startedAt?: boolean
   lastMessageAt?: boolean
   abandonedAt?: boolean
+  abandonedNotifiedAt?: boolean
   completedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   order?: boolean | Prisma.ChatConversation$orderArgs<ExtArgs>
@@ -1127,6 +1167,7 @@ export type ChatConversationSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   startedAt?: boolean
   lastMessageAt?: boolean
   abandonedAt?: boolean
+  abandonedNotifiedAt?: boolean
   completedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   order?: boolean | Prisma.ChatConversation$orderArgs<ExtArgs>
@@ -1148,6 +1189,7 @@ export type ChatConversationSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   startedAt?: boolean
   lastMessageAt?: boolean
   abandonedAt?: boolean
+  abandonedNotifiedAt?: boolean
   completedAt?: boolean
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   order?: boolean | Prisma.ChatConversation$orderArgs<ExtArgs>
@@ -1169,10 +1211,11 @@ export type ChatConversationSelectScalar = {
   startedAt?: boolean
   lastMessageAt?: boolean
   abandonedAt?: boolean
+  abandonedNotifiedAt?: boolean
   completedAt?: boolean
 }
 
-export type ChatConversationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "orderId" | "sessionId" | "status" | "outcome" | "firstName" | "lastName" | "email" | "phone" | "collectedData" | "metadata" | "startedAt" | "lastMessageAt" | "abandonedAt" | "completedAt", ExtArgs["result"]["chatConversation"]>
+export type ChatConversationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "orderId" | "sessionId" | "status" | "outcome" | "firstName" | "lastName" | "email" | "phone" | "collectedData" | "metadata" | "startedAt" | "lastMessageAt" | "abandonedAt" | "abandonedNotifiedAt" | "completedAt", ExtArgs["result"]["chatConversation"]>
 export type ChatConversationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   order?: boolean | Prisma.ChatConversation$orderArgs<ExtArgs>
@@ -1211,6 +1254,7 @@ export type $ChatConversationPayload<ExtArgs extends runtime.Types.Extensions.In
     startedAt: Date
     lastMessageAt: Date
     abandonedAt: Date | null
+    abandonedNotifiedAt: Date | null
     completedAt: Date | null
   }, ExtArgs["result"]["chatConversation"]>
   composites: {}
@@ -1653,6 +1697,7 @@ export interface ChatConversationFieldRefs {
   readonly startedAt: Prisma.FieldRef<"ChatConversation", 'DateTime'>
   readonly lastMessageAt: Prisma.FieldRef<"ChatConversation", 'DateTime'>
   readonly abandonedAt: Prisma.FieldRef<"ChatConversation", 'DateTime'>
+  readonly abandonedNotifiedAt: Prisma.FieldRef<"ChatConversation", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"ChatConversation", 'DateTime'>
 }
     

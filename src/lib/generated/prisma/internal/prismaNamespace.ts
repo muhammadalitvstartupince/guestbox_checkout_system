@@ -420,6 +420,7 @@ export const ModelName = {
   ShippingWeightEntry: 'ShippingWeightEntry',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
   ShippingRateLog: 'ShippingRateLog',
+  ChatbotSettings: 'ChatbotSettings',
   ChatConversation: 'ChatConversation',
   ChatMessage: 'ChatMessage'
 } as const
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatConversation" | "chatMessage"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatbotSettings" | "chatConversation" | "chatMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2143,6 +2144,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChatbotSettings: {
+      payload: Prisma.$ChatbotSettingsPayload<ExtArgs>
+      fields: Prisma.ChatbotSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatbotSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatbotSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.ChatbotSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatbotSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.ChatbotSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.ChatbotSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.ChatbotSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChatbotSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.ChatbotSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>
+        }
+        update: {
+          args: Prisma.ChatbotSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatbotSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatbotSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChatbotSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChatbotSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatbotSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.ChatbotSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatbotSettings>
+        }
+        groupBy: {
+          args: Prisma.ChatbotSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatbotSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatbotSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatbotSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     ChatConversation: {
       payload: Prisma.$ChatConversationPayload<ExtArgs>
       fields: Prisma.ChatConversationFieldRefs
@@ -2711,6 +2786,20 @@ export const ShippingRateLogScalarFieldEnum = {
 export type ShippingRateLogScalarFieldEnum = (typeof ShippingRateLogScalarFieldEnum)[keyof typeof ShippingRateLogScalarFieldEnum]
 
 
+export const ChatbotSettingsScalarFieldEnum = {
+  id: 'id',
+  systemPrompt: 'systemPrompt',
+  webhookChatStarted: 'webhookChatStarted',
+  webhookChatAbandoned: 'webhookChatAbandoned',
+  maxMessages: 'maxMessages',
+  chatModel: 'chatModel',
+  summarizerModel: 'summarizerModel',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatbotSettingsScalarFieldEnum = (typeof ChatbotSettingsScalarFieldEnum)[keyof typeof ChatbotSettingsScalarFieldEnum]
+
+
 export const ChatConversationScalarFieldEnum = {
   id: 'id',
   checkoutPageId: 'checkoutPageId',
@@ -2727,6 +2816,7 @@ export const ChatConversationScalarFieldEnum = {
   startedAt: 'startedAt',
   lastMessageAt: 'lastMessageAt',
   abandonedAt: 'abandonedAt',
+  abandonedNotifiedAt: 'abandonedNotifiedAt',
   completedAt: 'completedAt'
 } as const
 
@@ -3231,6 +3321,7 @@ export type GlobalOmitConfig = {
   shippingWeightEntry?: Prisma.ShippingWeightEntryOmit
   abandonedCheckoutSettings?: Prisma.AbandonedCheckoutSettingsOmit
   shippingRateLog?: Prisma.ShippingRateLogOmit
+  chatbotSettings?: Prisma.ChatbotSettingsOmit
   chatConversation?: Prisma.ChatConversationOmit
   chatMessage?: Prisma.ChatMessageOmit
 }

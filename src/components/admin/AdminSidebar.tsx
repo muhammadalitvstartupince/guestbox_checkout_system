@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, MessageCircle, Mail, Users, Bell, Truck } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, MessageCircle, Mail, Users, Bell, Truck, Bot } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -106,6 +106,14 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
         icon: Bell,
         iconBg: "bg-orange-50 dark:bg-orange-500/10",
         iconColor: "text-orange-600 dark:text-orange-400",
+        adminOnly: true,
+      },
+      {
+        href: "/admin/settings/chatbot",
+        label: "Chatbot",
+        icon: Bot,
+        iconBg: "bg-violet-50 dark:bg-violet-500/10",
+        iconColor: "text-violet-600 dark:text-violet-400",
         adminOnly: true,
       },
       {

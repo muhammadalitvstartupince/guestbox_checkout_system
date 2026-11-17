@@ -663,6 +663,22 @@ model ShippingRateLog {
   @@map("shipping_rate_logs")
 }
 
+// Singleton settings for the checkout chatbot — the system prompt is
+// editable by admins so they can tweak bot personality / product info
+// without a code deploy.
+model ChatbotSettings {
+  id                      String   @id @default(uuid()) @db.Uuid
+  systemPrompt            String   @map("system_prompt")
+  webhookChatStarted      String?  @map("webhook_chat_started")
+  webhookChatAbandoned    String?  @map("webhook_chat_abandoned")
+  maxMessages             Int      @default(50) @map("max_messages")
+  chatModel               String?  @map("chat_model")
+  summarizerModel         String?  @map("summarizer_model")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("chatbot_settings")
+}
+
 // Chat conversations on checkout pages — lead gate collects contact info
 // before chat starts, so every conversation has name/email/phone.
 model ChatConversation {
@@ -685,8 +701,9 @@ model ChatConversation {
 
   startedAt       DateTime                @default(now()) @map("started_at")
   lastMessageAt   DateTime                @default(now()) @map("last_message_at")
-  abandonedAt     DateTime?               @map("abandoned_at")
-  completedAt     DateTime?               @map("completed_at")
+  abandonedAt           DateTime?               @map("abandoned_at")
+  abandonedNotifiedAt   DateTime?               @map("abandoned_notified_at")
+  completedAt           DateTime?               @map("completed_at")
 
   messages        ChatMessage[]
 

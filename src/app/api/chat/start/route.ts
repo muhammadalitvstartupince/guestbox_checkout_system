@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/client";
+import { fireChatStartedWebhook } from "@/lib/chatbot/webhooks";
 
 interface StartChatBody {
   checkoutPageId: string;
@@ -36,6 +37,15 @@ export async function POST(req: NextRequest) {
     await prisma.chatMessage.create({
       data: { conversationId: conversation.id, role: "assistant", content: greeting },
     });
+
+    // Fire webhook (non-blocking)
+    fireChatStartedWebhook({
+      id: conversation.id,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+    }).catch(() => {});
 
     return NextResponse.json({ conversationId: conversation.id, greeting });
   } catch (err) {

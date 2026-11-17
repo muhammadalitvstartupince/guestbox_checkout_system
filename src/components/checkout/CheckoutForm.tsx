@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { initiateOrder, saveBillingInfo, saveBillingPlan, completeCheckout, checkPromoCode, getShippingOptions, selectShippingRate } from "@/app/c/[slug]/actions";
 import { OrderSuccessModal } from "@/components/checkout/OrderSuccessModal";
@@ -180,7 +180,7 @@ function getTierMonthlyPrice(tier: PlanTierView, qty: number): number {
   return tier.prices[0]?.monthlyPriceCents ?? 0;
 }
 
-export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1 }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number }) {
+export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null, initialPropQty = 1, initialGbQty = 1, chatPanel }: { checkoutPage: CheckoutPageView; landingUrl: string; activePromotion?: ActivePromotionView | null; initialPropQty?: number; initialGbQty?: number; chatPanel?: ReactNode }) {
   const boundInitiate = initiateOrder.bind(null, checkoutPage.slug);
   const [initState, initFormAction, initPending] = useActionState(boundInitiate, initialInitiateOrderState);
 
@@ -381,6 +381,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
       setWizardStep, setQuantity, setListingQty,
       setProfileField: (field: string, value: string) => {
         setProfileForm((prev) => ({ ...prev, [field]: value }));
+        if (field === "phoneCountry") {
+          setShippingForm((prev) => ({ ...prev, country: value }));
+          setBillingForm((prev) => ({ ...prev, country: value }));
+        }
       },
       setAddressField: (field: string, value: string) => {
         setBillingForm((prev) => ({ ...prev, [field]: value }));
@@ -416,6 +420,14 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   // Auto-apply promo code from ?promo=CODE URL param
   const searchParams = useSearchParams();
   const promoAutoApplied = useRef(false);
+  const formCardRef = useRef<HTMLDivElement>(null);
+  const [chatPanelHeight, setChatPanelHeight] = useState<string>("600px");
+  useEffect(() => {
+    if (!chatPanel || !formCardRef.current) return;
+    const ro = new ResizeObserver(() => { if (formCardRef.current) setChatPanelHeight(`${Math.max(formCardRef.current.offsetHeight, 520)}px`); });
+    ro.observe(formCardRef.current);
+    return () => ro.disconnect();
+  }, [chatPanel]);
   useEffect(() => {
     const urlPromo = searchParams.get("promo");
     if (urlPromo && !promoAutoApplied.current) {
@@ -2046,7 +2058,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl px-4 pb-10 pt-4">
+      <div className={`mx-auto px-4 pb-10 pt-4 ${chatPanel ? "max-w-6xl" : "max-w-2xl"}`}>
 
         {checkoutPage.heroHtml ? (
           <>
@@ -2092,8 +2104,15 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
         <StepIndicator step={wizardStep} accentColor={accentColor} />
 
-        <div className="mt-8 rounded-lg bg-white p-6 shadow-xl sm:p-8">
-          {stepContent}
+        <div className={`mt-8 ${chatPanel ? "flex flex-col gap-6 lg:flex-row lg:items-start" : ""}`}>
+          <div ref={formCardRef} className={`rounded-lg bg-white p-6 shadow-xl sm:p-8 ${chatPanel ? "min-w-0 flex-1" : ""}`}>
+            {stepContent}
+          </div>
+          {chatPanel && (
+            <div className="min-w-0 flex-1 lg:sticky lg:top-4" style={{ height: chatPanelHeight }}>
+              {chatPanel}
+            </div>
+          )}
         </div>
       </div>
       </div>{/* end Zone 1 */}
