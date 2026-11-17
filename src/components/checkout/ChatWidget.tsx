@@ -36,23 +36,25 @@ function getQuickReplies(content: string, isGreeting: boolean): { label: string;
     ];
   }
 
+  // Asking about number of devices / TVs / GuestBoxes — check BEFORE properties
+  // (bot often says "across those properties" which would false-match the property pattern)
+  if (lower.includes("how many tv") || lower.includes("how many devices") || lower.includes("how many guestbox") || lower.includes("equip") || lower.includes("total do you")) {
+    return [
+      { label: "📺 1", text: "1 device" },
+      { label: "📺 2", text: "2 devices" },
+      { label: "📺 3", text: "3 devices" },
+      { label: "📺 5", text: "5 devices" },
+      { label: "📺 10", text: "10 devices" },
+    ];
+  }
+
   // Asking about number of properties
-  if (lower.includes("how many properties") || lower.includes("how many locations") || (lower.includes("propert") && lower.includes("?"))) {
+  if (lower.includes("how many properties") || lower.includes("how many locations") || lower.includes("do you manage")) {
     return [
       { label: "🏠 1 property", text: "1 property" },
       { label: "🏘️ 2 properties", text: "2 properties" },
       { label: "🏘️ 3 properties", text: "3 properties" },
       { label: "🏙️ 5+", text: "5 properties" },
-    ];
-  }
-
-  // Asking about number of devices / TVs / GuestBoxes
-  if (lower.includes("how many devices") || lower.includes("how many guestbox") || lower.includes("how many tv")) {
-    return [
-      { label: "📺 1", text: "1 device" },
-      { label: "📺 2", text: "2 devices" },
-      { label: "📺 5", text: "5 devices" },
-      { label: "📺 10", text: "10 devices" },
     ];
   }
 
