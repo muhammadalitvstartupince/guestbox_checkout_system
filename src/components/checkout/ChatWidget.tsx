@@ -311,31 +311,35 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
   useEffect(() => { if (open && conversationId) inputRef.current?.focus(); }, [open, conversationId]);
 
-  // Auto-start conversation when lead gate is disabled — begins guided flow
+  // Show guided greeting immediately but defer conversation creation until first interaction
   const autoStarted = useRef(false);
   useEffect(() => {
-    if (leadGateEnabled || autoStarted.current || conversationId) return;
+    if (leadGateEnabled || autoStarted.current) return;
     autoStarted.current = true;
     const rawCents = checkoutContext?.promoPriceCents || checkoutContext?.priceTiers?.[0]?.priceCents || checkoutContext?.basePriceCents || 9900;
     const priceDollars = Math.floor(rawCents / 100);
-    const greeting = `Hi! I'll help you set up your order. Devices are $${priceDollars} each right now, with your first month free, plus 7 extra days to allow for shipping.\n\n**How many properties do you manage?**`;
-    (async () => {
-      try {
-        const res = await fetch("/api/chat/start", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ checkoutPageId, sessionId, skipLeadGate: true }),
-        });
-        const data = await res.json();
-        if (data.conversationId) {
-          setConversationId(data.conversationId);
-          setChatConversationId(data.conversationId);
-          setMessages([{ role: "assistant", content: greeting }]);
-          setGuidedStep("properties");
-        }
-      } catch { /* user can type to retry */ }
-    })();
-  }, [leadGateEnabled, checkoutPageId, sessionId, conversationId, checkoutContext]);
+    setMessages([{ role: "assistant", content: `Hi! I'll help you set up your order. Devices are $${priceDollars} each right now, with your first month free, plus 7 extra days to allow for shipping.\n\n**How many properties do you manage?**` }]);
+    setGuidedStep("properties");
+  }, [leadGateEnabled, checkoutContext]);
+
+  // Create conversation on server only when user first interacts
+  async function ensureConversation() {
+    if (conversationId) return conversationId;
+    try {
+      const res = await fetch("/api/chat/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ checkoutPageId, sessionId, skipLeadGate: true }),
+      });
+      const data = await res.json();
+      if (data.conversationId) {
+        setConversationId(data.conversationId);
+        setChatConversationId(data.conversationId);
+        return data.conversationId as string;
+      }
+    } catch { /* silent */ }
+    return null;
+  }
 
   // --- Abandonment detection ---
   const lastActivityRef = useRef(Date.now());
@@ -493,14 +497,29 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   // --- Guided flow helpers ---
   const TV_QUESTION = "**Quick note:** GuestBox is not needed on every TV. That's your choice: it just has to be on at least one TV, the main television in the home. It can be more effective on every TV, and you can always expand later. Some hosts do all their TVs, some 2, some just 1.\n\n**How many TVs per property do you want GuestBox on?**";
 
+  const pendingMessages = useRef<{ role: "user" | "assistant"; content: string }[]>([]);
+
   function saveGuidedMessages(msgs: { role: "user" | "assistant"; content: string }[]) {
-    if (!conversationId) return;
+    pendingMessages.current.push(...msgs);
+    if (!conversationId) return; // will flush when conversationId arrives
+    flushPendingMessages(conversationId);
+  }
+
+  function flushPendingMessages(cId: string) {
+    if (!pendingMessages.current.length) return;
+    const toSave = [...pendingMessages.current];
+    pendingMessages.current = [];
     fetch("/api/chat/log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ conversationId, messages: msgs }),
+      body: JSON.stringify({ conversationId: cId, messages: toSave }),
     }).catch(() => {});
   }
+
+  // Flush pending messages when conversationId becomes available
+  useEffect(() => {
+    if (conversationId && pendingMessages.current.length) flushPendingMessages(conversationId);
+  }, [conversationId]);
 
   function addGuidedMessages(userMsg: string, botMsg: string) {
     const msgs: { role: "user" | "assistant"; content: string }[] = [{ role: "user", content: userMsg }, { role: "assistant", content: botMsg }];
@@ -535,6 +554,9 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   }
 
   function handleGuidedAction(action: string) {
+    // Create conversation on first interaction (lazy init)
+    if (!conversationId && !leadGateEnabled) ensureConversation();
+
     switch (guidedStep) {
       case "properties":
         if (action === "1-property") {
