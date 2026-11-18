@@ -23,6 +23,7 @@ export default async function ChatbotSettingsPage() {
           maxMessages: settings.maxMessages,
           chatModel: settings.chatModel,
           summarizerModel: settings.summarizerModel,
+          leadGateEnabled: settings.leadGateEnabled,
         }}
       />
     </div>

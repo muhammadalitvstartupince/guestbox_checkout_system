@@ -25,6 +25,7 @@ const schema = z.object({
   maxMessages: z.coerce.number().int().min(5, "Min 5 messages").max(200, "Max 200 messages"),
   chatModel: z.string().refine((v) => allowedModels.includes(v), "Invalid model"),
   summarizerModel: z.string().refine((v) => allowedModels.includes(v), "Invalid model"),
+  leadGateEnabled: z.string().transform((v) => v === "true"),
 });
 
 export async function updateChatbotSettings(
@@ -40,19 +41,20 @@ export async function updateChatbotSettings(
     maxMessages: formData.get("maxMessages"),
     chatModel: formData.get("chatModel"),
     summarizerModel: formData.get("summarizerModel"),
+    leadGateEnabled: formData.get("leadGateEnabled"),
   });
 
   if (!parsed.success) {
     return { status: "error", message: "Please fix the highlighted fields.", fieldErrors: parsed.error.flatten().fieldErrors };
   }
 
-  const { systemPrompt, webhookChatStarted, webhookChatAbandoned, maxMessages, chatModel, summarizerModel } = parsed.data;
+  const { systemPrompt, webhookChatStarted, webhookChatAbandoned, maxMessages, chatModel, summarizerModel, leadGateEnabled } = parsed.data;
   const existing = await prisma.chatbotSettings.findFirst();
 
   await prisma.chatbotSettings.upsert({
     where: { id: existing?.id ?? "00000000-0000-0000-0000-000000000000" },
-    update: { systemPrompt, webhookChatStarted, webhookChatAbandoned, maxMessages, chatModel, summarizerModel },
-    create: { systemPrompt, webhookChatStarted, webhookChatAbandoned, maxMessages, chatModel, summarizerModel },
+    update: { systemPrompt, webhookChatStarted, webhookChatAbandoned, maxMessages, chatModel, summarizerModel, leadGateEnabled },
+    create: { systemPrompt, webhookChatStarted, webhookChatAbandoned, maxMessages, chatModel, summarizerModel, leadGateEnabled },
   });
 
   revalidatePath("/admin/settings/chatbot");

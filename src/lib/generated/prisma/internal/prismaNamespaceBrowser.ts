@@ -484,6 +484,7 @@ export const ChatbotSettingsScalarFieldEnum = {
   maxMessages: 'maxMessages',
   chatModel: 'chatModel',
   summarizerModel: 'summarizerModel',
+  leadGateEnabled: 'leadGateEnabled',
   updatedAt: 'updatedAt'
 } as const
 

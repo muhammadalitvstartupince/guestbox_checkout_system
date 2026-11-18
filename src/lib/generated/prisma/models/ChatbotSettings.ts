@@ -42,6 +42,7 @@ export type ChatbotSettingsMinAggregateOutputType = {
   maxMessages: number | null
   chatModel: string | null
   summarizerModel: string | null
+  leadGateEnabled: boolean | null
   updatedAt: Date | null
 }
 
@@ -53,6 +54,7 @@ export type ChatbotSettingsMaxAggregateOutputType = {
   maxMessages: number | null
   chatModel: string | null
   summarizerModel: string | null
+  leadGateEnabled: boolean | null
   updatedAt: Date | null
 }
 
@@ -64,6 +66,7 @@ export type ChatbotSettingsCountAggregateOutputType = {
   maxMessages: number
   chatModel: number
   summarizerModel: number
+  leadGateEnabled: number
   updatedAt: number
   _all: number
 }
@@ -85,6 +88,7 @@ export type ChatbotSettingsMinAggregateInputType = {
   maxMessages?: true
   chatModel?: true
   summarizerModel?: true
+  leadGateEnabled?: true
   updatedAt?: true
 }
 
@@ -96,6 +100,7 @@ export type ChatbotSettingsMaxAggregateInputType = {
   maxMessages?: true
   chatModel?: true
   summarizerModel?: true
+  leadGateEnabled?: true
   updatedAt?: true
 }
 
@@ -107,6 +112,7 @@ export type ChatbotSettingsCountAggregateInputType = {
   maxMessages?: true
   chatModel?: true
   summarizerModel?: true
+  leadGateEnabled?: true
   updatedAt?: true
   _all?: true
 }
@@ -205,6 +211,7 @@ export type ChatbotSettingsGroupByOutputType = {
   maxMessages: number
   chatModel: string | null
   summarizerModel: string | null
+  leadGateEnabled: boolean
   updatedAt: Date
   _count: ChatbotSettingsCountAggregateOutputType | null
   _avg: ChatbotSettingsAvgAggregateOutputType | null
@@ -239,6 +246,7 @@ export type ChatbotSettingsWhereInput = {
   maxMessages?: Prisma.IntFilter<"ChatbotSettings"> | number
   chatModel?: Prisma.StringNullableFilter<"ChatbotSettings"> | string | null
   summarizerModel?: Prisma.StringNullableFilter<"ChatbotSettings"> | string | null
+  leadGateEnabled?: Prisma.BoolFilter<"ChatbotSettings"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"ChatbotSettings"> | Date | string
 }
 
@@ -250,6 +258,7 @@ export type ChatbotSettingsOrderByWithRelationInput = {
   maxMessages?: Prisma.SortOrder
   chatModel?: Prisma.SortOrderInput | Prisma.SortOrder
   summarizerModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  leadGateEnabled?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -264,6 +273,7 @@ export type ChatbotSettingsWhereUniqueInput = Prisma.AtLeast<{
   maxMessages?: Prisma.IntFilter<"ChatbotSettings"> | number
   chatModel?: Prisma.StringNullableFilter<"ChatbotSettings"> | string | null
   summarizerModel?: Prisma.StringNullableFilter<"ChatbotSettings"> | string | null
+  leadGateEnabled?: Prisma.BoolFilter<"ChatbotSettings"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"ChatbotSettings"> | Date | string
 }, "id">
 
@@ -275,6 +285,7 @@ export type ChatbotSettingsOrderByWithAggregationInput = {
   maxMessages?: Prisma.SortOrder
   chatModel?: Prisma.SortOrderInput | Prisma.SortOrder
   summarizerModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  leadGateEnabled?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ChatbotSettingsCountOrderByAggregateInput
   _avg?: Prisma.ChatbotSettingsAvgOrderByAggregateInput
@@ -294,6 +305,7 @@ export type ChatbotSettingsScalarWhereWithAggregatesInput = {
   maxMessages?: Prisma.IntWithAggregatesFilter<"ChatbotSettings"> | number
   chatModel?: Prisma.StringNullableWithAggregatesFilter<"ChatbotSettings"> | string | null
   summarizerModel?: Prisma.StringNullableWithAggregatesFilter<"ChatbotSettings"> | string | null
+  leadGateEnabled?: Prisma.BoolWithAggregatesFilter<"ChatbotSettings"> | boolean
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ChatbotSettings"> | Date | string
 }
 
@@ -305,6 +317,7 @@ export type ChatbotSettingsCreateInput = {
   maxMessages?: number
   chatModel?: string | null
   summarizerModel?: string | null
+  leadGateEnabled?: boolean
   updatedAt?: Date | string
 }
 
@@ -316,6 +329,7 @@ export type ChatbotSettingsUncheckedCreateInput = {
   maxMessages?: number
   chatModel?: string | null
   summarizerModel?: string | null
+  leadGateEnabled?: boolean
   updatedAt?: Date | string
 }
 
@@ -327,6 +341,7 @@ export type ChatbotSettingsUpdateInput = {
   maxMessages?: Prisma.IntFieldUpdateOperationsInput | number
   chatModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   summarizerModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leadGateEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -338,6 +353,7 @@ export type ChatbotSettingsUncheckedUpdateInput = {
   maxMessages?: Prisma.IntFieldUpdateOperationsInput | number
   chatModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   summarizerModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leadGateEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -349,6 +365,7 @@ export type ChatbotSettingsCreateManyInput = {
   maxMessages?: number
   chatModel?: string | null
   summarizerModel?: string | null
+  leadGateEnabled?: boolean
   updatedAt?: Date | string
 }
 
@@ -360,6 +377,7 @@ export type ChatbotSettingsUpdateManyMutationInput = {
   maxMessages?: Prisma.IntFieldUpdateOperationsInput | number
   chatModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   summarizerModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leadGateEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -371,6 +389,7 @@ export type ChatbotSettingsUncheckedUpdateManyInput = {
   maxMessages?: Prisma.IntFieldUpdateOperationsInput | number
   chatModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   summarizerModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leadGateEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -382,6 +401,7 @@ export type ChatbotSettingsCountOrderByAggregateInput = {
   maxMessages?: Prisma.SortOrder
   chatModel?: Prisma.SortOrder
   summarizerModel?: Prisma.SortOrder
+  leadGateEnabled?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -397,6 +417,7 @@ export type ChatbotSettingsMaxOrderByAggregateInput = {
   maxMessages?: Prisma.SortOrder
   chatModel?: Prisma.SortOrder
   summarizerModel?: Prisma.SortOrder
+  leadGateEnabled?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -408,6 +429,7 @@ export type ChatbotSettingsMinOrderByAggregateInput = {
   maxMessages?: Prisma.SortOrder
   chatModel?: Prisma.SortOrder
   summarizerModel?: Prisma.SortOrder
+  leadGateEnabled?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -425,6 +447,7 @@ export type ChatbotSettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   maxMessages?: boolean
   chatModel?: boolean
   summarizerModel?: boolean
+  leadGateEnabled?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["chatbotSettings"]>
 
@@ -436,6 +459,7 @@ export type ChatbotSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   maxMessages?: boolean
   chatModel?: boolean
   summarizerModel?: boolean
+  leadGateEnabled?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["chatbotSettings"]>
 
@@ -447,6 +471,7 @@ export type ChatbotSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   maxMessages?: boolean
   chatModel?: boolean
   summarizerModel?: boolean
+  leadGateEnabled?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["chatbotSettings"]>
 
@@ -458,10 +483,11 @@ export type ChatbotSettingsSelectScalar = {
   maxMessages?: boolean
   chatModel?: boolean
   summarizerModel?: boolean
+  leadGateEnabled?: boolean
   updatedAt?: boolean
 }
 
-export type ChatbotSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "systemPrompt" | "webhookChatStarted" | "webhookChatAbandoned" | "maxMessages" | "chatModel" | "summarizerModel" | "updatedAt", ExtArgs["result"]["chatbotSettings"]>
+export type ChatbotSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "systemPrompt" | "webhookChatStarted" | "webhookChatAbandoned" | "maxMessages" | "chatModel" | "summarizerModel" | "leadGateEnabled" | "updatedAt", ExtArgs["result"]["chatbotSettings"]>
 
 export type $ChatbotSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ChatbotSettings"
@@ -474,6 +500,7 @@ export type $ChatbotSettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     maxMessages: number
     chatModel: string | null
     summarizerModel: string | null
+    leadGateEnabled: boolean
     updatedAt: Date
   }, ExtArgs["result"]["chatbotSettings"]>
   composites: {}
@@ -905,6 +932,7 @@ export interface ChatbotSettingsFieldRefs {
   readonly maxMessages: Prisma.FieldRef<"ChatbotSettings", 'Int'>
   readonly chatModel: Prisma.FieldRef<"ChatbotSettings", 'String'>
   readonly summarizerModel: Prisma.FieldRef<"ChatbotSettings", 'String'>
+  readonly leadGateEnabled: Prisma.FieldRef<"ChatbotSettings", 'Boolean'>
   readonly updatedAt: Prisma.FieldRef<"ChatbotSettings", 'DateTime'>
 }
     

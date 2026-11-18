@@ -674,6 +674,7 @@ model ChatbotSettings {
   maxMessages             Int      @default(50) @map("max_messages")
   chatModel               String?  @map("chat_model")
   summarizerModel         String?  @map("summarizer_model")
+  leadGateEnabled         Boolean  @default(true) @map("lead_gate_enabled")
   updatedAt               DateTime @updatedAt @map("updated_at")
 
   @@map("chatbot_settings")

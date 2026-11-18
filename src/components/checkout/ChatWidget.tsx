@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { X, Send, Loader2, Package, DollarSign, ShoppingCart, Tv, Monitor, Home, Building2, Hotel, Award, Gem, Crown, CalendarDays, Banknote, Check, XCircle, CreditCard, PencilLine, MapPin, Truck, ClipboardList, ThumbsUp } from "lucide-react";
+import { X, Send, Loader2, Package, DollarSign, ShoppingCart, Tv, Monitor, Home, Building2, Hotel, Award, Gem, Crown, CalendarDays, Banknote, Check, XCircle, CreditCard, PencilLine, MapPin, Truck, ClipboardList, ThumbsUp, ArrowRight, RefreshCw, Hash, ChevronDown, ChevronUp } from "lucide-react";
 import { getChatBridge, setChatConversationId } from "@/components/checkout/ChatBridge";
 import { PhoneNumberField } from "@/components/checkout/PhoneNumberField";
 import { DEFAULT_COUNTRY_CODE } from "@/lib/checkout/countries";
@@ -19,6 +19,7 @@ interface ToolCall {
 interface CheckoutContext {
   productName: string;
   basePriceCents: number;
+  promoPriceCents?: number;
   priceTiers: { minQty: number; maxQty: number | null; priceCents: number }[];
   billingPlans: { id: string; label: string; interval: string; priceCents: number }[];
   planTiers: { id: string; name: string; prices: { minQty: number; maxQty: number | null; monthlyPriceCents: number }[] }[];
@@ -153,6 +154,13 @@ function getQuickReplies(content: string, isGreeting: boolean): QuickReply[] {
     ];
   }
 
+  // "Talk to a human" response — show schedule demo button
+  if (lower.includes("book a demo") || lower.includes("sales@guestbox")) {
+    return [
+      { icon: Package, label: "SCHEDULE A LIVE DEMO", text: "__schedule_demo__" },
+    ];
+  }
+
   return [];
 }
 
@@ -244,7 +252,7 @@ function executeToolCalls(toolCalls: ToolCall[]) {
   }
 }
 
-export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }: { checkoutPageId: string; checkoutContext?: CheckoutContext; embedded?: boolean }) {
+export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, leadGateEnabled = true }: { checkoutPageId: string; checkoutContext?: CheckoutContext; embedded?: boolean; leadGateEnabled?: boolean }) {
   const [open, setOpen] = useState(embedded);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -254,6 +262,14 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [showBubbleMsg, setShowBubbleMsg] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Guided flow state (when lead gate is off)
+  type GuidedStep = "properties" | "properties-picker" | "tvs" | "tvs-input" | "summary" | "form-personal" | "form-address" | "form-billing" | "form-payment" | "form-final" | "done";
+  const [guidedStep, setGuidedStep] = useState<GuidedStep | null>(null);
+  const [guidedProps, setGuidedProps] = useState(1);
+  const [guidedTvsPerProp, setGuidedTvsPerProp] = useState(1);
+  const [pickerValue, setPickerValue] = useState(2);
 
   // Show greeting bubble after 15s of TRUE inactivity (no clicks, typing, scrolling)
   useEffect(() => {
@@ -293,6 +309,32 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
 
   useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
   useEffect(() => { if (open && conversationId) inputRef.current?.focus(); }, [open, conversationId]);
+
+  // Auto-start conversation when lead gate is disabled — begins guided flow
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (leadGateEnabled || autoStarted.current || conversationId) return;
+    autoStarted.current = true;
+    const rawCents = checkoutContext?.promoPriceCents || checkoutContext?.priceTiers?.[0]?.priceCents || checkoutContext?.basePriceCents || 9900;
+    const priceDollars = Math.floor(rawCents / 100);
+    const greeting = `Hi! I'll help you set up your order. Devices are $${priceDollars} each right now, with your first month free, plus 7 extra days to allow for shipping.\n\n**How many properties do you manage?**`;
+    (async () => {
+      try {
+        const res = await fetch("/api/chat/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ checkoutPageId, sessionId, skipLeadGate: true }),
+        });
+        const data = await res.json();
+        if (data.conversationId) {
+          setConversationId(data.conversationId);
+          setChatConversationId(data.conversationId);
+          setMessages([{ role: "assistant", content: greeting }]);
+          setGuidedStep("properties");
+        }
+      } catch { /* user can type to retry */ }
+    })();
+  }, [leadGateEnabled, checkoutPageId, sessionId, conversationId, checkoutContext]);
 
   // --- Abandonment detection ---
   const lastActivityRef = useRef(Date.now());
@@ -348,7 +390,6 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
       if (data.conversationId) {
         setConversationId(data.conversationId);
         setChatConversationId(data.conversationId);
-        setMessages([{ role: "assistant", content: data.greeting }]);
         // Push lead gate info into the checkout form
         const bridge = getChatBridge();
         if (bridge) {
@@ -358,6 +399,11 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
           bridge.setProfileField("phoneCountry", leadForm.phoneCountry);
           bridge.setProfileField("phoneNumber", leadForm.phoneNumber);
         }
+        // Start guided flow (same as no-lead-gate mode)
+        const rawCents = checkoutContext?.promoPriceCents || checkoutContext?.priceTiers?.[0]?.priceCents || checkoutContext?.basePriceCents || 9900;
+        const priceDollars = Math.floor(rawCents / 100);
+        setMessages([{ role: "assistant", content: `Hi ${leadForm.firstName}! I'll help you set up your order. Devices are $${priceDollars} each right now, with your first month free, plus 7 extra days to allow for shipping.\n\n**How many properties do you manage?**` }]);
+        setGuidedStep("properties");
       }
     } catch {
       // silently fail — user can retry
@@ -368,6 +414,11 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
 
   async function sendMessage(text: string) {
     if (!text || !conversationId || sending) return;
+
+    if (text === "__schedule_demo__") {
+      window.open("https://guestbox.tv/schedule-live-demo", "_blank", "noopener");
+      return;
+    }
 
     // Intercept validation checks
     if (text === "__check_address__") {
@@ -432,10 +483,211 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
     sendMessage(input.trim());
   }
 
-  const inputClass = "w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 transition focus:border-cyan-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20";
+  function handleTalkToHuman() {
+    setMessages(prev => [...prev,
+      { role: "assistant", content: "For sales and orders, email [sales@guestbox.tv](mailto:sales@guestbox.tv). For an existing order, email [support@guestbox.tv](mailto:support@guestbox.tv). You can also use Live Chat on the form, or book a demo." },
+    ]);
+  }
+
+  // --- Guided flow helpers ---
+  const TV_QUESTION = "**Quick note:** GuestBox is not needed on every TV. That's your choice: it just has to be on at least one TV, the main television in the home. It can be more effective on every TV, and you can always expand later. Some hosts do all their TVs, some 2, some just 1.\n\n**How many TVs per property do you want GuestBox on?**";
+
+  function addGuidedMessages(userMsg: string, botMsg: string) {
+    setMessages(prev => [...prev, { role: "user", content: userMsg }, { role: "assistant", content: botMsg }]);
+  }
+
+  function updateFormQuantities(props: number, tvs: number) {
+    const bridge = getChatBridge();
+    if (bridge) {
+      bridge.setListingQty(props);
+      bridge.setQuantity(props * tvs);
+    }
+  }
+
+  function finishTvSelection(props: number, tvs: number) {
+    setGuidedTvsPerProp(tvs);
+    updateFormQuantities(props, tvs);
+    const total = props * tvs;
+    const propLabel = props === 1 ? "1 property" : `${props} properties`;
+    const perProp = props > 1 ? ` (${tvs} per property)` : "";
+    addGuidedMessages(
+      tvs === 1 ? "1 TV" : `${tvs} TVs`,
+      `I've set your order to **${propLabel}** and **${total} GuestBox${total > 1 ? "es" : ""}**${perProp}. Just pick your plan (or skip, it defaults to Gold) and enter your details. First month free, plus 7 extra days to allow for shipping.\n\nShipping is **FREE inside the US**. For international orders, shipping is calculated at checkout. You can adjust the counters in the form if needed.`,
+    );
+    setGuidedStep("summary");
+  }
+
+  function handleGuidedAction(action: string) {
+    switch (guidedStep) {
+      case "properties":
+        if (action === "1-property") {
+          setGuidedProps(1);
+          updateFormQuantities(1, 1);
+          addGuidedMessages("1 Property", TV_QUESTION);
+          setGuidedStep("tvs");
+        } else {
+          setPickerValue(2);
+          setGuidedStep("properties-picker");
+        }
+        break;
+      case "properties-picker": {
+        const p = pickerValue;
+        setGuidedProps(p);
+        updateFormQuantities(p, 1);
+        addGuidedMessages(`${p} Properties`, TV_QUESTION);
+        setGuidedStep("tvs");
+        break;
+      }
+      case "tvs":
+        if (action === "1-tv") { finishTvSelection(guidedProps, 1); }
+        else if (action === "2-tvs") { finishTvSelection(guidedProps, 2); }
+        else { setPickerValue(3); setGuidedStep("tvs-input"); }
+        break;
+      case "tvs-input":
+        finishTvSelection(guidedProps, pickerValue);
+        break;
+      case "summary":
+        if (action === "done") {
+          const b = getChatBridge();
+          if (b) {
+            b.setWizardStep(2);
+            b.setDetailsSubStep("personal");
+          }
+          setMessages(prev => [...prev, { role: "assistant", content: "In the form, enter your **First Name**, **Last Name**, **Email Address**, and **Phone Number**, then press **Next**." }]);
+          setGuidedStep("form-personal");
+        } else {
+          const pd = Math.floor((checkoutContext?.promoPriceCents || checkoutContext?.priceTiers?.[0]?.priceCents || checkoutContext?.basePriceCents || 9900) / 100);
+          addGuidedMessages("Change quantities", `No problem! Devices are $${pd} each.\n\n**How many properties do you manage?**`);
+          setGuidedStep("properties");
+        }
+        break;
+      case "form-personal": {
+        const b = getChatBridge();
+        if (b && b.profileForm.firstName && b.profileForm.email) {
+          b.setWizardStep(2);
+          b.setDetailsSubStep("address");
+          setMessages(prev => [...prev,
+            { role: "user", content: "Done, next step" },
+            { role: "assistant", content: "This is where your GuestBox device(s) will be shipped. Enter **Street Address**, **Country**, **City**, **State / Province**, and **Zip Code**, then press **Next**. Shipping is **FREE inside the US**; international shipping is calculated at checkout." },
+          ]);
+          setGuidedStep("form-address");
+        } else {
+          setMessages(prev => [...prev, { role: "assistant", content: "Please fill in your **First Name**, **Email**, and other personal details in the form first." }]);
+        }
+        break;
+      }
+      case "form-address": {
+        const b = getChatBridge();
+        if (b && b.addressFilled) {
+          b.setWizardStep(2);
+          b.setDetailsSubStep("billing-cycle");
+          setMessages(prev => [...prev,
+            { role: "user", content: "Done, next step" },
+            { role: "assistant", content: "Choose Your Plan (**GOLD**, **PLATINUM**, or **DIAMOND**) and a Billing Cycle (Annual renews 13 months after purchase: free first month plus 12 months). You can skip it — it defaults to Gold, and you can change your tier later during onboarding. Then press **Next**." },
+          ]);
+          setGuidedStep("form-billing");
+        } else {
+          setMessages(prev => [...prev, { role: "assistant", content: "Please fill in your **shipping address** in the form first — I need at least street address, city, and ZIP code." }]);
+        }
+        break;
+      }
+      case "form-billing": {
+        const b = getChatBridge();
+        if (b) {
+          b.setWizardStep(3);
+          setMessages(prev => [...prev,
+            { role: "user", content: "Done, next step" },
+            { role: "assistant", content: "Enter your **Credit Card Number**, **Exp. Month**, **Exp. Year**, and **CVV**. First month free, plus 7 extra days to allow for shipping. Review the **Order Summary**, agree to the **Terms & Conditions**, and press **Submit** when you're ready." },
+          ]);
+          setGuidedStep("form-payment");
+        }
+        break;
+      }
+      case "form-payment":
+        setMessages(prev => [...prev,
+          { role: "user", content: "Done, next step" },
+          { role: "assistant", content: "You're at the last step in the form. When you press **Submit**, you'll get a confirmation email. Don't type card numbers in this chat." },
+        ]);
+        setGuidedStep("form-final");
+        break;
+      case "form-final":
+        setGuidedStep("done");
+        break;
+    }
+  }
+
+  function renderGuidedButtons() {
+    const btnClass = "flex w-full items-center justify-center gap-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] px-4 py-4 text-base font-bold text-white transition hover:bg-[#0e3a5c]";
+
+    if (guidedStep === "properties") {
+      return (
+        <div className="mt-3 flex flex-col gap-2 px-2">
+          <button type="button" onClick={() => handleGuidedAction("1-property")} className={btnClass}><Home className="h-5 w-5 text-cyan-400" /> 1 Property</button>
+          <button type="button" onClick={() => handleGuidedAction("multiple")} className={btnClass}><Building2 className="h-5 w-5 text-cyan-400" /> Multiple Properties</button>
+          <button type="button" onClick={handleTalkToHuman} className="mt-1 text-center text-sm text-white/50 underline hover:text-white/70">Talk to a human</button>
+        </div>
+      );
+    }
+
+    if (guidedStep === "properties-picker" || guidedStep === "tvs-input") {
+      const min = guidedStep === "properties-picker" ? 2 : 3;
+      const label = guidedStep === "properties-picker" ? "properties" : "TVs per property";
+      return (
+        <div className="mx-2 mt-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] p-4">
+          <p className="mb-3 text-center text-sm font-semibold text-white">How many {label}?</p>
+          <div className="flex items-center justify-center gap-6">
+            <button type="button" onClick={() => setPickerValue(v => Math.max(min, v - 1))} className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xl font-bold text-white hover:bg-white/10">−</button>
+            <span className="min-w-[3ch] text-center text-3xl font-bold text-white">{pickerValue}</span>
+            <button type="button" onClick={() => setPickerValue(v => Math.min(50, v + 1))} className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xl font-bold text-white hover:bg-white/10">+</button>
+          </div>
+          <button type="button" onClick={() => handleGuidedAction("confirm")} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 py-3 text-sm font-bold text-white hover:bg-cyan-600"><ArrowRight className="h-4 w-4" /> Continue</button>
+        </div>
+      );
+    }
+
+    if (guidedStep === "tvs") {
+      return (
+        <div className="mt-3 flex flex-col gap-2 px-2">
+          <button type="button" onClick={() => handleGuidedAction("1-tv")} className={btnClass}><Monitor className="h-5 w-5 text-cyan-400" /> 1 TV (the main TV)</button>
+          <button type="button" onClick={() => handleGuidedAction("2-tvs")} className={btnClass}><Tv className="h-5 w-5 text-cyan-400" /> 2 TVs</button>
+          <button type="button" onClick={() => handleGuidedAction("more")} className={btnClass}><Hash className="h-5 w-5 text-cyan-400" /> More (type a number)</button>
+        </div>
+      );
+    }
+
+    if (guidedStep === "summary") {
+      return (
+        <div className="mt-3 flex flex-col gap-2 px-2">
+          <button type="button" onClick={() => handleGuidedAction("done")} className={btnClass}><ArrowRight className="h-5 w-5 text-cyan-400" /> Done, next step</button>
+          <div className="flex items-center justify-center gap-4">
+            <button type="button" onClick={() => handleGuidedAction("change")} className="inline-flex items-center gap-1.5 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"><RefreshCw className="h-3.5 w-3.5" /> Change quantities</button>
+            <button type="button" onClick={handleTalkToHuman} className="text-sm text-white/50 underline hover:text-white/70">Talk to a human</button>
+          </div>
+        </div>
+      );
+    }
+
+    // Form step guide buttons
+    if (guidedStep?.startsWith("form-")) {
+      return (
+        <div className="mt-3 flex flex-col gap-2 px-2">
+          <button type="button" onClick={() => handleGuidedAction("next")} className={btnClass}><ArrowRight className="h-5 w-5 text-cyan-400" /> Done, next step</button>
+          <div className="flex items-center justify-center gap-4">
+            <button type="button" onClick={handleTalkToHuman} className="text-sm text-white/50 underline hover:text-white/70">Talk to a human</button>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  }
+
+  const inputClass = embedded
+    ? "w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white shadow-sm placeholder:text-white/40 transition focus:border-cyan-500 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+    : "w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 transition focus:border-cyan-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20";
 
   const panelClasses = embedded
-    ? "flex h-full w-full flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-xl"
+    ? "flex w-full flex-col overflow-hidden bg-[#0b1a2b] lg:h-full lg:rounded-2xl"
     : "fixed bottom-5 right-5 z-50 flex h-[480px] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl sm:h-[520px]";
 
   return (
@@ -481,45 +733,70 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
       {/* Chat panel */}
       {open && (
         <div className={panelClasses}>
-          {/* Header banner */}
-          <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0c2d48 0%, #0a4d6e 50%, #0c2d48 100%)" }}>
-            {!embedded && (
+          {/* Header */}
+          {embedded ? (
+            <button
+              type="button"
+              onClick={() => setMobileOpen(v => !v)}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left lg:cursor-default"
+              style={{ background: "linear-gradient(135deg, #0c2d48 0%, #0a4d6e 50%, #0c2d48 100%)" }}
+            >
+              <style>{`
+                @keyframes bot-hover { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+                @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .6; transform: scale(1.4); } }
+              `}</style>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/pages_Images/robot.png" alt="Bot" className="h-10 w-10 shrink-0 rounded-full object-cover" style={{ animation: "bot-hover 2s ease-in-out infinite" }} />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold text-white">GuestBox Order Assistant</p>
+                <p className="flex items-center gap-1.5 text-xs text-white/70">
+                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" style={{ animation: "pulse-dot 1.5s ease-in-out infinite" }} />
+                  Questions about your order? Ask here.
+                </p>
+              </div>
+              <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-cyan-300 lg:hidden">
+                {mobileOpen ? "Hide" : "Ask"} {mobileOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </span>
+            </button>
+          ) : (
+            <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0c2d48 0%, #0a4d6e 50%, #0c2d48 100%)" }}>
               <button onClick={() => setOpen(false)} className="absolute right-2 top-2 z-10 rounded p-1 text-white/70 hover:bg-white/20 hover:text-white" aria-label="Close chat">
                 <X className="h-4 w-4" />
               </button>
-            )}
-            <style>{`
-              @keyframes bot-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-              @keyframes bubble-glow { 0%,100% { box-shadow: 0 0 8px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 18px rgba(6,182,212,0.5); } }
-              @keyframes wave { 0% { transform: rotate(0deg); } 15% { transform: rotate(14deg); } 30% { transform: rotate(-8deg); } 45% { transform: rotate(14deg); } 60% { transform: rotate(-4deg); } 75% { transform: rotate(10deg); } 100% { transform: rotate(0deg); } }
-            `}</style>
-            <div className="flex items-end gap-2 px-3 pt-2 sm:gap-3 sm:px-4 sm:pt-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/pages_Images/robot.png"
-                alt="GuestBox Bot"
-                className="h-14 w-14 shrink-0 object-contain sm:h-20 sm:w-20"
-                style={!conversationId ? { animation: "bot-bounce 2s ease-in-out infinite" } : undefined}
-              />
-              <div
-                className="mb-2 rounded-lg border border-cyan-500/30 bg-cyan-900/40 px-2.5 py-2 backdrop-blur-sm sm:mb-3 sm:rounded-xl sm:px-3.5 sm:py-2.5"
-                style={!conversationId ? { animation: "bubble-glow 2s ease-in-out infinite" } : undefined}
-              >
-                <p className="text-xs font-bold text-white sm:text-sm">
-                  <span style={!conversationId ? { display: "inline-block", animation: "wave 1.5s ease-in-out infinite", transformOrigin: "70% 70%" } : undefined}>👋</span>
-                  {" "}Hi! I'm the <span className="text-cyan-300">GuestBox Checkout Assistant.</span>
-                </p>
-                <p className="mt-0.5 text-[10px] leading-relaxed text-white sm:text-xs">I'll help you get the right setup, explain your options, and apply any coupon codes. It only takes a minute!</p>
+              <style>{`
+                @keyframes bot-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+                @keyframes bubble-glow { 0%,100% { box-shadow: 0 0 8px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 18px rgba(6,182,212,0.5); } }
+                @keyframes wave { 0% { transform: rotate(0deg); } 15% { transform: rotate(14deg); } 30% { transform: rotate(-8deg); } 45% { transform: rotate(14deg); } 60% { transform: rotate(-4deg); } 75% { transform: rotate(10deg); } 100% { transform: rotate(0deg); } }
+              `}</style>
+              <div className="flex items-end gap-2 px-3 pt-2 sm:gap-3 sm:px-4 sm:pt-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/pages_Images/robot.png"
+                  alt="GuestBox Bot"
+                  className="h-14 w-14 shrink-0 object-contain sm:h-20 sm:w-20"
+                  style={!conversationId ? { animation: "bot-bounce 2s ease-in-out infinite" } : undefined}
+                />
+                <div
+                  className="mb-2 rounded-lg border border-cyan-500/30 bg-cyan-900/40 px-2.5 py-2 backdrop-blur-sm sm:mb-3 sm:rounded-xl sm:px-3.5 sm:py-2.5"
+                  style={!conversationId ? { animation: "bubble-glow 2s ease-in-out infinite" } : undefined}
+                >
+                  <p className="text-xs font-bold text-white sm:text-sm">
+                    <span style={!conversationId ? { display: "inline-block", animation: "wave 1.5s ease-in-out infinite", transformOrigin: "70% 70%" } : undefined}>👋</span>
+                    {" "}Hi! I'm the <span className="text-cyan-300">GuestBox Checkout Assistant.</span>
+                  </p>
+                  <p className="mt-0.5 text-[10px] leading-relaxed text-white sm:text-xs">I'll help you get the right setup, explain your options, and apply any coupon codes. It only takes a minute!</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {!conversationId ? (
+          <div className={embedded ? `flex-1 flex-col overflow-hidden ${mobileOpen ? "flex" : "hidden lg:flex"}` : "flex flex-1 flex-col"}>
+          {!conversationId && leadGateEnabled ? (
             /* Lead gate form */
             <form onSubmit={handleLeadSubmit} className="flex flex-1 flex-col gap-4 p-5">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-zinc-500">First Name</label>
+                  <label className={`mb-1 block text-xs font-semibold ${embedded ? "text-white/70" : "text-zinc-500"}`}>First Name</label>
                   <input
                     className={inputClass}
                     placeholder="John"
@@ -529,7 +806,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-zinc-500">Last Name</label>
+                  <label className={`mb-1 block text-xs font-semibold ${embedded ? "text-white/70" : "text-zinc-500"}`}>Last Name</label>
                   <input
                     className={inputClass}
                     placeholder="Doe"
@@ -540,7 +817,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                 </div>
               </div>
               <div>
-                <label className="mb-1 block text-xs font-semibold text-zinc-500">Email</label>
+                <label className={`mb-1 block text-xs font-semibold ${embedded ? "text-white/70" : "text-zinc-500"}`}>Email</label>
                 <input
                   className={inputClass}
                   type="email"
@@ -556,12 +833,13 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                   onCountryChange={(code) => setLeadForm((f) => ({ ...f, phoneCountry: code }))}
                   number={leadForm.phoneNumber}
                   onNumberChange={(val) => setLeadForm((f) => ({ ...f, phoneNumber: val }))}
+                  dark={embedded}
                 />
               </div>
               <button
                 type="submit"
                 disabled={leadSubmitting}
-                className={`mt-auto inline-flex w-full items-center justify-center gap-2 text-white transition disabled:opacity-60 ${
+                className={`inline-flex w-full items-center justify-center gap-2 text-white transition disabled:opacity-60 ${
                   embedded
                     ? "rounded-full py-3.5 text-lg font-bold hover:brightness-110"
                     : "rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-semibold hover:bg-cyan-700"
@@ -578,7 +856,8 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                 <div className="space-y-3">
                   {messages.map((msg, i) => {
                     const isLast = msg.role === "assistant" && i === messages.length - 1 && !sending;
-                    const quickReplies = isLast ? getQuickReplies(msg.content, i === 0) : [];
+                    const isGuided = guidedStep !== null && guidedStep !== "done";
+                    const quickReplies = isLast && (!isGuided || msg.content.includes("book a demo")) ? getQuickReplies(msg.content, i === 0) : [];
                     return (
                       <div key={i}>
                         <div className={`flex ${msg.role === "user" ? "justify-end" : "items-start gap-2"}`}>
@@ -587,30 +866,43 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                             <img src="/favicon.png" alt="" className="mt-1 h-6 w-6 shrink-0 rounded-full" />
                           )}
                           <div
-                            className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
+                            className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
                               msg.role === "user"
                                 ? "bg-cyan-600 text-white"
-                                : "bg-zinc-100 text-zinc-800"
+                                : embedded
+                                  ? "bg-white/10 text-white/90"
+                                  : "bg-zinc-100 text-zinc-800"
                             }`}
                           >
                             {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
                           </div>
                         </div>
                         {quickReplies.length > 0 && (
-                          <div className="ml-8 mt-2 flex flex-wrap gap-2">
+                          <div className={embedded ? "mt-3 flex flex-col gap-2 px-2" : "ml-8 mt-2 flex flex-wrap gap-2"}>
                             {quickReplies.map((cta) => (
                               <button
                                 key={cta.label}
                                 type="button"
                                 onClick={() => sendMessage(cta.text)}
-                                className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white transition hover:border-cyan-400 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                                className={embedded
+                                  ? cta.text === "__schedule_demo__"
+                                    ? "inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-blue-500/30 transition hover:bg-blue-500"
+                                    : "w-full rounded-xl bg-cyan-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-cyan-600"
+                                  : "flex flex-col items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white transition hover:border-cyan-400 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                                }
                               >
-                                <cta.icon className="h-5 w-5 text-cyan-400" />
-                                <span className="text-[11px] font-semibold leading-tight">{cta.label}</span>
+                                {!embedded && <cta.icon className="h-5 w-5 text-cyan-400" />}
+                                <span className={embedded ? "" : "text-[11px] font-semibold leading-tight"}>{cta.label}</span>
                               </button>
                             ))}
+                            {embedded && !quickReplies.some(c => c.text === "__schedule_demo__") && (
+                              <button type="button" onClick={handleTalkToHuman} className="mt-1 text-center text-sm text-white/50 underline hover:text-white/70">
+                                Talk to a human
+                              </button>
+                            )}
                           </div>
                         )}
+                        {isLast && isGuided && renderGuidedButtons()}
                       </div>
                     );
                   })}
@@ -625,13 +917,13 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                 </div>
               </div>
 
-              <div className="border-t border-zinc-200 bg-slate-900 p-3">
+              <div className={`border-t p-3 ${embedded ? "border-white/10 bg-[#0b1a2b]" : "border-zinc-200 bg-slate-900"}`}>
                 <div className="flex items-end gap-2">
                   <textarea
                     ref={inputRef}
                     rows={1}
                     className="max-h-24 min-h-[38px] flex-1 resize-none rounded-xl border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
-                    placeholder="Type a message…"
+                    placeholder={embedded ? "Type a question about ordering…" : "Type a message…"}
                     value={input}
                     onChange={(e) => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; }}
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
@@ -646,9 +938,11 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false }
                     <Send className="h-4 w-4" />
                   </button>
                 </div>
+                {embedded && <p className="mt-2 text-center text-[11px] text-white/40">Automated helper with answers from guestbox.tv.</p>}
               </div>
             </>
           )}
+          </div>{/* end collapsible content */}
         </div>
       )}
     </>
