@@ -304,7 +304,8 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   const [leadSubmitting, setLeadSubmitting] = useState(false);
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = messagesEndRef.current?.parentElement?.parentElement;
+    if (el) el.scrollTop = el.scrollHeight;
   }, []);
 
   useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
@@ -492,8 +493,24 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   // --- Guided flow helpers ---
   const TV_QUESTION = "**Quick note:** GuestBox is not needed on every TV. That's your choice: it just has to be on at least one TV, the main television in the home. It can be more effective on every TV, and you can always expand later. Some hosts do all their TVs, some 2, some just 1.\n\n**How many TVs per property do you want GuestBox on?**";
 
+  function saveGuidedMessages(msgs: { role: "user" | "assistant"; content: string }[]) {
+    if (!conversationId) return;
+    fetch("/api/chat/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationId, messages: msgs }),
+    }).catch(() => {});
+  }
+
   function addGuidedMessages(userMsg: string, botMsg: string) {
-    setMessages(prev => [...prev, { role: "user", content: userMsg }, { role: "assistant", content: botMsg }]);
+    const msgs: { role: "user" | "assistant"; content: string }[] = [{ role: "user", content: userMsg }, { role: "assistant", content: botMsg }];
+    setMessages(prev => [...prev, ...msgs]);
+    saveGuidedMessages(msgs);
+  }
+
+  function addBotMessage(content: string) {
+    setMessages(prev => [...prev, { role: "assistant", content }]);
+    saveGuidedMessages([{ role: "assistant", content }]);
   }
 
   function updateFormQuantities(props: number, tvs: number) {
@@ -553,7 +570,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
             b.setWizardStep(2);
             b.setDetailsSubStep("personal");
           }
-          setMessages(prev => [...prev, { role: "assistant", content: "In the form, enter your **First Name**, **Last Name**, **Email Address**, and **Phone Number**, then press **Next**." }]);
+          addBotMessage("In the form, enter your **First Name**, **Last Name**, **Email Address**, and **Phone Number**, then press **Next**.");
           setGuidedStep("form-personal");
         } else {
           const pd = Math.floor((checkoutContext?.promoPriceCents || checkoutContext?.priceTiers?.[0]?.priceCents || checkoutContext?.basePriceCents || 9900) / 100);
@@ -572,7 +589,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
           ]);
           setGuidedStep("form-address");
         } else {
-          setMessages(prev => [...prev, { role: "assistant", content: "Please fill in your **First Name**, **Email**, and other personal details in the form first." }]);
+          addBotMessage("Please fill in your **First Name**, **Email**, and other personal details in the form first.");
         }
         break;
       }
@@ -587,7 +604,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
           ]);
           setGuidedStep("form-billing");
         } else {
-          setMessages(prev => [...prev, { role: "assistant", content: "Please fill in your **shipping address** in the form first — I need at least street address, city, and ZIP code." }]);
+          addBotMessage("Please fill in your **shipping address** in the form first — I need at least street address, city, and ZIP code.");
         }
         break;
       }
@@ -863,7 +880,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
                         <div className={`flex ${msg.role === "user" ? "justify-end" : "items-start gap-2"}`}>
                           {msg.role === "assistant" && (
                             /* eslint-disable-next-line @next/next/no-img-element */
-                            <img src="/favicon.png" alt="" className="mt-1 h-6 w-6 shrink-0 rounded-full" />
+                            <img src="/icons/100-by-100.png" alt="" className="mt-1 h-6 w-6 shrink-0 rounded-full" />
                           )}
                           <div
                             className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
