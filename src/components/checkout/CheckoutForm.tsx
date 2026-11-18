@@ -421,13 +421,6 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   const searchParams = useSearchParams();
   const promoAutoApplied = useRef(false);
   const formCardRef = useRef<HTMLDivElement>(null);
-  const [chatPanelHeight, setChatPanelHeight] = useState<string>("600px");
-  useEffect(() => {
-    if (!chatPanel || !formCardRef.current) return;
-    const ro = new ResizeObserver(() => { if (formCardRef.current) setChatPanelHeight(`${Math.max(formCardRef.current.offsetHeight, 520)}px`); });
-    ro.observe(formCardRef.current);
-    return () => ro.disconnect();
-  }, [chatPanel]);
   useEffect(() => {
     const urlPromo = searchParams.get("promo");
     if (urlPromo && !promoAutoApplied.current) {
@@ -2020,7 +2013,11 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   }
 
   return (
-    <div className={montserrat.className}>
+    <div className={`${montserrat.className} ${chatPanel ? "bg-[#060e18] lg:flex lg:h-screen lg:gap-3 lg:p-3" : ""}`}>
+      {chatPanel && (
+        <div className="shrink-0 lg:overflow-hidden lg:rounded-2xl lg:w-[420px]">{chatPanel}</div>
+      )}
+      <div className={chatPanel ? "min-w-0 flex-1 lg:overflow-y-auto lg:overflow-x-hidden lg:rounded-2xl" : ""}>
 
       {/* Top announcement bar */}
       <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-cyan-500 px-4 py-3 text-center text-base font-semibold text-white sm:py-3.5 sm:text-lg">
@@ -2058,7 +2055,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
         </div>
       </div>
 
-      <div className={`mx-auto px-4 pb-10 pt-4 ${chatPanel ? "max-w-6xl" : "max-w-2xl"}`}>
+      <div className="mx-auto max-w-2xl px-4 pb-10 pt-4">
 
         {checkoutPage.heroHtml ? (
           <>
@@ -2104,15 +2101,10 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
         <StepIndicator step={wizardStep} accentColor={accentColor} />
 
-        <div className={`mt-8 ${chatPanel ? "flex flex-col gap-6 lg:flex-row lg:items-start" : ""}`}>
-          <div ref={formCardRef} className={`rounded-lg bg-white p-6 shadow-xl sm:p-8 ${chatPanel ? "min-w-0 flex-1" : ""}`}>
+        <div className="mt-8">
+          <div ref={formCardRef} className="rounded-2xl bg-white p-6 shadow-xl sm:p-8">
             {stepContent}
           </div>
-          {chatPanel && (
-            <div className="min-w-0 flex-1 lg:sticky lg:top-4" style={{ height: chatPanelHeight }}>
-              {chatPanel}
-            </div>
-          )}
         </div>
       </div>
       </div>{/* end Zone 1 */}
@@ -2124,17 +2116,17 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
       {/* Features section */}
       <div className="px-6 pt-16 pb-12 sm:px-10 lg:px-16 xl:px-24">
-        <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-start lg:gap-8">
+        <div className={chatPanel ? "mx-auto max-w-2xl space-y-8" : "flex flex-col items-center gap-6 lg:flex-row lg:items-start lg:gap-8"}>
           {/* Mockup images */}
           {checkoutPage.mockupImageUrl && (
-            <div className="w-full lg:w-1/2">
+            <div className={chatPanel ? "mx-auto max-w-lg" : "w-full lg:w-1/2"}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={checkoutPage.mockupImageUrl} alt="" className="w-full max-w-none" />
+              <img src={checkoutPage.mockupImageUrl} alt="" className="w-full" />
             </div>
           )}
 
           {/* Text + feature grid */}
-          <div className="flex-1">
+          <div className={chatPanel ? "" : "flex-1"}>
             <h2 className={`${montserrat.className} mb-4 text-xl font-extrabold tracking-tight text-white sm:text-4xl`}>
               EVERYTHING YOU NEED TO{" "}
               <span style={{ color: accentColor }}>ELEVATE</span> EVERY STAY
@@ -2179,6 +2171,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
       {completeState.status === "success" && completeState.redirectUrl && (
         <OrderSuccessModal redirectUrl={completeState.redirectUrl} accentColor={accentColor} />
       )}
+      </div>{/* end content wrapper */}
     </div>
   );
 }

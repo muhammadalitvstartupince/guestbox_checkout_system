@@ -12,6 +12,7 @@ interface Defaults {
   maxMessages: number;
   chatModel: string;
   summarizerModel: string;
+  leadGateEnabled: boolean;
 }
 
 const inputClass =
@@ -91,6 +92,26 @@ export function ChatbotSettingsForm({ defaults }: { defaults: Defaults }) {
         <h2 className="mb-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">General</h2>
 
         <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className={labelClass}>Lead Form</span>
+              <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                When enabled, visitors must enter their name, email, and phone before chatting. When disabled, the chat starts immediately.
+              </p>
+            </div>
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input type="hidden" name="leadGateEnabled" value="false" />
+              <input
+                type="checkbox"
+                name="leadGateEnabled"
+                value="true"
+                defaultChecked={defaults.leadGateEnabled}
+                className="peer sr-only"
+              />
+              <div className="peer h-6 w-11 rounded-full bg-zinc-300 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-indigo-600 peer-checked:after:translate-x-full dark:bg-zinc-600 dark:peer-checked:bg-indigo-500" />
+            </label>
+          </div>
+
           <div>
             <label htmlFor="maxMessages" className={labelClass}>
               Max Messages Per Conversation

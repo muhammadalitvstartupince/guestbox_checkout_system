@@ -7,6 +7,7 @@ import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { ChatWidget } from "@/components/checkout/ChatWidget";
 import { hasUpgradeOffer } from "@/lib/checkout/select-product";
 import { calculateOrderPrice } from "@/lib/pricing/calculate";
+import { getChatbotSettings } from "@/lib/chatbot/settings";
 
 type CheckoutRouteParams = {
   params: Promise<{ slug: string }>;
@@ -134,13 +135,16 @@ export default async function CheckoutRoutePage({ params, searchParams }: Checko
   }
 
   const isSideChat = checkoutPage.chatEnabled && checkoutPage.chatLayout === "side";
+  const chatSettings = checkoutPage.chatEnabled ? await getChatbotSettings() : null;
   const chatWidget = checkoutPage.chatEnabled ? (
     <ChatWidget
       checkoutPageId={checkoutPage.id}
       embedded={isSideChat}
+      leadGateEnabled={chatSettings!.leadGateEnabled}
       checkoutContext={{
         productName: checkoutPage.productName ?? checkoutPage.title,
         basePriceCents: checkoutPage.basePriceCents,
+        promoPriceCents: activePromotion?.promoPriceCents,
         priceTiers: checkoutPage.priceTiers.map((t) => ({ minQty: t.minQty, maxQty: t.maxQty, priceCents: t.priceCents })),
         billingPlans: checkoutPage.billingPlans.map((p) => ({ id: p.id, label: p.label, interval: p.interval, priceCents: p.priceCents })),
         planTiers: checkoutPage.planTiers.map((t) => ({ id: t.id, name: t.name, prices: t.prices.map((p) => ({ minQty: p.minQty, maxQty: p.maxQty, monthlyPriceCents: p.monthlyPriceCents })) })),
