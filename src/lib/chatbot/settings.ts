@@ -66,6 +66,7 @@ export interface ChatbotSettingsData {
   maxMessages: number;
   chatModel: string;
   summarizerModel: string;
+  leadGateEnabled: boolean;
 }
 
 export async function getChatbotSettings(): Promise<ChatbotSettingsData> {
@@ -77,6 +78,7 @@ export async function getChatbotSettings(): Promise<ChatbotSettingsData> {
     maxMessages: row?.maxMessages ?? 50,
     chatModel: row?.chatModel ?? DEFAULT_CHAT_MODEL,
     summarizerModel: row?.summarizerModel ?? DEFAULT_SUMMARIZER_MODEL,
+    leadGateEnabled: row?.leadGateEnabled ?? true,
   };
 }
 

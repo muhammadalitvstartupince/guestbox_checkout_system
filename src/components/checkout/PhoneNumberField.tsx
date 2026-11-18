@@ -51,12 +51,14 @@ export function PhoneNumberField({
   number,
   onNumberChange,
   errors,
+  dark = false,
 }: {
   country: string;
   onCountryChange: (code: string) => void;
   number: string;
   onNumberChange: (value: string) => void;
   errors?: string[];
+  dark?: boolean;
 }) {
   const userPickedCountry = useRef(false);
 
@@ -105,14 +107,14 @@ export function PhoneNumberField({
   return (
     <div>
       <input type="hidden" name="phone" value={fullPhone} />
-      <label htmlFor="phone-number" className="mb-1 block text-sm text-zinc-700">
+      <label htmlFor="phone-number" className={`mb-1 block text-sm ${dark ? "text-white/70" : "text-zinc-700"}`}>
         Phone Number
       </label>
       <div ref={containerRef} className="relative">
         <div
-          className={`flex h-10 overflow-hidden rounded border transition-colors focus-within:border-zinc-400 ${
-            errors?.[0] ? "border-red-300" : ""
-          }`}
+          className={`flex h-10 overflow-hidden rounded border transition-colors ${
+            dark ? "border-white/20 focus-within:border-cyan-500" : "focus-within:border-zinc-400"
+          } ${errors?.[0] ? "border-red-300" : ""}`}
         >
           <button
             type="button"
@@ -122,7 +124,7 @@ export function PhoneNumberField({
             }}
             aria-haspopup="listbox"
             aria-expanded={open}
-            className="flex shrink-0 items-center gap-1 border-r bg-zinc-50 px-2 text-sm focus:outline-none"
+            className={`flex shrink-0 items-center gap-1 border-r px-2 text-sm focus:outline-none ${dark ? "border-white/20 bg-white/10 text-white" : "bg-zinc-50"}`}
           >
             <span>{flagEmoji(selected.code)}</span>
             <span>{selected.dialCode}</span>
@@ -135,7 +137,7 @@ export function PhoneNumberField({
             value={number}
             onChange={(e) => onNumberChange(e.target.value.replace(/[^\d\s()-]/g, ""))}
             placeholder="555 123 4567"
-            className="h-full w-full px-3 focus:outline-none"
+            className={`h-full w-full px-3 focus:outline-none ${dark ? "bg-white/10 text-white placeholder:text-white/40" : ""}`}
           />
         </div>
 
