@@ -2116,17 +2116,17 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
 
       {/* Features section */}
       <div className="px-6 pt-16 pb-12 sm:px-10 lg:px-16 xl:px-24">
-        <div className={chatPanel ? "mx-auto max-w-2xl space-y-8" : "flex flex-col items-center gap-6 lg:flex-row lg:items-start lg:gap-8"}>
-          {/* Mockup images */}
+        <div className="mx-auto max-w-3xl">
+          {/* Mockup images — temporarily disabled
           {checkoutPage.mockupImageUrl && (
             <div className={chatPanel ? "mx-auto max-w-lg" : "w-full lg:w-1/2"}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={checkoutPage.mockupImageUrl} alt="" className="w-full" />
             </div>
           )}
+          */}
 
           {/* Text + feature grid */}
-          <div className={chatPanel ? "" : "flex-1"}>
+          <div>
             <h2 className={`${montserrat.className} mb-4 text-xl font-extrabold tracking-tight text-white sm:text-4xl`}>
               EVERYTHING YOU NEED TO{" "}
               <span style={{ color: accentColor }}>ELEVATE</span> EVERY STAY

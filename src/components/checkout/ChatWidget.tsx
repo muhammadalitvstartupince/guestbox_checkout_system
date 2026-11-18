@@ -656,7 +656,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   }
 
   function renderGuidedButtons() {
-    const btnClass = "flex w-full items-center justify-center gap-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] px-4 py-4 text-base font-bold text-white transition hover:bg-[#0e3a5c]";
+    const btnClass = "flex w-full items-center justify-center gap-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] px-4 py-4 text-base font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] transition hover:bg-[#0e3a5c] hover:shadow-[0_0_20px_rgba(6,182,212,0.6)]";
 
     if (guidedStep === "properties") {
       return (
@@ -679,7 +679,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
             <span className="min-w-[3ch] text-center text-3xl font-bold text-white">{pickerValue}</span>
             <button type="button" onClick={() => setPickerValue(v => Math.min(50, v + 1))} className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xl font-bold text-white hover:bg-white/10">+</button>
           </div>
-          <button type="button" onClick={() => handleGuidedAction("confirm")} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 py-3 text-sm font-bold text-white hover:bg-cyan-600"><ArrowRight className="h-4 w-4" /> Continue</button>
+          <button type="button" onClick={() => handleGuidedAction("confirm")} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 py-3 text-sm font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:bg-cyan-600 hover:shadow-[0_0_20px_rgba(6,182,212,0.6)]"><ArrowRight className="h-4 w-4" /> Continue</button>
         </div>
       );
     }
@@ -925,9 +925,9 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
                                 onClick={() => sendMessage(cta.text)}
                                 className={embedded
                                   ? cta.text === "__schedule_demo__"
-                                    ? "inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-blue-500/30 transition hover:bg-blue-500"
-                                    : "w-full rounded-xl bg-cyan-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-cyan-600"
-                                  : "flex flex-col items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white transition hover:border-cyan-400 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                                    ? "inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-[0_0_15px_rgba(59,130,246,0.5)] transition hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.7)]"
+                                    : "w-full rounded-xl bg-cyan-700 px-4 py-3 text-sm font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] transition hover:bg-cyan-600 hover:shadow-[0_0_20px_rgba(6,182,212,0.6)]"
+                                  : "flex flex-col items-center gap-1.5 rounded-xl border border-cyan-500/30 bg-slate-800 px-4 py-3 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)] transition hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
                                 }
                               >
                                 {!embedded && <cta.icon className="h-5 w-5 text-cyan-400" />}
