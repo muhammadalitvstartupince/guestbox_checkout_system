@@ -418,6 +418,7 @@ export const ModelName = {
   ShippingSettings: 'ShippingSettings',
   ShippingPackageTier: 'ShippingPackageTier',
   ShippingWeightEntry: 'ShippingWeightEntry',
+  LiveChatSettings: 'LiveChatSettings',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
   ShippingRateLog: 'ShippingRateLog',
   ChatbotSettings: 'ChatbotSettings',
@@ -438,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatbotSettings" | "chatConversation" | "chatMessage"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "liveChatSettings" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatbotSettings" | "chatConversation" | "chatMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1996,6 +1997,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LiveChatSettings: {
+      payload: Prisma.$LiveChatSettingsPayload<ExtArgs>
+      fields: Prisma.LiveChatSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LiveChatSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LiveChatSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.LiveChatSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LiveChatSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.LiveChatSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.LiveChatSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.LiveChatSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LiveChatSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.LiveChatSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>
+        }
+        update: {
+          args: Prisma.LiveChatSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.LiveChatSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LiveChatSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LiveChatSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.LiveChatSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveChatSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.LiveChatSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLiveChatSettings>
+        }
+        groupBy: {
+          args: Prisma.LiveChatSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LiveChatSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LiveChatSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LiveChatSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     AbandonedCheckoutSettings: {
       payload: Prisma.$AbandonedCheckoutSettingsPayload<ExtArgs>
       fields: Prisma.AbandonedCheckoutSettingsFieldRefs
@@ -2764,6 +2839,15 @@ export const ShippingWeightEntryScalarFieldEnum = {
 export type ShippingWeightEntryScalarFieldEnum = (typeof ShippingWeightEntryScalarFieldEnum)[keyof typeof ShippingWeightEntryScalarFieldEnum]
 
 
+export const LiveChatSettingsScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LiveChatSettingsScalarFieldEnum = (typeof LiveChatSettingsScalarFieldEnum)[keyof typeof LiveChatSettingsScalarFieldEnum]
+
+
 export const AbandonedCheckoutSettingsScalarFieldEnum = {
   id: 'id',
   enabled: 'enabled',
@@ -3320,6 +3404,7 @@ export type GlobalOmitConfig = {
   shippingSettings?: Prisma.ShippingSettingsOmit
   shippingPackageTier?: Prisma.ShippingPackageTierOmit
   shippingWeightEntry?: Prisma.ShippingWeightEntryOmit
+  liveChatSettings?: Prisma.LiveChatSettingsOmit
   abandonedCheckoutSettings?: Prisma.AbandonedCheckoutSettingsOmit
   shippingRateLog?: Prisma.ShippingRateLogOmit
   chatbotSettings?: Prisma.ChatbotSettingsOmit

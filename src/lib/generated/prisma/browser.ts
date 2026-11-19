@@ -123,6 +123,11 @@ export type ShippingPackageTier = Prisma.ShippingPackageTierModel
  */
 export type ShippingWeightEntry = Prisma.ShippingWeightEntryModel
 /**
+ * Model LiveChatSettings
+ * 
+ */
+export type LiveChatSettings = Prisma.LiveChatSettingsModel
+/**
  * Model AbandonedCheckoutSettings
  * 
  */

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, MessageCircle, Mail, Users, Bell, Truck, Bot } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, LayoutTemplate, Puzzle, Tag, Zap, MessageCircle, Mail, Users, Bell, Truck, Bot, MessageSquare } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -106,6 +106,14 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
         icon: Bell,
         iconBg: "bg-orange-50 dark:bg-orange-500/10",
         iconColor: "text-orange-600 dark:text-orange-400",
+        adminOnly: true,
+      },
+      {
+        href: "/admin/settings/livechat",
+        label: "Live Chat",
+        icon: MessageSquare,
+        iconBg: "bg-teal-50 dark:bg-teal-500/10",
+        iconColor: "text-teal-600 dark:text-teal-400",
         adminOnly: true,
       },
       {

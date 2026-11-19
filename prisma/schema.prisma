@@ -640,6 +640,14 @@ model ShippingWeightEntry {
   @@map("shipping_weight_entries")
 }
 
+model LiveChatSettings {
+  id        String   @id @default(uuid()) @db.Uuid
+  enabled   Boolean  @default(true)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("live_chat_settings")
+}
+
 model AbandonedCheckoutSettings {
   id              String   @id @default(uuid()) @db.Uuid
   enabled         Boolean  @default(false)

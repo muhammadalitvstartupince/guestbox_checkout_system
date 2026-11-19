@@ -2015,7 +2015,7 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
   return (
     <div className={`${montserrat.className} ${chatPanel ? "bg-[#060e18] lg:flex lg:h-screen lg:gap-3 lg:p-3" : ""}`}>
       {chatPanel && (
-        <div className="shrink-0 lg:overflow-hidden lg:rounded-2xl lg:w-[420px]">{chatPanel}</div>
+        <div className="shrink-0 lg:sticky lg:top-3 lg:self-start lg:h-[min(858px,calc(100vh-1.5rem))] lg:rounded-2xl lg:w-[460px]">{chatPanel}</div>
       )}
       <div className={chatPanel ? "min-w-0 flex-1 lg:overflow-y-auto lg:overflow-x-hidden lg:rounded-2xl" : ""}>
 
