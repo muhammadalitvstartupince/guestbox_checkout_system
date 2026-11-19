@@ -151,6 +151,8 @@ export const CheckoutPageScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   tieredPlansEnabled: 'tieredPlansEnabled',
+  ogImage: 'ogImage',
+  metaDescription: 'metaDescription',
   chatEnabled: 'chatEnabled',
   chatLayout: 'chatLayout'
 } as const

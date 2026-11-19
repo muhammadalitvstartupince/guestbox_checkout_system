@@ -149,6 +149,8 @@ const checkoutPageSchema = z.object({
   upgradeRecurringPriceCents: z.number().int().min(0).nullable(),
   upgradeZohoItemId: z.string().trim().optional(),
   upgradeZohoRecurringItemId: z.string().trim().optional(),
+  ogImage: z.string().trim().optional(),
+  metaDescription: z.string().trim().optional(),
 });
 
 function parseCheckoutPageForm(formData: FormData) {
@@ -181,6 +183,8 @@ function parseCheckoutPageForm(formData: FormData) {
     upgradeRecurringPriceCents: upgradeRecurringPriceRaw ? dollarsToCents(upgradeRecurringPriceRaw) : null,
     upgradeZohoItemId: formData.get("upgradeZohoItemId") ?? undefined,
     upgradeZohoRecurringItemId: formData.get("upgradeZohoRecurringItemId") ?? undefined,
+    ogImage: formData.get("ogImage") ?? undefined,
+    metaDescription: formData.get("metaDescription") ?? undefined,
   });
 }
 
@@ -264,6 +268,8 @@ export async function createCheckoutPage(
       upgradeRecurringPriceCents: data.upgradeRecurringPriceCents,
       upgradeZohoItemId: data.upgradeZohoItemId || null,
       upgradeZohoRecurringItemId: data.upgradeZohoRecurringItemId || null,
+      ogImage: data.ogImage || null,
+      metaDescription: data.metaDescription || null,
       createdById: session.adminUserId as string,
       addonLinks: {
         create: selectedAddonIds.map((addonId, index) => ({ addonId, sortOrder: index })),
@@ -373,6 +379,8 @@ export async function updateCheckoutPage(
         upgradeRecurringPriceCents: data.upgradeRecurringPriceCents,
         upgradeZohoItemId: data.upgradeZohoItemId || null,
         upgradeZohoRecurringItemId: data.upgradeZohoRecurringItemId || null,
+        ogImage: data.ogImage || null,
+        metaDescription: data.metaDescription || null,
       },
     }),
     // Delete only tiers that have no promotions; update protected ones in place
@@ -461,6 +469,8 @@ export async function duplicateCheckoutPage(checkoutPageId: string): Promise<voi
       upgradeRecurringPriceCents: source.upgradeRecurringPriceCents,
       upgradeZohoItemId: source.upgradeZohoItemId,
       upgradeZohoRecurringItemId: source.upgradeZohoRecurringItemId,
+      ogImage: source.ogImage,
+      metaDescription: source.metaDescription,
       showPromoCode: source.showPromoCode,
       successRedirectUrl: source.successRedirectUrl,
       failRedirectUrl: source.failRedirectUrl,
