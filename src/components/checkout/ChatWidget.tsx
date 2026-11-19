@@ -727,7 +727,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
 
   const panelClasses = embedded
     ? "flex w-full flex-col overflow-hidden bg-[#0b1a2b] lg:h-full lg:rounded-2xl"
-    : "fixed bottom-5 right-5 z-50 flex h-[480px] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl sm:h-[520px]";
+    : "fixed bottom-5 right-5 z-50 flex h-[min(420px,70vh)] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl";
 
   return (
     <>

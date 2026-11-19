@@ -72,6 +72,7 @@ export const ModelName = {
   ShippingSettings: 'ShippingSettings',
   ShippingPackageTier: 'ShippingPackageTier',
   ShippingWeightEntry: 'ShippingWeightEntry',
+  LiveChatSettings: 'LiveChatSettings',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
   ShippingRateLog: 'ShippingRateLog',
   ChatbotSettings: 'ChatbotSettings',
@@ -452,6 +453,15 @@ export const ShippingWeightEntryScalarFieldEnum = {
 } as const
 
 export type ShippingWeightEntryScalarFieldEnum = (typeof ShippingWeightEntryScalarFieldEnum)[keyof typeof ShippingWeightEntryScalarFieldEnum]
+
+
+export const LiveChatSettingsScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LiveChatSettingsScalarFieldEnum = (typeof LiveChatSettingsScalarFieldEnum)[keyof typeof LiveChatSettingsScalarFieldEnum]
 
 
 export const AbandonedCheckoutSettingsScalarFieldEnum = {
