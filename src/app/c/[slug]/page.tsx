@@ -41,9 +41,16 @@ export async function generateMetadata({ params }: CheckoutRouteParams): Promise
     return { title: "Checkout" };
   }
 
+  const description = checkoutPage.metaDescription || checkoutPage.headline || checkoutPage.title;
+
   return {
     title: checkoutPage.title,
-    description: checkoutPage.headline ?? checkoutPage.title,
+    description,
+    openGraph: {
+      title: checkoutPage.title,
+      description,
+      ...(checkoutPage.ogImage ? { images: [{ url: checkoutPage.ogImage }] } : {}),
+    },
   };
 }
 

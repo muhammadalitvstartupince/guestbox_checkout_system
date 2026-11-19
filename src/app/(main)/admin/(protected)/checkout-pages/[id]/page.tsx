@@ -81,6 +81,8 @@ export default async function EditCheckoutPagePage({ params }: { params: Promise
       chargeAtCheckout: p.chargeAtCheckout,
       isDefault: p.isDefault,
     })),
+    ogImage: page.ogImage ?? "",
+    metaDescription: page.metaDescription ?? "",
     tieredPlansEnabled: page.tieredPlansEnabled,
     chatEnabled: page.chatEnabled,
     chatLayout: page.chatLayout,

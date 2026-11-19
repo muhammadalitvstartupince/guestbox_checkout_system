@@ -213,6 +213,11 @@ model CheckoutPage {
 
   tieredPlansEnabled Boolean @default(false) @map("tiered_plans_enabled")
 
+  // Social sharing / SEO meta — shown in Open Graph tags when the checkout
+  // link is shared on WhatsApp, Slack, social media, etc.
+  ogImage         String? @map("og_image")
+  metaDescription String? @map("meta_description")
+
   chatEnabled Boolean    @default(false) @map("chat_enabled")
   chatLayout  ChatLayout @default(floating) @map("chat_layout")
 

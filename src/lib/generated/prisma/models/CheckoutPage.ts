@@ -74,6 +74,8 @@ export type CheckoutPageMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   tieredPlansEnabled: boolean | null
+  ogImage: string | null
+  metaDescription: string | null
   chatEnabled: boolean | null
   chatLayout: $Enums.ChatLayout | null
 }
@@ -110,6 +112,8 @@ export type CheckoutPageMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   tieredPlansEnabled: boolean | null
+  ogImage: string | null
+  metaDescription: string | null
   chatEnabled: boolean | null
   chatLayout: $Enums.ChatLayout | null
 }
@@ -146,6 +150,8 @@ export type CheckoutPageCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   tieredPlansEnabled: number
+  ogImage: number
+  metaDescription: number
   chatEnabled: number
   chatLayout: number
   _all: number
@@ -200,6 +206,8 @@ export type CheckoutPageMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   tieredPlansEnabled?: true
+  ogImage?: true
+  metaDescription?: true
   chatEnabled?: true
   chatLayout?: true
 }
@@ -236,6 +244,8 @@ export type CheckoutPageMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   tieredPlansEnabled?: true
+  ogImage?: true
+  metaDescription?: true
   chatEnabled?: true
   chatLayout?: true
 }
@@ -272,6 +282,8 @@ export type CheckoutPageCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   tieredPlansEnabled?: true
+  ogImage?: true
+  metaDescription?: true
   chatEnabled?: true
   chatLayout?: true
   _all?: true
@@ -395,6 +407,8 @@ export type CheckoutPageGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   tieredPlansEnabled: boolean
+  ogImage: string | null
+  metaDescription: string | null
   chatEnabled: boolean
   chatLayout: $Enums.ChatLayout
   _count: CheckoutPageCountAggregateOutputType | null
@@ -454,6 +468,8 @@ export type CheckoutPageWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   tieredPlansEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
+  ogImage?: Prisma.StringNullableFilter<"CheckoutPage"> | string | null
+  metaDescription?: Prisma.StringNullableFilter<"CheckoutPage"> | string | null
   chatEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
   chatLayout?: Prisma.EnumChatLayoutFilter<"CheckoutPage"> | $Enums.ChatLayout
   skin?: Prisma.XOR<Prisma.SkinScalarRelationFilter, Prisma.SkinWhereInput>
@@ -501,6 +517,8 @@ export type CheckoutPageOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tieredPlansEnabled?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   chatEnabled?: Prisma.SortOrder
   chatLayout?: Prisma.SortOrder
   skin?: Prisma.SkinOrderByWithRelationInput
@@ -551,6 +569,8 @@ export type CheckoutPageWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   tieredPlansEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
+  ogImage?: Prisma.StringNullableFilter<"CheckoutPage"> | string | null
+  metaDescription?: Prisma.StringNullableFilter<"CheckoutPage"> | string | null
   chatEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
   chatLayout?: Prisma.EnumChatLayoutFilter<"CheckoutPage"> | $Enums.ChatLayout
   skin?: Prisma.XOR<Prisma.SkinScalarRelationFilter, Prisma.SkinWhereInput>
@@ -598,6 +618,8 @@ export type CheckoutPageOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tieredPlansEnabled?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   chatEnabled?: Prisma.SortOrder
   chatLayout?: Prisma.SortOrder
   _count?: Prisma.CheckoutPageCountOrderByAggregateInput
@@ -642,6 +664,8 @@ export type CheckoutPageScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutPage"> | Date | string
   tieredPlansEnabled?: Prisma.BoolWithAggregatesFilter<"CheckoutPage"> | boolean
+  ogImage?: Prisma.StringNullableWithAggregatesFilter<"CheckoutPage"> | string | null
+  metaDescription?: Prisma.StringNullableWithAggregatesFilter<"CheckoutPage"> | string | null
   chatEnabled?: Prisma.BoolWithAggregatesFilter<"CheckoutPage"> | boolean
   chatLayout?: Prisma.EnumChatLayoutWithAggregatesFilter<"CheckoutPage"> | $Enums.ChatLayout
 }
@@ -676,6 +700,8 @@ export type CheckoutPageCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -723,6 +749,8 @@ export type CheckoutPageUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -766,6 +794,8 @@ export type CheckoutPageUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -813,6 +843,8 @@ export type CheckoutPageUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -858,6 +890,8 @@ export type CheckoutPageCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
 }
@@ -892,6 +926,8 @@ export type CheckoutPageUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
 }
@@ -928,6 +964,8 @@ export type CheckoutPageUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
 }
@@ -974,6 +1012,8 @@ export type CheckoutPageCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tieredPlansEnabled?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
+  metaDescription?: Prisma.SortOrder
   chatEnabled?: Prisma.SortOrder
   chatLayout?: Prisma.SortOrder
 }
@@ -1018,6 +1058,8 @@ export type CheckoutPageMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tieredPlansEnabled?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
+  metaDescription?: Prisma.SortOrder
   chatEnabled?: Prisma.SortOrder
   chatLayout?: Prisma.SortOrder
 }
@@ -1054,6 +1096,8 @@ export type CheckoutPageMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tieredPlansEnabled?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
+  metaDescription?: Prisma.SortOrder
   chatEnabled?: Prisma.SortOrder
   chatLayout?: Prisma.SortOrder
 }
@@ -1358,6 +1402,8 @@ export type CheckoutPageCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -1403,6 +1449,8 @@ export type CheckoutPageUncheckedCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -1477,6 +1525,8 @@ export type CheckoutPageScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutPage"> | Date | string
   tieredPlansEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
+  ogImage?: Prisma.StringNullableFilter<"CheckoutPage"> | string | null
+  metaDescription?: Prisma.StringNullableFilter<"CheckoutPage"> | string | null
   chatEnabled?: Prisma.BoolFilter<"CheckoutPage"> | boolean
   chatLayout?: Prisma.EnumChatLayoutFilter<"CheckoutPage"> | $Enums.ChatLayout
 }
@@ -1511,6 +1561,8 @@ export type CheckoutPageCreateWithoutSkinInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   createdBy?: Prisma.AdminUserCreateNestedOneWithoutCreatedCheckoutPagesInput
@@ -1556,6 +1608,8 @@ export type CheckoutPageUncheckedCreateWithoutSkinInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -1625,6 +1679,8 @@ export type CheckoutPageCreateWithoutPriceTiersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -1671,6 +1727,8 @@ export type CheckoutPageUncheckedCreateWithoutPriceTiersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -1729,6 +1787,8 @@ export type CheckoutPageUpdateWithoutPriceTiersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -1775,6 +1835,8 @@ export type CheckoutPageUncheckedUpdateWithoutPriceTiersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -1817,6 +1879,8 @@ export type CheckoutPageCreateWithoutBillingPlansInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -1863,6 +1927,8 @@ export type CheckoutPageUncheckedCreateWithoutBillingPlansInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -1921,6 +1987,8 @@ export type CheckoutPageUpdateWithoutBillingPlansInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -1967,6 +2035,8 @@ export type CheckoutPageUncheckedUpdateWithoutBillingPlansInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -2009,6 +2079,8 @@ export type CheckoutPageCreateWithoutPlanTiersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -2055,6 +2127,8 @@ export type CheckoutPageUncheckedCreateWithoutPlanTiersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -2113,6 +2187,8 @@ export type CheckoutPageUpdateWithoutPlanTiersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -2159,6 +2235,8 @@ export type CheckoutPageUncheckedUpdateWithoutPlanTiersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -2201,6 +2279,8 @@ export type CheckoutPageCreateWithoutLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -2247,6 +2327,8 @@ export type CheckoutPageUncheckedCreateWithoutLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -2305,6 +2387,8 @@ export type CheckoutPageUpdateWithoutLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -2351,6 +2435,8 @@ export type CheckoutPageUncheckedUpdateWithoutLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -2393,6 +2479,8 @@ export type CheckoutPageCreateWithoutAddonLinksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -2439,6 +2527,8 @@ export type CheckoutPageUncheckedCreateWithoutAddonLinksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   promoCodes?: Prisma.PromoCodeUncheckedCreateNestedManyWithoutAppliesToCheckoutPageInput
@@ -2497,6 +2587,8 @@ export type CheckoutPageUpdateWithoutAddonLinksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -2543,6 +2635,8 @@ export type CheckoutPageUncheckedUpdateWithoutAddonLinksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   promoCodes?: Prisma.PromoCodeUncheckedUpdateManyWithoutAppliesToCheckoutPageNestedInput
@@ -2585,6 +2679,8 @@ export type CheckoutPageCreateWithoutPromoCodesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -2631,6 +2727,8 @@ export type CheckoutPageUncheckedCreateWithoutPromoCodesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -2689,6 +2787,8 @@ export type CheckoutPageUpdateWithoutPromoCodesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -2735,6 +2835,8 @@ export type CheckoutPageUncheckedUpdateWithoutPromoCodesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -2777,6 +2879,8 @@ export type CheckoutPageCreateWithoutOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -2823,6 +2927,8 @@ export type CheckoutPageUncheckedCreateWithoutOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -2881,6 +2987,8 @@ export type CheckoutPageUpdateWithoutOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -2927,6 +3035,8 @@ export type CheckoutPageUncheckedUpdateWithoutOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -2969,6 +3079,8 @@ export type CheckoutPageCreateWithoutPromotionLinksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -3015,6 +3127,8 @@ export type CheckoutPageUncheckedCreateWithoutPromotionLinksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -3073,6 +3187,8 @@ export type CheckoutPageUpdateWithoutPromotionLinksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -3119,6 +3235,8 @@ export type CheckoutPageUncheckedUpdateWithoutPromotionLinksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -3161,6 +3279,8 @@ export type CheckoutPageCreateWithoutChatConversationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   skin: Prisma.SkinCreateNestedOneWithoutCheckoutPagesInput
@@ -3207,6 +3327,8 @@ export type CheckoutPageUncheckedCreateWithoutChatConversationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedCreateNestedManyWithoutCheckoutPageInput
@@ -3265,6 +3387,8 @@ export type CheckoutPageUpdateWithoutChatConversationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -3311,6 +3435,8 @@ export type CheckoutPageUncheckedUpdateWithoutChatConversationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -3354,6 +3480,8 @@ export type CheckoutPageCreateManyCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
 }
@@ -3388,6 +3516,8 @@ export type CheckoutPageUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   skin?: Prisma.SkinUpdateOneRequiredWithoutCheckoutPagesNestedInput
@@ -3433,6 +3563,8 @@ export type CheckoutPageUncheckedUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -3477,6 +3609,8 @@ export type CheckoutPageUncheckedUpdateManyWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
 }
@@ -3512,6 +3646,8 @@ export type CheckoutPageCreateManySkinInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tieredPlansEnabled?: boolean
+  ogImage?: string | null
+  metaDescription?: string | null
   chatEnabled?: boolean
   chatLayout?: $Enums.ChatLayout
 }
@@ -3546,6 +3682,8 @@ export type CheckoutPageUpdateWithoutSkinInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   createdBy?: Prisma.AdminUserUpdateOneWithoutCreatedCheckoutPagesNestedInput
@@ -3591,6 +3729,8 @@ export type CheckoutPageUncheckedUpdateWithoutSkinInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
   addonLinks?: Prisma.CheckoutPageAddonUncheckedUpdateManyWithoutCheckoutPageNestedInput
@@ -3635,6 +3775,8 @@ export type CheckoutPageUncheckedUpdateManyWithoutSkinInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tieredPlansEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatLayout?: Prisma.EnumChatLayoutFieldUpdateOperationsInput | $Enums.ChatLayout
 }
@@ -3774,6 +3916,8 @@ export type CheckoutPageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   createdAt?: boolean
   updatedAt?: boolean
   tieredPlansEnabled?: boolean
+  ogImage?: boolean
+  metaDescription?: boolean
   chatEnabled?: boolean
   chatLayout?: boolean
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
@@ -3822,6 +3966,8 @@ export type CheckoutPageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   createdAt?: boolean
   updatedAt?: boolean
   tieredPlansEnabled?: boolean
+  ogImage?: boolean
+  metaDescription?: boolean
   chatEnabled?: boolean
   chatLayout?: boolean
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
@@ -3860,6 +4006,8 @@ export type CheckoutPageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   createdAt?: boolean
   updatedAt?: boolean
   tieredPlansEnabled?: boolean
+  ogImage?: boolean
+  metaDescription?: boolean
   chatEnabled?: boolean
   chatLayout?: boolean
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
@@ -3898,11 +4046,13 @@ export type CheckoutPageSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   tieredPlansEnabled?: boolean
+  ogImage?: boolean
+  metaDescription?: boolean
   chatEnabled?: boolean
   chatLayout?: boolean
 }
 
-export type CheckoutPageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "type" | "title" | "productName" | "skinId" | "zohoItemId" | "zohoRecurringItemId" | "basePriceCents" | "recurringPriceCents" | "billingInterval" | "headline" | "originalPriceCents" | "mockupImageUrl" | "heroHtml" | "heroHtmlMobile" | "upgradeTitle" | "upgradeDescription" | "upgradePriceCents" | "upgradeRecurringPriceCents" | "upgradeZohoItemId" | "upgradeZohoRecurringItemId" | "showPromoCode" | "successRedirectUrl" | "failRedirectUrl" | "webhookUrl" | "status" | "createdById" | "createdAt" | "updatedAt" | "tieredPlansEnabled" | "chatEnabled" | "chatLayout", ExtArgs["result"]["checkoutPage"]>
+export type CheckoutPageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "type" | "title" | "productName" | "skinId" | "zohoItemId" | "zohoRecurringItemId" | "basePriceCents" | "recurringPriceCents" | "billingInterval" | "headline" | "originalPriceCents" | "mockupImageUrl" | "heroHtml" | "heroHtmlMobile" | "upgradeTitle" | "upgradeDescription" | "upgradePriceCents" | "upgradeRecurringPriceCents" | "upgradeZohoItemId" | "upgradeZohoRecurringItemId" | "showPromoCode" | "successRedirectUrl" | "failRedirectUrl" | "webhookUrl" | "status" | "createdById" | "createdAt" | "updatedAt" | "tieredPlansEnabled" | "ogImage" | "metaDescription" | "chatEnabled" | "chatLayout", ExtArgs["result"]["checkoutPage"]>
 export type CheckoutPageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   skin?: boolean | Prisma.SkinDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.CheckoutPage$createdByArgs<ExtArgs>
@@ -3973,6 +4123,8 @@ export type $CheckoutPagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     createdAt: Date
     updatedAt: Date
     tieredPlansEnabled: boolean
+    ogImage: string | null
+    metaDescription: string | null
     chatEnabled: boolean
     chatLayout: $Enums.ChatLayout
   }, ExtArgs["result"]["checkoutPage"]>
@@ -4440,6 +4592,8 @@ export interface CheckoutPageFieldRefs {
   readonly createdAt: Prisma.FieldRef<"CheckoutPage", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CheckoutPage", 'DateTime'>
   readonly tieredPlansEnabled: Prisma.FieldRef<"CheckoutPage", 'Boolean'>
+  readonly ogImage: Prisma.FieldRef<"CheckoutPage", 'String'>
+  readonly metaDescription: Prisma.FieldRef<"CheckoutPage", 'String'>
   readonly chatEnabled: Prisma.FieldRef<"CheckoutPage", 'Boolean'>
   readonly chatLayout: Prisma.FieldRef<"CheckoutPage", 'ChatLayout'>
 }

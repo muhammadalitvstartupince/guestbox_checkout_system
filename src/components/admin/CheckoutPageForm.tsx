@@ -66,6 +66,8 @@ export interface CheckoutPageFormDefaults {
   billingPlans: BillingPlanDefault[];
   tieredPlansEnabled: boolean;
   planTiers: PlanTierDefault[];
+  ogImage: string;
+  metaDescription: string;
   chatEnabled: boolean;
   chatLayout: "floating" | "side";
 }
@@ -99,6 +101,8 @@ export const emptyCheckoutPageDefaults: CheckoutPageFormDefaults = {
   billingPlans: [],
   tieredPlansEnabled: false,
   planTiers: [],
+  ogImage: "",
+  metaDescription: "",
   chatEnabled: false,
   chatLayout: "floating",
 };
@@ -140,6 +144,10 @@ export function CheckoutPageForm({
   const [billingPlans, setBillingPlans] = useState<BillingPlanDefault[]>(defaults.billingPlans ?? []);
   const [tieredPlansEnabled, setTieredPlansEnabled] = useState(defaults.tieredPlansEnabled ?? false);
   const [planTiers, setPlanTiers] = useState<PlanTierDefault[]>(defaults.planTiers ?? []);
+
+  const [previewTitle, setPreviewTitle] = useState(defaults.title ?? "");
+  const [ogImage, setOgImage] = useState(defaults.ogImage ?? "");
+  const [metaDescription, setMetaDescription] = useState(defaults.metaDescription ?? "");
 
   const isNew = !defaults.slug;
   const [slug, setSlug] = useState(defaults.slug ?? "");
@@ -186,7 +194,7 @@ export function CheckoutPageForm({
             id="title"
             name="title"
             defaultValue={defaults.title}
-            onChange={(e) => { if (!slugManual) setSlug(toSlug(e.target.value)); }}
+            onChange={(e) => { setPreviewTitle(e.target.value); if (!slugManual) setSlug(toSlug(e.target.value)); }}
             className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
           />
           {state.fieldErrors?.title?.[0] && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{state.fieldErrors.title[0]}</p>}
@@ -795,6 +803,77 @@ export function CheckoutPageForm({
       </div>
 
       <Field name="webhookUrl" label="Marketing Webhook URL (optional)" defaultValue={defaults.webhookUrl} />
+
+      {/* Social / SEO Meta */}
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+        <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">Social Sharing / SEO Meta</h3>
+        <p className="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+          Controls the preview card when this checkout link is shared on WhatsApp, Slack, social media, etc.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <label htmlFor="ogImage" className="mb-1 block text-sm text-zinc-700 dark:text-zinc-300">
+              Social Image URL (og:image)
+            </label>
+            <input
+              id="ogImage"
+              name="ogImage"
+              type="text"
+              value={ogImage}
+              onChange={(e) => setOgImage(e.target.value)}
+              placeholder="https://example.com/images/promo.jpg"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="metaDescription" className="mb-1 block text-sm text-zinc-700 dark:text-zinc-300">
+              Meta Description
+            </label>
+            <textarea
+              id="metaDescription"
+              name="metaDescription"
+              rows={2}
+              value={metaDescription}
+              onChange={(e) => setMetaDescription(e.target.value)}
+              placeholder="Short description shown in link previews (recommended 150-160 characters)"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+            />
+          </div>
+        </div>
+
+        {/* Live preview */}
+        {(ogImage || metaDescription || previewTitle) && (
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">Preview</p>
+            <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              {ogImage && (
+                <div className="relative aspect-[1.91/1] w-full bg-zinc-100 dark:bg-zinc-700">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={ogImage}
+                    alt="Social preview"
+                    className="h-full w-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                </div>
+              )}
+              <div className="px-3 py-2.5">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  {slug ? `yoursite.com/c/${slug}` : "yoursite.com"}
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                  {previewTitle || "Page Title"}
+                </p>
+                {metaDescription && (
+                  <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                    {metaDescription}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {availableAddons && (
         <div>
