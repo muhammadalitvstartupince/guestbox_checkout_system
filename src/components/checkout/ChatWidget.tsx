@@ -656,13 +656,15 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
   }
 
   function renderGuidedButtons() {
-    const btnClass = "flex w-full items-center justify-center gap-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] px-4 py-4 text-base font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] transition hover:bg-[#0e3a5c] hover:shadow-[0_0_20px_rgba(6,182,212,0.6)]";
+    const btnClass = "flex w-full items-center justify-center gap-2 rounded-xl border border-cyan-500/30 bg-[#0c2d48] px-3 py-2.5 text-sm font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] transition hover:bg-[#0e3a5c] hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] sm:gap-3 sm:px-4 sm:py-4 sm:text-base";
 
     if (guidedStep === "properties") {
       return (
         <div className="mt-3 flex flex-col gap-2 px-2">
-          <button type="button" onClick={() => handleGuidedAction("1-property")} className={btnClass}><Home className="h-5 w-5 text-cyan-400" /> 1 Property</button>
-          <button type="button" onClick={() => handleGuidedAction("multiple")} className={btnClass}><Building2 className="h-5 w-5 text-cyan-400" /> Multiple Properties</button>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+            <button type="button" onClick={() => handleGuidedAction("1-property")} className={btnClass}><Home className="h-4 w-4 text-cyan-400 lg:h-5 lg:w-5" /> 1 Property</button>
+            <button type="button" onClick={() => handleGuidedAction("multiple")} className={btnClass}><Building2 className="h-4 w-4 text-cyan-400 lg:h-5 lg:w-5" /> Multiple Properties</button>
+          </div>
           <button type="button" onClick={handleTalkToHuman} className="mt-1 text-center text-sm text-white/50 underline hover:text-white/70">Talk to a human</button>
         </div>
       );
@@ -672,24 +674,24 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
       const min = guidedStep === "properties-picker" ? 2 : 3;
       const label = guidedStep === "properties-picker" ? "properties" : "TVs per property";
       return (
-        <div className="mx-2 mt-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] p-4">
-          <p className="mb-3 text-center text-sm font-semibold text-white">How many {label}?</p>
-          <div className="flex items-center justify-center gap-6">
-            <button type="button" onClick={() => setPickerValue(v => Math.max(min, v - 1))} className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xl font-bold text-white hover:bg-white/10">−</button>
-            <span className="min-w-[3ch] text-center text-3xl font-bold text-white">{pickerValue}</span>
-            <button type="button" onClick={() => setPickerValue(v => Math.min(50, v + 1))} className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xl font-bold text-white hover:bg-white/10">+</button>
+        <div className="mx-2 mt-3 rounded-xl border border-cyan-500/30 bg-[#0c2d48] p-3 sm:p-4">
+          <p className="mb-2 text-center text-sm font-semibold text-white sm:mb-3">How many {label}?</p>
+          <div className="flex items-center justify-center gap-5 sm:gap-6">
+            <button type="button" onClick={() => setPickerValue(v => Math.max(min, v - 1))} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-lg font-bold text-white hover:bg-white/10 sm:h-10 sm:w-10 sm:text-xl">−</button>
+            <span className="min-w-[3ch] text-center text-2xl font-bold text-white sm:text-3xl">{pickerValue}</span>
+            <button type="button" onClick={() => setPickerValue(v => Math.min(50, v + 1))} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-lg font-bold text-white hover:bg-white/10 sm:h-10 sm:w-10 sm:text-xl">+</button>
           </div>
-          <button type="button" onClick={() => handleGuidedAction("confirm")} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 py-3 text-sm font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:bg-cyan-600 hover:shadow-[0_0_20px_rgba(6,182,212,0.6)]"><ArrowRight className="h-4 w-4" /> Continue</button>
+          <button type="button" onClick={() => handleGuidedAction("confirm")} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 py-2.5 text-sm font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:bg-cyan-600 hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] sm:mt-4 sm:py-3"><ArrowRight className="h-4 w-4" /> Continue</button>
         </div>
       );
     }
 
     if (guidedStep === "tvs") {
       return (
-        <div className="mt-3 flex flex-col gap-2 px-2">
-          <button type="button" onClick={() => handleGuidedAction("1-tv")} className={btnClass}><Monitor className="h-5 w-5 text-cyan-400" /> 1 TV (the main TV)</button>
-          <button type="button" onClick={() => handleGuidedAction("2-tvs")} className={btnClass}><Tv className="h-5 w-5 text-cyan-400" /> 2 TVs</button>
-          <button type="button" onClick={() => handleGuidedAction("more")} className={btnClass}><Hash className="h-5 w-5 text-cyan-400" /> More (type a number)</button>
+        <div className="mt-3 grid grid-cols-3 gap-2 px-2 lg:grid-cols-1">
+          <button type="button" onClick={() => handleGuidedAction("1-tv")} className={btnClass}><Monitor className="h-4 w-4 text-cyan-400 lg:h-5 lg:w-5" /> <span className="lg:hidden">1 TV</span><span className="hidden lg:inline">1 TV (the main TV)</span></button>
+          <button type="button" onClick={() => handleGuidedAction("2-tvs")} className={btnClass}><Tv className="h-4 w-4 text-cyan-400 lg:h-5 lg:w-5" /> 2 TVs</button>
+          <button type="button" onClick={() => handleGuidedAction("more")} className={btnClass}><Hash className="h-4 w-4 text-cyan-400 lg:h-5 lg:w-5" /> <span className="lg:hidden">More</span><span className="hidden lg:inline">More (type a number)</span></button>
         </div>
       );
     }
@@ -726,8 +728,8 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
     : "w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 transition focus:border-cyan-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20";
 
   const panelClasses = embedded
-    ? "flex w-full flex-col overflow-hidden bg-[#0b1a2b] lg:h-full lg:rounded-2xl"
-    : "fixed bottom-5 right-5 z-50 flex h-[min(420px,70vh)] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl";
+    ? "flex w-full flex-col overflow-hidden rounded-2xl bg-[#0b1a2b] lg:h-full"
+    : "fixed z-50 flex flex-col overflow-hidden shadow-2xl bottom-0 inset-x-0 h-[80vh] rounded-t-2xl border-t border-zinc-200 bg-white animate-[slideUp_0.3s_ease-out] sm:bottom-5 sm:right-5 sm:left-auto sm:h-[min(420px,70vh)] sm:w-[380px] sm:rounded-2xl sm:border sm:animate-none";
 
   return (
     <>
@@ -770,7 +772,8 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
       )}
 
       {/* Chat panel */}
-      {open && (
+      {open && (<>
+        {!embedded && <div className="fixed inset-0 z-40 bg-black/40 sm:hidden" onClick={() => setOpen(false)} />}
         <div className={panelClasses}>
           {/* Header */}
           {embedded ? (
@@ -799,10 +802,14 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
             </button>
           ) : (
             <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0c2d48 0%, #0a4d6e 50%, #0c2d48 100%)" }}>
-              <button onClick={() => setOpen(false)} className="absolute right-2 top-2 z-10 rounded p-1 text-white/70 hover:bg-white/20 hover:text-white" aria-label="Close chat">
+              <button type="button" onClick={() => setOpen(false)} className="flex w-full justify-center pt-3 pb-1 sm:hidden" aria-label="Close chat">
+                <div className="h-1.5 w-12 rounded-full bg-white/30" />
+              </button>
+              <button onClick={() => setOpen(false)} className="absolute right-2 top-2 z-10 hidden rounded p-1 text-white/70 hover:bg-white/20 hover:text-white sm:block" aria-label="Close chat">
                 <X className="h-4 w-4" />
               </button>
               <style>{`
+                @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
                 @keyframes bot-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
                 @keyframes bubble-glow { 0%,100% { box-shadow: 0 0 8px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 18px rgba(6,182,212,0.5); } }
                 @keyframes wave { 0% { transform: rotate(0deg); } 15% { transform: rotate(14deg); } 30% { transform: rotate(-8deg); } 45% { transform: rotate(14deg); } 60% { transform: rotate(-4deg); } 75% { transform: rotate(10deg); } 100% { transform: rotate(0deg); } }
@@ -832,7 +839,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
           <div className={embedded ? `flex-1 flex-col overflow-hidden ${mobileOpen ? "flex" : "hidden lg:flex"}` : "flex flex-1 flex-col"}>
           {!conversationId && leadGateEnabled ? (
             /* Lead gate form */
-            <form onSubmit={handleLeadSubmit} className="flex flex-1 flex-col gap-4 p-5">
+            <form onSubmit={handleLeadSubmit} className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-5">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={`mb-1 block text-xs font-semibold ${embedded ? "text-white/70" : "text-zinc-500"}`}>First Name</label>
@@ -891,8 +898,8 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
           ) : (
             /* Chat messages + input */
             <>
-              <div className="flex-1 overflow-y-auto p-4">
-                <div className="space-y-3">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4">
+                <div className="space-y-2 sm:space-y-3">
                   {messages.map((msg, i) => {
                     const isLast = msg.role === "assistant" && i === messages.length - 1 && !sending;
                     const isGuided = guidedStep !== null && guidedStep !== "done";
@@ -927,7 +934,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
                                   ? cta.text === "__schedule_demo__"
                                     ? "inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-[0_0_15px_rgba(59,130,246,0.5)] transition hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.7)]"
                                     : "w-full rounded-xl bg-cyan-700 px-4 py-3 text-sm font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] transition hover:bg-cyan-600 hover:shadow-[0_0_20px_rgba(6,182,212,0.6)]"
-                                  : "flex flex-col items-center gap-1.5 rounded-xl border border-cyan-500/30 bg-slate-800 px-4 py-3 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)] transition hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+                                  : "flex flex-col items-center gap-1 rounded-lg border border-cyan-500/30 bg-slate-800 px-3 py-2 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)] transition hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] sm:gap-1.5 sm:rounded-xl sm:px-4 sm:py-3"
                                 }
                               >
                                 {!embedded && <cta.icon className="h-5 w-5 text-cyan-400" />}
@@ -956,7 +963,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
                 </div>
               </div>
 
-              <div className={`border-t p-3 ${embedded ? "border-white/10 bg-[#0b1a2b]" : "border-zinc-200 bg-slate-900"}`}>
+              <div className={`border-t p-2.5 sm:p-3 ${embedded ? "border-white/10 bg-[#0b1a2b]" : "border-zinc-200 bg-slate-900"}`}>
                 <div className="flex items-end gap-2">
                   <textarea
                     ref={inputRef}
@@ -983,7 +990,7 @@ export function ChatWidget({ checkoutPageId, checkoutContext, embedded = false, 
           )}
           </div>{/* end collapsible content */}
         </div>
-      )}
+      </>)}
     </>
   );
 }
