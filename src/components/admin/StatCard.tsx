@@ -34,7 +34,7 @@ export function StatCard({
 
 function ChangeIndicator({ changePct }: { changePct: number | null }) {
   if (changePct === null) {
-    return <p className="mt-3 text-xs text-zinc-400 dark:text-zinc-500">No orders in the prior week</p>;
+    return null;
   }
   const isUp = changePct >= 0;
   return (

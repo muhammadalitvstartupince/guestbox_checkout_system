@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DollarSign, ShoppingBag, Users } from "lucide-react";
+import { Clock, DollarSign, ShoppingBag, Users } from "lucide-react";
 import { verifySession } from "@/lib/auth/dal";
 import { getDashboardStats } from "@/lib/admin/dashboard-stats";
 import { StatCard } from "@/components/admin/StatCard";
@@ -42,6 +42,14 @@ export default async function AdminDashboardPage() {
             icon={Users}
             iconBg="bg-amber-50 dark:bg-amber-500/10"
             iconColor="text-amber-600 dark:text-amber-400"
+          />
+          <StatCard
+            label="Avg Successful Checkout Time"
+            value={stats.avgCheckoutTime ?? "—"}
+            changePct={null}
+            icon={Clock}
+            iconBg="bg-purple-50 dark:bg-purple-500/10"
+            iconColor="text-purple-600 dark:text-purple-400"
           />
         </div>
 
