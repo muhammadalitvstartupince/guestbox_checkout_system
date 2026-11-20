@@ -13,7 +13,7 @@ const schema = z.object({
     .trim()
     .transform((v) => v || null)
     .pipe(z.string().url("Enter a valid URL").nullable()),
-  timeoutMinutes: z.coerce.number().int().min(15, "Min 15 minutes").max(60, "Max 60 minutes"),
+  timeoutMinutes: z.coerce.number().int().min(10, "Min 10 minutes").max(60, "Max 60 minutes"),
 });
 
 export async function updateAbandonedAlertSettings(

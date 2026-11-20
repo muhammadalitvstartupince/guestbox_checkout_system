@@ -72,7 +72,7 @@ export function AbandonedAlertSettingsForm({ defaults }: { defaults: Defaults })
               id="timeoutMinutes"
               name="timeoutMinutes"
               type="number"
-              min={15}
+              min={10}
               max={60}
               defaultValue={defaults.timeoutMinutes}
               className={`${inputClass} max-w-32`}
