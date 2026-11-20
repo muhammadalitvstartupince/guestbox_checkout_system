@@ -24,6 +24,7 @@ export interface DashboardStats {
   ordersChangePct: number | null;
   totalCustomers: number;
   customersChangePct: number | null;
+  avgCheckoutTime: string | null;
   monthly: MonthlyPoint[];
   recentOrders: RecentOrderRow[];
 }
@@ -32,6 +33,16 @@ export interface DashboardStats {
 function pctChange(current: number, previous: number): number | null {
   if (previous === 0) return current === 0 ? 0 : null;
   return ((current - previous) / previous) * 100;
+}
+
+function formatDurationSeconds(avgSec: number): string {
+  const totalSeconds = Math.round(avgSec);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
 }
 
 const MONTH_LABELS = [
@@ -57,6 +68,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     allTimeCustomers,
     monthlyOrders,
     recentOrders,
+    avgCheckoutRows,
   ] = await Promise.all([
     prisma.order.aggregate({ where: { status: "paid" }, _sum: { amountCents: true } }),
     prisma.order.count({ where: { status: "paid" } }),
@@ -83,7 +95,16 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       take: 8,
       include: { checkoutPage: { select: { title: true } } },
     }),
+    prisma.$queryRaw<{ avg_seconds: number | null }[]>`
+      SELECT AVG(EXTRACT(EPOCH FROM (ps.created_at - oi.created_at))) AS avg_seconds
+      FROM order_events oi
+      JOIN order_events ps ON ps.order_id = oi.order_id AND ps.type = 'payment_succeeded'
+      WHERE oi.type = 'order_initiated'
+    `,
   ]);
+
+  const avgSeconds = avgCheckoutRows[0]?.avg_seconds;
+  const avgCheckoutTime = avgSeconds != null ? formatDurationSeconds(avgSeconds) : null;
 
   // Bucket the last 12 months, oldest first, keyed by calendar month.
   const buckets = new Map<string, MonthlyPoint>();
@@ -107,6 +128,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     totalOrders,
     ordersChangePct: pctChange(currentWeekOrders, previousWeekOrders),
     totalCustomers: allTimeCustomers.length,
+    avgCheckoutTime,
     customersChangePct: pctChange(currentWeekCustomers.length, previousWeekCustomers.length),
     monthly: Array.from(buckets.values()),
     recentOrders: recentOrders.map((o) => ({
