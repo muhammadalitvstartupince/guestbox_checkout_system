@@ -34,26 +34,51 @@ function formatTimestamp(date: Date): string {
   return date.toISOString().slice(0, 19).replace("T", " ");
 }
 
+function formatDuration(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
 export function OrderTimeline({ events }: { events: OrderEventView[] }) {
   if (events.length === 0) {
     return <p className="text-sm text-zinc-500 dark:text-zinc-400">No activity recorded yet.</p>;
   }
 
+  const started = events.find((e) => e.type === "order_initiated");
+  const completed = events.find((e) => e.type === "payment_succeeded");
+  const totalTime = started && completed
+    ? formatDuration(completed.createdAt.getTime() - started.createdAt.getTime())
+    : null;
+
   return (
-    <ol className="space-y-4">
-      {events.map((event) => {
-        const meta = EVENT_META[event.type] ?? { label: event.type, tone: "neutral" as const };
-        return (
-          <li key={event.id} className="flex gap-3">
-            <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${DOT_COLOR[meta.tone]}`} />
-            <div>
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{meta.label}</p>
-              {event.message && <p className="text-xs text-zinc-500 dark:text-zinc-400">{event.message}</p>}
-              <p className="text-xs text-zinc-400 dark:text-zinc-500">{formatTimestamp(event.createdAt)}</p>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
+    <>
+      <ol className="space-y-4">
+        {events.map((event) => {
+          const meta = EVENT_META[event.type] ?? { label: event.type, tone: "neutral" as const };
+          return (
+            <li key={event.id} className="flex gap-3">
+              <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${DOT_COLOR[meta.tone]}`} />
+              <div>
+                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{meta.label}</p>
+                {event.message && <p className="text-xs text-zinc-500 dark:text-zinc-400">{event.message}</p>}
+                <p className="text-xs text-zinc-400 dark:text-zinc-500">{formatTimestamp(event.createdAt)}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+      {totalTime && (
+        <div className="mt-4 border-t border-zinc-100 pt-3 dark:border-zinc-800">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Total checkout time: <span className="font-medium text-zinc-900 dark:text-zinc-100">{totalTime}</span>
+          </p>
+        </div>
+      )}
+    </>
   );
 }
