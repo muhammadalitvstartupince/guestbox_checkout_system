@@ -433,6 +433,8 @@ model Order {
   shippingState         String? @map("shipping_state")
   shippingZip           String? @map("shipping_zip")
   shippingCountry       String? @map("shipping_country")
+  taxId                 String? @map("tax_id")
+  addressVerified       Boolean @default(false) @map("address_verified")
 
   // Which billing plan the customer selected (monthly/annual).
   selectedBillingPlanId String? @map("selected_billing_plan_id") @db.Uuid

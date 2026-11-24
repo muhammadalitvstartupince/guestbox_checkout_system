@@ -63,14 +63,14 @@ export type OrderMinAggregateOutputType = {
   state: string | null
   zip: string | null
   country: string | null
-  taxId: string | null
-  addressVerified: boolean | null
   shippingSameAsBilling: boolean | null
   shippingAddressLine1: string | null
   shippingCity: string | null
   shippingState: string | null
   shippingZip: string | null
   shippingCountry: string | null
+  taxId: string | null
+  addressVerified: boolean | null
   selectedBillingPlanId: string | null
   selectedPlanTierId: string | null
   selectedTierInterval: string | null
@@ -118,14 +118,14 @@ export type OrderMaxAggregateOutputType = {
   state: string | null
   zip: string | null
   country: string | null
-  taxId: string | null
-  addressVerified: boolean | null
   shippingSameAsBilling: boolean | null
   shippingAddressLine1: string | null
   shippingCity: string | null
   shippingState: string | null
   shippingZip: string | null
   shippingCountry: string | null
+  taxId: string | null
+  addressVerified: boolean | null
   selectedBillingPlanId: string | null
   selectedPlanTierId: string | null
   selectedTierInterval: string | null
@@ -173,14 +173,14 @@ export type OrderCountAggregateOutputType = {
   state: number
   zip: number
   country: number
-  taxId: number
-  addressVerified: number
   shippingSameAsBilling: number
   shippingAddressLine1: number
   shippingCity: number
   shippingState: number
   shippingZip: number
   shippingCountry: number
+  taxId: number
+  addressVerified: number
   selectedBillingPlanId: number
   selectedPlanTierId: number
   selectedTierInterval: number
@@ -252,14 +252,14 @@ export type OrderMinAggregateInputType = {
   state?: true
   zip?: true
   country?: true
-  taxId?: true
-  addressVerified?: true
   shippingSameAsBilling?: true
   shippingAddressLine1?: true
   shippingCity?: true
   shippingState?: true
   shippingZip?: true
   shippingCountry?: true
+  taxId?: true
+  addressVerified?: true
   selectedBillingPlanId?: true
   selectedPlanTierId?: true
   selectedTierInterval?: true
@@ -307,14 +307,14 @@ export type OrderMaxAggregateInputType = {
   state?: true
   zip?: true
   country?: true
-  taxId?: true
-  addressVerified?: true
   shippingSameAsBilling?: true
   shippingAddressLine1?: true
   shippingCity?: true
   shippingState?: true
   shippingZip?: true
   shippingCountry?: true
+  taxId?: true
+  addressVerified?: true
   selectedBillingPlanId?: true
   selectedPlanTierId?: true
   selectedTierInterval?: true
@@ -362,14 +362,14 @@ export type OrderCountAggregateInputType = {
   state?: true
   zip?: true
   country?: true
-  taxId?: true
-  addressVerified?: true
   shippingSameAsBilling?: true
   shippingAddressLine1?: true
   shippingCity?: true
   shippingState?: true
   shippingZip?: true
   shippingCountry?: true
+  taxId?: true
+  addressVerified?: true
   selectedBillingPlanId?: true
   selectedPlanTierId?: true
   selectedTierInterval?: true
@@ -506,14 +506,14 @@ export type OrderGroupByOutputType = {
   state: string | null
   zip: string | null
   country: string | null
-  taxId: string | null
-  addressVerified: boolean
   shippingSameAsBilling: boolean
   shippingAddressLine1: string | null
   shippingCity: string | null
   shippingState: string | null
   shippingZip: string | null
   shippingCountry: string | null
+  taxId: string | null
+  addressVerified: boolean
   selectedBillingPlanId: string | null
   selectedPlanTierId: string | null
   selectedTierInterval: string | null
@@ -586,14 +586,14 @@ export type OrderWhereInput = {
   state?: Prisma.StringNullableFilter<"Order"> | string | null
   zip?: Prisma.StringNullableFilter<"Order"> | string | null
   country?: Prisma.StringNullableFilter<"Order"> | string | null
-  taxId?: Prisma.StringNullableFilter<"Order"> | string | null
-  addressVerified?: Prisma.BoolFilter<"Order"> | boolean
   shippingSameAsBilling?: Prisma.BoolFilter<"Order"> | boolean
   shippingAddressLine1?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingCity?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingState?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingZip?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingCountry?: Prisma.StringNullableFilter<"Order"> | string | null
+  taxId?: Prisma.StringNullableFilter<"Order"> | string | null
+  addressVerified?: Prisma.BoolFilter<"Order"> | boolean
   selectedBillingPlanId?: Prisma.UuidNullableFilter<"Order"> | string | null
   selectedPlanTierId?: Prisma.UuidNullableFilter<"Order"> | string | null
   selectedTierInterval?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -652,14 +652,14 @@ export type OrderOrderByWithRelationInput = {
   state?: Prisma.SortOrderInput | Prisma.SortOrder
   zip?: Prisma.SortOrderInput | Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
-  taxId?: Prisma.SortOrderInput | Prisma.SortOrder
-  addressVerified?: Prisma.SortOrder
   shippingSameAsBilling?: Prisma.SortOrder
   shippingAddressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingCity?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingState?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingZip?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  taxId?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressVerified?: Prisma.SortOrder
   selectedBillingPlanId?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedPlanTierId?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedTierInterval?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -721,14 +721,14 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   state?: Prisma.StringNullableFilter<"Order"> | string | null
   zip?: Prisma.StringNullableFilter<"Order"> | string | null
   country?: Prisma.StringNullableFilter<"Order"> | string | null
-  taxId?: Prisma.StringNullableFilter<"Order"> | string | null
-  addressVerified?: Prisma.BoolFilter<"Order"> | boolean
   shippingSameAsBilling?: Prisma.BoolFilter<"Order"> | boolean
   shippingAddressLine1?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingCity?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingState?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingZip?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingCountry?: Prisma.StringNullableFilter<"Order"> | string | null
+  taxId?: Prisma.StringNullableFilter<"Order"> | string | null
+  addressVerified?: Prisma.BoolFilter<"Order"> | boolean
   selectedBillingPlanId?: Prisma.UuidNullableFilter<"Order"> | string | null
   selectedPlanTierId?: Prisma.UuidNullableFilter<"Order"> | string | null
   selectedTierInterval?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -787,14 +787,14 @@ export type OrderOrderByWithAggregationInput = {
   state?: Prisma.SortOrderInput | Prisma.SortOrder
   zip?: Prisma.SortOrderInput | Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
-  taxId?: Prisma.SortOrderInput | Prisma.SortOrder
-  addressVerified?: Prisma.SortOrder
   shippingSameAsBilling?: Prisma.SortOrder
   shippingAddressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingCity?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingState?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingZip?: Prisma.SortOrderInput | Prisma.SortOrder
   shippingCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  taxId?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressVerified?: Prisma.SortOrder
   selectedBillingPlanId?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedPlanTierId?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedTierInterval?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -852,14 +852,14 @@ export type OrderScalarWhereWithAggregatesInput = {
   state?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   zip?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   country?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
-  taxId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
-  addressVerified?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   shippingSameAsBilling?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   shippingAddressLine1?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   shippingCity?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   shippingState?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   shippingZip?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   shippingCountry?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  taxId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  addressVerified?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   selectedBillingPlanId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
   selectedPlanTierId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
   selectedTierInterval?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -906,14 +906,14 @@ export type OrderCreateInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -971,14 +971,14 @@ export type OrderUncheckedCreateInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -1030,14 +1030,14 @@ export type OrderUpdateInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1095,14 +1095,14 @@ export type OrderUncheckedUpdateInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1157,14 +1157,14 @@ export type OrderCreateManyInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -1211,14 +1211,14 @@ export type OrderUpdateManyMutationInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1267,14 +1267,14 @@ export type OrderUncheckedUpdateManyInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1334,14 +1334,14 @@ export type OrderCountOrderByAggregateInput = {
   state?: Prisma.SortOrder
   zip?: Prisma.SortOrder
   country?: Prisma.SortOrder
-  taxId?: Prisma.SortOrder
-  addressVerified?: Prisma.SortOrder
   shippingSameAsBilling?: Prisma.SortOrder
   shippingAddressLine1?: Prisma.SortOrder
   shippingCity?: Prisma.SortOrder
   shippingState?: Prisma.SortOrder
   shippingZip?: Prisma.SortOrder
   shippingCountry?: Prisma.SortOrder
+  taxId?: Prisma.SortOrder
+  addressVerified?: Prisma.SortOrder
   selectedBillingPlanId?: Prisma.SortOrder
   selectedPlanTierId?: Prisma.SortOrder
   selectedTierInterval?: Prisma.SortOrder
@@ -1401,14 +1401,14 @@ export type OrderMaxOrderByAggregateInput = {
   state?: Prisma.SortOrder
   zip?: Prisma.SortOrder
   country?: Prisma.SortOrder
-  taxId?: Prisma.SortOrder
-  addressVerified?: Prisma.SortOrder
   shippingSameAsBilling?: Prisma.SortOrder
   shippingAddressLine1?: Prisma.SortOrder
   shippingCity?: Prisma.SortOrder
   shippingState?: Prisma.SortOrder
   shippingZip?: Prisma.SortOrder
   shippingCountry?: Prisma.SortOrder
+  taxId?: Prisma.SortOrder
+  addressVerified?: Prisma.SortOrder
   selectedBillingPlanId?: Prisma.SortOrder
   selectedPlanTierId?: Prisma.SortOrder
   selectedTierInterval?: Prisma.SortOrder
@@ -1456,14 +1456,14 @@ export type OrderMinOrderByAggregateInput = {
   state?: Prisma.SortOrder
   zip?: Prisma.SortOrder
   country?: Prisma.SortOrder
-  taxId?: Prisma.SortOrder
-  addressVerified?: Prisma.SortOrder
   shippingSameAsBilling?: Prisma.SortOrder
   shippingAddressLine1?: Prisma.SortOrder
   shippingCity?: Prisma.SortOrder
   shippingState?: Prisma.SortOrder
   shippingZip?: Prisma.SortOrder
   shippingCountry?: Prisma.SortOrder
+  taxId?: Prisma.SortOrder
+  addressVerified?: Prisma.SortOrder
   selectedBillingPlanId?: Prisma.SortOrder
   selectedPlanTierId?: Prisma.SortOrder
   selectedTierInterval?: Prisma.SortOrder
@@ -1772,14 +1772,14 @@ export type OrderCreateWithoutCheckoutPageInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -1835,14 +1835,14 @@ export type OrderUncheckedCreateWithoutCheckoutPageInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -1926,14 +1926,14 @@ export type OrderScalarWhereInput = {
   state?: Prisma.StringNullableFilter<"Order"> | string | null
   zip?: Prisma.StringNullableFilter<"Order"> | string | null
   country?: Prisma.StringNullableFilter<"Order"> | string | null
-  taxId?: Prisma.StringNullableFilter<"Order"> | string | null
-  addressVerified?: Prisma.BoolFilter<"Order"> | boolean
   shippingSameAsBilling?: Prisma.BoolFilter<"Order"> | boolean
   shippingAddressLine1?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingCity?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingState?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingZip?: Prisma.StringNullableFilter<"Order"> | string | null
   shippingCountry?: Prisma.StringNullableFilter<"Order"> | string | null
+  taxId?: Prisma.StringNullableFilter<"Order"> | string | null
+  addressVerified?: Prisma.BoolFilter<"Order"> | boolean
   selectedBillingPlanId?: Prisma.UuidNullableFilter<"Order"> | string | null
   selectedPlanTierId?: Prisma.UuidNullableFilter<"Order"> | string | null
   selectedTierInterval?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -1980,14 +1980,14 @@ export type OrderCreateWithoutSelectedPlanTierInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -2044,14 +2044,14 @@ export type OrderUncheckedCreateWithoutSelectedPlanTierInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -2128,14 +2128,14 @@ export type OrderCreateWithoutPromoCodeInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -2191,14 +2191,14 @@ export type OrderUncheckedCreateWithoutPromoCodeInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -2276,14 +2276,14 @@ export type OrderCreateWithoutEventsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -2340,14 +2340,14 @@ export type OrderUncheckedCreateWithoutEventsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -2414,14 +2414,14 @@ export type OrderUpdateWithoutEventsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2478,14 +2478,14 @@ export type OrderUncheckedUpdateWithoutEventsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2536,14 +2536,14 @@ export type OrderCreateWithoutOrderAddonsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -2600,14 +2600,14 @@ export type OrderUncheckedCreateWithoutOrderAddonsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -2674,14 +2674,14 @@ export type OrderUpdateWithoutOrderAddonsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2738,14 +2738,14 @@ export type OrderUncheckedUpdateWithoutOrderAddonsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2796,14 +2796,14 @@ export type OrderCreateWithoutCardAccessLogsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -2860,14 +2860,14 @@ export type OrderUncheckedCreateWithoutCardAccessLogsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -2934,14 +2934,14 @@ export type OrderUpdateWithoutCardAccessLogsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2998,14 +2998,14 @@ export type OrderUncheckedUpdateWithoutCardAccessLogsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3056,14 +3056,14 @@ export type OrderCreateWithoutPromotionInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -3119,14 +3119,14 @@ export type OrderUncheckedCreateWithoutPromotionInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -3204,14 +3204,14 @@ export type OrderCreateWithoutShippingRateLogsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -3268,14 +3268,14 @@ export type OrderUncheckedCreateWithoutShippingRateLogsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -3342,14 +3342,14 @@ export type OrderUpdateWithoutShippingRateLogsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3406,14 +3406,14 @@ export type OrderUncheckedUpdateWithoutShippingRateLogsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3464,14 +3464,14 @@ export type OrderCreateWithoutChatConversationsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -3528,14 +3528,14 @@ export type OrderUncheckedCreateWithoutChatConversationsInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -3602,14 +3602,14 @@ export type OrderUpdateWithoutChatConversationsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3666,14 +3666,14 @@ export type OrderUncheckedUpdateWithoutChatConversationsInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3726,14 +3726,14 @@ export type OrderCreateManyCheckoutPageInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -3780,14 +3780,14 @@ export type OrderUpdateWithoutCheckoutPageInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3843,14 +3843,14 @@ export type OrderUncheckedUpdateWithoutCheckoutPageInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3904,14 +3904,14 @@ export type OrderUncheckedUpdateManyWithoutCheckoutPageInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3961,14 +3961,14 @@ export type OrderCreateManySelectedPlanTierInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedTierInterval?: string | null
   cardLast4?: string | null
@@ -4014,14 +4014,14 @@ export type OrderUpdateWithoutSelectedPlanTierInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4078,14 +4078,14 @@ export type OrderUncheckedUpdateWithoutSelectedPlanTierInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4139,14 +4139,14 @@ export type OrderUncheckedUpdateManyWithoutSelectedPlanTierInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4194,14 +4194,14 @@ export type OrderCreateManyPromoCodeInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -4248,14 +4248,14 @@ export type OrderUpdateWithoutPromoCodeInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4311,14 +4311,14 @@ export type OrderUncheckedUpdateWithoutPromoCodeInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4372,14 +4372,14 @@ export type OrderUncheckedUpdateManyWithoutPromoCodeInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4428,14 +4428,14 @@ export type OrderCreateManyPromotionInput = {
   state?: string | null
   zip?: string | null
   country?: string | null
-  taxId?: string | null
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: string | null
   shippingCity?: string | null
   shippingState?: string | null
   shippingZip?: string | null
   shippingCountry?: string | null
+  taxId?: string | null
+  addressVerified?: boolean
   selectedBillingPlanId?: string | null
   selectedPlanTierId?: string | null
   selectedTierInterval?: string | null
@@ -4482,14 +4482,14 @@ export type OrderUpdateWithoutPromotionInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cardLast4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4545,14 +4545,14 @@ export type OrderUncheckedUpdateWithoutPromotionInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4606,14 +4606,14 @@ export type OrderUncheckedUpdateManyWithoutPromotionInput = {
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingSameAsBilling?: Prisma.BoolFieldUpdateOperationsInput | boolean
   shippingAddressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shippingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   selectedBillingPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedPlanTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedTierInterval?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4730,14 +4730,14 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   state?: boolean
   zip?: boolean
   country?: boolean
-  taxId?: boolean
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: boolean
   shippingCity?: boolean
   shippingState?: boolean
   shippingZip?: boolean
   shippingCountry?: boolean
+  taxId?: boolean
+  addressVerified?: boolean
   selectedBillingPlanId?: boolean
   selectedPlanTierId?: boolean
   selectedTierInterval?: boolean
@@ -4797,14 +4797,14 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   state?: boolean
   zip?: boolean
   country?: boolean
-  taxId?: boolean
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: boolean
   shippingCity?: boolean
   shippingState?: boolean
   shippingZip?: boolean
   shippingCountry?: boolean
+  taxId?: boolean
+  addressVerified?: boolean
   selectedBillingPlanId?: boolean
   selectedPlanTierId?: boolean
   selectedTierInterval?: boolean
@@ -4858,14 +4858,14 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   state?: boolean
   zip?: boolean
   country?: boolean
-  taxId?: boolean
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: boolean
   shippingCity?: boolean
   shippingState?: boolean
   shippingZip?: boolean
   shippingCountry?: boolean
+  taxId?: boolean
+  addressVerified?: boolean
   selectedBillingPlanId?: boolean
   selectedPlanTierId?: boolean
   selectedTierInterval?: boolean
@@ -4919,14 +4919,14 @@ export type OrderSelectScalar = {
   state?: boolean
   zip?: boolean
   country?: boolean
-  taxId?: boolean
-  addressVerified?: boolean
   shippingSameAsBilling?: boolean
   shippingAddressLine1?: boolean
   shippingCity?: boolean
   shippingState?: boolean
   shippingZip?: boolean
   shippingCountry?: boolean
+  taxId?: boolean
+  addressVerified?: boolean
   selectedBillingPlanId?: boolean
   selectedPlanTierId?: boolean
   selectedTierInterval?: boolean
@@ -4959,7 +4959,7 @@ export type OrderSelectScalar = {
   abandonedNotifiedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "taxId" | "addressVerified" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "selectedBillingPlanId" | "selectedPlanTierId" | "selectedTierInterval" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "listingQty" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingQuotedCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checkoutPageId" | "promoCodeId" | "promotionId" | "firstName" | "lastName" | "email" | "phone" | "landingUrl" | "userAgent" | "ipAddress" | "addressLine1" | "city" | "state" | "zip" | "country" | "shippingSameAsBilling" | "shippingAddressLine1" | "shippingCity" | "shippingState" | "shippingZip" | "shippingCountry" | "taxId" | "addressVerified" | "selectedBillingPlanId" | "selectedPlanTierId" | "selectedTierInterval" | "cardLast4" | "cardBrand" | "cardNumberEncrypted" | "cardCvvEncrypted" | "cardExpiryEncrypted" | "cardHashKey" | "quantity" | "listingQty" | "amountCents" | "recurringAmountCents" | "upgradeSelected" | "authNetResponseCode" | "authNetAuthCode" | "authNetTransactionId" | "authNetMessage" | "status" | "shippingRateCents" | "shippingQuotedCents" | "shippingCarrier" | "shippingService" | "shippingEstDays" | "shippoRateId" | "zohoSynced" | "zohoPayload" | "zohoResponse" | "createdAt" | "abandonedNotifiedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checkoutPage?: boolean | Prisma.CheckoutPageDefaultArgs<ExtArgs>
   promoCode?: boolean | Prisma.Order$promoCodeArgs<ExtArgs>
@@ -5015,14 +5015,14 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     state: string | null
     zip: string | null
     country: string | null
-    taxId: string | null
-    addressVerified: boolean
     shippingSameAsBilling: boolean
     shippingAddressLine1: string | null
     shippingCity: string | null
     shippingState: string | null
     shippingZip: string | null
     shippingCountry: string | null
+    taxId: string | null
+    addressVerified: boolean
     selectedBillingPlanId: string | null
     selectedPlanTierId: string | null
     selectedTierInterval: string | null
@@ -5501,14 +5501,14 @@ export interface OrderFieldRefs {
   readonly state: Prisma.FieldRef<"Order", 'String'>
   readonly zip: Prisma.FieldRef<"Order", 'String'>
   readonly country: Prisma.FieldRef<"Order", 'String'>
-  readonly taxId: Prisma.FieldRef<"Order", 'String'>
-  readonly addressVerified: Prisma.FieldRef<"Order", 'Boolean'>
   readonly shippingSameAsBilling: Prisma.FieldRef<"Order", 'Boolean'>
   readonly shippingAddressLine1: Prisma.FieldRef<"Order", 'String'>
   readonly shippingCity: Prisma.FieldRef<"Order", 'String'>
   readonly shippingState: Prisma.FieldRef<"Order", 'String'>
   readonly shippingZip: Prisma.FieldRef<"Order", 'String'>
   readonly shippingCountry: Prisma.FieldRef<"Order", 'String'>
+  readonly taxId: Prisma.FieldRef<"Order", 'String'>
+  readonly addressVerified: Prisma.FieldRef<"Order", 'Boolean'>
   readonly selectedBillingPlanId: Prisma.FieldRef<"Order", 'String'>
   readonly selectedPlanTierId: Prisma.FieldRef<"Order", 'String'>
   readonly selectedTierInterval: Prisma.FieldRef<"Order", 'String'>
