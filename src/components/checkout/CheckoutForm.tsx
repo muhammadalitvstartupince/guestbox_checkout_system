@@ -18,7 +18,7 @@ import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { montserrat } from "@/lib/fonts";
 import { detectCardBrand } from "@/lib/payments/card-brand";
 import { isValidLuhn } from "@/lib/payments/luhn";
-import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone, Home } from "lucide-react";
+import { Check, ShieldCheck, CreditCard, Ticket, PencilLine, Minus, Plus, Tv, ThumbsUp, Settings, Truck, Zap, Lock, Clock, Phone, Home, MapPin, AlertTriangle } from "lucide-react";
 import { registerChatBridge, unregisterChatBridge, getChatConversationId } from "@/components/checkout/ChatBridge";
 
 function CardBrandIcon({ brand }: { brand: string | null }) {
@@ -322,13 +322,26 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
     zip: "",
   });
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
+  const [confirmedAddress, setConfirmedAddress] = useState(false);
+  const [dismissedSuggestion, setDismissedSuggestion] = useState(false);
+  const billingFormRef = useRef<HTMLFormElement>(null);
   const [shippingForm, setShippingForm] = useState({
     addressLine1: "",
     country: "US",
     city: "",
     state: "",
     zip: "",
+    taxId: "",
   });
+
+  // Auto-submit billing form when user accepts a suggested address
+  useEffect(() => {
+    if (confirmedAddress && billingFormRef.current) {
+      billingFormRef.current.requestSubmit();
+      setConfirmedAddress(false);
+    }
+  }, [confirmedAddress, billingGen]);
+
   const [paymentForm, setPaymentForm] = useState({
     cardNumber: "",
     expMonth: "",
@@ -909,14 +922,65 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
     );
   }
 
+  function handleUseSuggestedAddress() {
+    const suggested = billingState.suggestedAddress;
+    if (!suggested) return;
+    setShippingForm((prev) => ({
+      ...prev,
+      addressLine1: suggested.street1,
+      city: suggested.city,
+      state: suggested.state,
+      zip: suggested.zip,
+      country: suggested.country,
+    }));
+    setConfirmedAddress(true);
+    // Bump form key to re-render with new values, then auto-submit
+    setBillingGen((g) => g + 1);
+  }
+
   function renderAddressSubStep() {
     return (
       <>
         {billingState.status === "error" && billingState.message && (
           <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-800">{billingState.message}</div>
         )}
-        <form key={billingGen} action={billingFormAction} className="space-y-4">
+
+        {/* Address suggestion from Shippo */}
+        {billingState.status === "address_suggestion" && billingState.suggestedAddress && !dismissedSuggestion && (
+          <div className="mb-4 rounded-lg border border-blue-300 bg-blue-50 p-4">
+            <p className="mb-2 flex items-center gap-1.5 text-sm font-bold text-blue-800">
+              <MapPin className="h-4 w-4" /> Did you mean this address?
+            </p>
+            <div className="mb-3 rounded-md bg-white p-3 text-sm text-blue-900">
+              <p>{billingState.suggestedAddress.street1}</p>
+              <p>{billingState.suggestedAddress.city}, {billingState.suggestedAddress.state} {billingState.suggestedAddress.zip}</p>
+              <p>{billingState.suggestedAddress.country}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleUseSuggestedAddress}
+                className="flex-1 rounded-full py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+                style={{ backgroundColor: accentColor }}
+              >
+                Use Suggested Address
+              </button>
+              <button
+                type="button"
+                onClick={() => { setConfirmedAddress(true); setDismissedSuggestion(true); setBillingGen((g) => g + 1); }}
+                className="flex-1 rounded-full bg-zinc-200 py-2.5 text-sm font-bold text-zinc-700 transition-colors hover:bg-zinc-300"
+              >
+                Keep My Address
+              </button>
+            </div>
+          </div>
+        )}
+
+
+
+        <form ref={billingFormRef} key={billingGen} action={billingFormAction} className="space-y-4">
           <input type="hidden" name="billingSameAsShipping" value={billingSameAsShipping ? "on" : ""} />
+          <input type="hidden" name="confirmedAddress" value={confirmedAddress || billingState.status === "address_suggestion" ? "true" : ""} />
           {!billingSameAsShipping && (
             <>
               <input type="hidden" name="billingAddressLine1" value={billingForm.addressLine1} />
@@ -976,6 +1040,18 @@ export function CheckoutForm({ checkoutPage, landingUrl, activePromotion = null,
               placeholder="10001"
             />
           </div>
+
+          {/* Tax ID for Mexico */}
+          {shippingForm.country === "MX" && (
+            <Field
+              name="taxId"
+              label="Tax ID (RFC/CURP)"
+              value={shippingForm.taxId ?? ""}
+              onChange={(v) => setShippingForm((s) => ({ ...s, taxId: v }))}
+              errors={billingState.fieldErrors?.taxId}
+              placeholder="XAXX010101000"
+            />
+          )}
 
           {/* Billing same as shipping */}
           <label className="flex items-center gap-2 text-sm font-bold text-zinc-800">
