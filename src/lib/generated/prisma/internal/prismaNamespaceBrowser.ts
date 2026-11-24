@@ -297,6 +297,8 @@ export const OrderScalarFieldEnum = {
   state: 'state',
   zip: 'zip',
   country: 'country',
+  taxId: 'taxId',
+  addressVerified: 'addressVerified',
   shippingSameAsBilling: 'shippingSameAsBilling',
   shippingAddressLine1: 'shippingAddressLine1',
   shippingCity: 'shippingCity',

@@ -24,6 +24,7 @@ import { sendOrderConfirmationEmail } from "@/lib/email/send-order-confirmation"
 import { sendOrderWebhook } from "@/lib/webhook/send";
 import { logOrderEvent } from "@/lib/orders/log-event";
 import { getShippingRates, type ShippingRate, type ShippingRateResult } from "@/lib/shipping/get-rates";
+import { validateAddress } from "@/lib/shipping/validate-address";
 import { DOMESTIC_COUNTRY } from "@/lib/shipping/config";
 
 /**
@@ -169,6 +170,11 @@ export async function checkPromoCode(
 /**
  * Step 2: billing address. Updates the order created in step 1 with address
  * fields only — no charge happens yet.
+ *
+ * Also runs Shippo address validation on the shipping address. If the address
+ * is correctable, returns a suggestion instead of saving. If invalid, blocks.
+ * Pass confirmedAddress=true (hidden field) to skip re-validation after the
+ * customer accepts a suggestion.
  */
 export async function saveBillingInfo(
   orderId: string,
@@ -199,6 +205,31 @@ export async function saveBillingInfo(
   // from separate hidden fields when the customer unchecks the checkbox.
   const billingSameAsShipping = formData.get("billingSameAsShipping") === "on";
 
+  // --- Shippo address validation (skip if user already confirmed a suggestion) ---
+  const confirmedAddress = formData.get("confirmedAddress") === "true";
+  if (!confirmedAddress) {
+    const validation = await validateAddress({
+      street1: data.addressLine1,
+      city: data.city,
+      state: data.state,
+      zip: data.zip,
+      country: data.country,
+    });
+
+    if (validation.status === "correctable" && validation.suggested) {
+      return {
+        status: "address_suggestion",
+        message: "We found a more accurate version of your address.",
+        suggestedAddress: validation.suggested,
+      };
+    }
+
+    // Invalid address — log warning but don't block the customer
+    if (validation.status === "invalid") {
+      console.warn("Address validation failed, proceeding anyway:", validation.messages);
+    }
+  }
+
   await prisma.order.update({
     where: { id: order.id },
     data: {
@@ -215,6 +246,10 @@ export async function saveBillingInfo(
       shippingState: data.state,
       shippingZip: data.zip,
       shippingCountry: data.country,
+      // Tax ID (Mexico customs, etc.)
+      taxId: data.taxId || null,
+      // Track that Shippo validated (or user confirmed) this address
+      addressVerified: true,
       // Clear any previously selected shipping rate (address may have changed)
       shippingRateCents: null,
       shippingCarrier: null,
@@ -224,7 +259,7 @@ export async function saveBillingInfo(
     },
   });
 
-  await logOrderEvent(order.id, "billing_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}`);
+  await logOrderEvent(order.id, "billing_info_saved", `Shipping: ${data.city}, ${data.state}, ${data.country}${confirmedAddress ? " (address confirmed by customer)" : ""}`);
 
   const shippingConfig = await prisma.shippingSettings.findFirst({ select: { enabled: true } });
   const shippingEnabled = shippingConfig?.enabled === true;

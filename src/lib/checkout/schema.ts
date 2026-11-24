@@ -21,17 +21,35 @@ export function parseContactInfoData(formData: FormData) {
   });
 }
 
+// Bare "PO Box" without a box number — catches "PO Box", "P.O. Box", etc.
+// A full "PO Box 123" is fine; a bare "PO Box" is not shippable.
+const BARE_PO_BOX_RE = /^\s*p[.\\/]?\s*o[.\\/]?\s*(box)?\s*$/i;
+
 // Step 2 — address fields. The main form collects the shipping address (where
 // the device ships). Billing is either the same or entered separately.
 export const billingInfoSchema = z.object({
-  addressLine1: z.string().trim().min(1, "Street address is required"),
+  addressLine1: z.string().trim().min(1, "Street address is required")
+    .refine((v) => !BARE_PO_BOX_RE.test(v), "Please include a PO Box number (e.g. PO Box 123)"),
   city: z.string().trim().min(1, "City is required"),
   state: z.string().trim().default(""),
   zip: z.string().trim().min(1, "Zip code is required"),
   country: z.string().trim().min(2, "Select a country"),
+  taxId: z.string().trim().optional().default(""),
 }).superRefine((data, ctx) => {
   if (data.country === "US" && !data.state) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "State is required", path: ["state"] });
+  }
+  // US ZIP format: 5 digits or 5+4
+  if (data.country === "US" && !/^\d{5}(-\d{4})?$/.test(data.zip)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter a valid US ZIP code (e.g. 10001)", path: ["zip"] });
+  }
+  // Canada postal code format
+  if (data.country === "CA" && !/^[A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d$/.test(data.zip)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter a valid Canadian postal code (e.g. K1A 0B1)", path: ["zip"] });
+  }
+  // Mexico tax ID required for customs
+  if (data.country === "MX" && !data.taxId) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Tax ID (RFC/CURP) is required for Mexico shipments", path: ["taxId"] });
   }
 });
 
@@ -44,6 +62,7 @@ export function parseBillingInfoData(formData: FormData) {
     state: formData.get("state"),
     zip: formData.get("zip"),
     country: formData.get("country"),
+    taxId: formData.get("taxId") ?? "",
   });
 }
 
