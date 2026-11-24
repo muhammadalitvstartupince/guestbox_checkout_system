@@ -192,6 +192,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <Row label="Phone" value={order.phone} />
             <Row label="Shipping address" value={shippingAddress} />
             <Row label="Billing address" value={billingAddress ?? "Same as shipping"} />
+            {order.taxId && <Row label="RFC/Tax ID" value={order.taxId} />}
           </dl>
           <div className="mt-3 border-t border-zinc-100 pt-3 dark:border-zinc-800">
             <dt className="text-sm text-zinc-500 dark:text-zinc-400">Landing page (source)</dt>
