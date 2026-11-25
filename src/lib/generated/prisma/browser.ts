@@ -83,6 +83,11 @@ export type Order = Prisma.OrderModel
  */
 export type OrderEvent = Prisma.OrderEventModel
 /**
+ * Model OrderNote
+ * 
+ */
+export type OrderNote = Prisma.OrderNoteModel
+/**
  * Model OrderAddon
  * 
  */

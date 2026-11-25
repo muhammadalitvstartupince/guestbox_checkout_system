@@ -171,6 +171,33 @@ export async function retryZohoSync(orderId: string): Promise<void> {
   await logOrderEvent(order.id, result.success ? "zoho_synced" : "zoho_failed", result.success ? "Manual retry" : result.error);
 }
 
+export async function addOrderNote(orderId: string, _prev: unknown, formData: FormData) {
+  const session = await verifyAdminSession();
+  const content = formData.get("content")?.toString().trim() ?? "";
+  if (!content) return { error: "Note cannot be empty." };
+
+  await prisma.orderNote.create({
+    data: {
+      orderId,
+      adminUserId: session.adminUserId as string,
+      content,
+    },
+  });
+
+  const { revalidatePath } = await import("next/cache");
+  revalidatePath(`/admin/orders/${orderId}`);
+  return { error: null };
+}
+
+export async function deleteOrderNote(noteId: string) {
+  await verifyAdminSession();
+  await prisma.orderNote.delete({ where: { id: noteId } });
+
+  // We don't know the orderId here cheaply, but revalidating the whole orders segment works
+  const { revalidatePath } = await import("next/cache");
+  revalidatePath("/admin/orders", "layout");
+}
+
 export async function resendConfirmationEmail(orderId: string): Promise<void> {
   await verifyAdminSession();
   await sendOrderConfirmationEmail(orderId, "Manually resent by admin");

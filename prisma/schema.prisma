@@ -127,6 +127,7 @@ model AdminUser {
   createdCheckoutPages CheckoutPage[]
   cardAccessLogs       CardAccessAuditLog[]
   checkoutPageLogs     CheckoutPageLog[]
+  orderNotes           OrderNote[]
 
   @@map("admin_users")
 }
@@ -499,6 +500,8 @@ model Order {
 
   abandonedNotifiedAt DateTime? @map("abandoned_notified_at")
 
+  notes            OrderNote[]
+
   @@map("orders")
 }
 
@@ -515,6 +518,18 @@ model OrderEvent {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("order_events")
+}
+
+model OrderNote {
+  id          String    @id @default(uuid()) @db.Uuid
+  orderId     String    @map("order_id") @db.Uuid
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  adminUserId String    @map("admin_user_id") @db.Uuid
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+  content     String
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("order_notes")
 }
 
 model OrderAddon {

@@ -410,6 +410,7 @@ export const ModelName = {
   PromoCode: 'PromoCode',
   Order: 'Order',
   OrderEvent: 'OrderEvent',
+  OrderNote: 'OrderNote',
   OrderAddon: 'OrderAddon',
   CardAccessAuditLog: 'CardAccessAuditLog',
   Promotion: 'Promotion',
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "liveChatSettings" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatbotSettings" | "chatConversation" | "chatMessage"
+    modelProps: "adminUser" | "skin" | "checkoutPage" | "priceTier" | "billingPlan" | "planTier" | "planTierPrice" | "checkoutPageLog" | "addon" | "checkoutPageAddon" | "promoCode" | "order" | "orderEvent" | "orderNote" | "orderAddon" | "cardAccessAuditLog" | "promotion" | "promotionCheckoutPage" | "emailSettings" | "shippingSettings" | "shippingPackageTier" | "shippingWeightEntry" | "liveChatSettings" | "abandonedCheckoutSettings" | "shippingRateLog" | "chatbotSettings" | "chatConversation" | "chatMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1402,6 +1403,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrderEventCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrderEventCountAggregateOutputType> | number
+        }
+      }
+    }
+    OrderNote: {
+      payload: Prisma.$OrderNotePayload<ExtArgs>
+      fields: Prisma.OrderNoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrderNoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrderNoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>
+        }
+        findFirst: {
+          args: Prisma.OrderNoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrderNoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>
+        }
+        findMany: {
+          args: Prisma.OrderNoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>[]
+        }
+        create: {
+          args: Prisma.OrderNoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>
+        }
+        createMany: {
+          args: Prisma.OrderNoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrderNoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>[]
+        }
+        delete: {
+          args: Prisma.OrderNoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>
+        }
+        update: {
+          args: Prisma.OrderNoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>
+        }
+        deleteMany: {
+          args: Prisma.OrderNoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrderNoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrderNoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>[]
+        }
+        upsert: {
+          args: Prisma.OrderNoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderNotePayload>
+        }
+        aggregate: {
+          args: Prisma.OrderNoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrderNote>
+        }
+        groupBy: {
+          args: Prisma.OrderNoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrderNoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrderNoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrderNoteCountAggregateOutputType> | number
         }
       }
     }
@@ -2735,6 +2810,17 @@ export const OrderEventScalarFieldEnum = {
 export type OrderEventScalarFieldEnum = (typeof OrderEventScalarFieldEnum)[keyof typeof OrderEventScalarFieldEnum]
 
 
+export const OrderNoteScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  adminUserId: 'adminUserId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type OrderNoteScalarFieldEnum = (typeof OrderNoteScalarFieldEnum)[keyof typeof OrderNoteScalarFieldEnum]
+
+
 export const OrderAddonScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
@@ -3400,6 +3486,7 @@ export type GlobalOmitConfig = {
   promoCode?: Prisma.PromoCodeOmit
   order?: Prisma.OrderOmit
   orderEvent?: Prisma.OrderEventOmit
+  orderNote?: Prisma.OrderNoteOmit
   orderAddon?: Prisma.OrderAddonOmit
   cardAccessAuditLog?: Prisma.CardAccessAuditLogOmit
   promotion?: Prisma.PromotionOmit
