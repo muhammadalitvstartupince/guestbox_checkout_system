@@ -193,6 +193,7 @@ export type AdminUserWhereInput = {
   createdCheckoutPages?: Prisma.CheckoutPageListRelationFilter
   cardAccessLogs?: Prisma.CardAccessAuditLogListRelationFilter
   checkoutPageLogs?: Prisma.CheckoutPageLogListRelationFilter
+  orderNotes?: Prisma.OrderNoteListRelationFilter
 }
 
 export type AdminUserOrderByWithRelationInput = {
@@ -205,6 +206,7 @@ export type AdminUserOrderByWithRelationInput = {
   createdCheckoutPages?: Prisma.CheckoutPageOrderByRelationAggregateInput
   cardAccessLogs?: Prisma.CardAccessAuditLogOrderByRelationAggregateInput
   checkoutPageLogs?: Prisma.CheckoutPageLogOrderByRelationAggregateInput
+  orderNotes?: Prisma.OrderNoteOrderByRelationAggregateInput
 }
 
 export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
@@ -220,6 +222,7 @@ export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
   createdCheckoutPages?: Prisma.CheckoutPageListRelationFilter
   cardAccessLogs?: Prisma.CardAccessAuditLogListRelationFilter
   checkoutPageLogs?: Prisma.CheckoutPageLogListRelationFilter
+  orderNotes?: Prisma.OrderNoteListRelationFilter
 }, "id" | "email">
 
 export type AdminUserOrderByWithAggregationInput = {
@@ -256,6 +259,7 @@ export type AdminUserCreateInput = {
   createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserUncheckedCreateInput = {
@@ -268,6 +272,7 @@ export type AdminUserUncheckedCreateInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserUpdateInput = {
@@ -280,6 +285,7 @@ export type AdminUserUpdateInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserUncheckedUpdateInput = {
@@ -292,6 +298,7 @@ export type AdminUserUncheckedUpdateInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserCreateManyInput = {
@@ -402,6 +409,20 @@ export type AdminUserUpdateOneWithoutCheckoutPageLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUserUpdateToOneWithWhereWithoutCheckoutPageLogsInput, Prisma.AdminUserUpdateWithoutCheckoutPageLogsInput>, Prisma.AdminUserUncheckedUpdateWithoutCheckoutPageLogsInput>
 }
 
+export type AdminUserCreateNestedOneWithoutOrderNotesInput = {
+  create?: Prisma.XOR<Prisma.AdminUserCreateWithoutOrderNotesInput, Prisma.AdminUserUncheckedCreateWithoutOrderNotesInput>
+  connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutOrderNotesInput
+  connect?: Prisma.AdminUserWhereUniqueInput
+}
+
+export type AdminUserUpdateOneRequiredWithoutOrderNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminUserCreateWithoutOrderNotesInput, Prisma.AdminUserUncheckedCreateWithoutOrderNotesInput>
+  connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutOrderNotesInput
+  upsert?: Prisma.AdminUserUpsertWithoutOrderNotesInput
+  connect?: Prisma.AdminUserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUserUpdateToOneWithWhereWithoutOrderNotesInput, Prisma.AdminUserUpdateWithoutOrderNotesInput>, Prisma.AdminUserUncheckedUpdateWithoutOrderNotesInput>
+}
+
 export type AdminUserCreateNestedOneWithoutCardAccessLogsInput = {
   create?: Prisma.XOR<Prisma.AdminUserCreateWithoutCardAccessLogsInput, Prisma.AdminUserUncheckedCreateWithoutCardAccessLogsInput>
   connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutCardAccessLogsInput
@@ -425,6 +446,7 @@ export type AdminUserCreateWithoutCreatedCheckoutPagesInput = {
   createdAt?: Date | string
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserUncheckedCreateWithoutCreatedCheckoutPagesInput = {
@@ -436,6 +458,7 @@ export type AdminUserUncheckedCreateWithoutCreatedCheckoutPagesInput = {
   createdAt?: Date | string
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserCreateOrConnectWithoutCreatedCheckoutPagesInput = {
@@ -463,6 +486,7 @@ export type AdminUserUpdateWithoutCreatedCheckoutPagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutCreatedCheckoutPagesInput = {
@@ -474,6 +498,7 @@ export type AdminUserUncheckedUpdateWithoutCreatedCheckoutPagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserCreateWithoutCheckoutPageLogsInput = {
@@ -485,6 +510,7 @@ export type AdminUserCreateWithoutCheckoutPageLogsInput = {
   createdAt?: Date | string
   createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserUncheckedCreateWithoutCheckoutPageLogsInput = {
@@ -496,6 +522,7 @@ export type AdminUserUncheckedCreateWithoutCheckoutPageLogsInput = {
   createdAt?: Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserCreateOrConnectWithoutCheckoutPageLogsInput = {
@@ -523,6 +550,7 @@ export type AdminUserUpdateWithoutCheckoutPageLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutCheckoutPageLogsInput = {
@@ -534,6 +562,71 @@ export type AdminUserUncheckedUpdateWithoutCheckoutPageLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
+}
+
+export type AdminUserCreateWithoutOrderNotesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name: string
+  role?: $Enums.AdminRole
+  createdAt?: Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
+}
+
+export type AdminUserUncheckedCreateWithoutOrderNotesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name: string
+  role?: $Enums.AdminRole
+  createdAt?: Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
+}
+
+export type AdminUserCreateOrConnectWithoutOrderNotesInput = {
+  where: Prisma.AdminUserWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminUserCreateWithoutOrderNotesInput, Prisma.AdminUserUncheckedCreateWithoutOrderNotesInput>
+}
+
+export type AdminUserUpsertWithoutOrderNotesInput = {
+  update: Prisma.XOR<Prisma.AdminUserUpdateWithoutOrderNotesInput, Prisma.AdminUserUncheckedUpdateWithoutOrderNotesInput>
+  create: Prisma.XOR<Prisma.AdminUserCreateWithoutOrderNotesInput, Prisma.AdminUserUncheckedCreateWithoutOrderNotesInput>
+  where?: Prisma.AdminUserWhereInput
+}
+
+export type AdminUserUpdateToOneWithWhereWithoutOrderNotesInput = {
+  where?: Prisma.AdminUserWhereInput
+  data: Prisma.XOR<Prisma.AdminUserUpdateWithoutOrderNotesInput, Prisma.AdminUserUncheckedUpdateWithoutOrderNotesInput>
+}
+
+export type AdminUserUpdateWithoutOrderNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
+}
+
+export type AdminUserUncheckedUpdateWithoutOrderNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserCreateWithoutCardAccessLogsInput = {
@@ -545,6 +638,7 @@ export type AdminUserCreateWithoutCardAccessLogsInput = {
   createdAt?: Date | string
   createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserUncheckedCreateWithoutCardAccessLogsInput = {
@@ -556,6 +650,7 @@ export type AdminUserUncheckedCreateWithoutCardAccessLogsInput = {
   createdAt?: Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
 }
 
 export type AdminUserCreateOrConnectWithoutCardAccessLogsInput = {
@@ -583,6 +678,7 @@ export type AdminUserUpdateWithoutCardAccessLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutCardAccessLogsInput = {
@@ -594,6 +690,7 @@ export type AdminUserUncheckedUpdateWithoutCardAccessLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
 }
 
 
@@ -605,12 +702,14 @@ export type AdminUserCountOutputType = {
   createdCheckoutPages: number
   cardAccessLogs: number
   checkoutPageLogs: number
+  orderNotes: number
 }
 
 export type AdminUserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdCheckoutPages?: boolean | AdminUserCountOutputTypeCountCreatedCheckoutPagesArgs
   cardAccessLogs?: boolean | AdminUserCountOutputTypeCountCardAccessLogsArgs
   checkoutPageLogs?: boolean | AdminUserCountOutputTypeCountCheckoutPageLogsArgs
+  orderNotes?: boolean | AdminUserCountOutputTypeCountOrderNotesArgs
 }
 
 /**
@@ -644,6 +743,13 @@ export type AdminUserCountOutputTypeCountCheckoutPageLogsArgs<ExtArgs extends ru
   where?: Prisma.CheckoutPageLogWhereInput
 }
 
+/**
+ * AdminUserCountOutputType without action
+ */
+export type AdminUserCountOutputTypeCountOrderNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderNoteWhereInput
+}
+
 
 export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -655,6 +761,7 @@ export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   createdCheckoutPages?: boolean | Prisma.AdminUser$createdCheckoutPagesArgs<ExtArgs>
   cardAccessLogs?: boolean | Prisma.AdminUser$cardAccessLogsArgs<ExtArgs>
   checkoutPageLogs?: boolean | Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs>
+  orderNotes?: boolean | Prisma.AdminUser$orderNotesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminUserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["adminUser"]>
 
@@ -690,6 +797,7 @@ export type AdminUserInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   createdCheckoutPages?: boolean | Prisma.AdminUser$createdCheckoutPagesArgs<ExtArgs>
   cardAccessLogs?: boolean | Prisma.AdminUser$cardAccessLogsArgs<ExtArgs>
   checkoutPageLogs?: boolean | Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs>
+  orderNotes?: boolean | Prisma.AdminUser$orderNotesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminUserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AdminUserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -701,6 +809,7 @@ export type $AdminUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     createdCheckoutPages: Prisma.$CheckoutPagePayload<ExtArgs>[]
     cardAccessLogs: Prisma.$CardAccessAuditLogPayload<ExtArgs>[]
     checkoutPageLogs: Prisma.$CheckoutPageLogPayload<ExtArgs>[]
+    orderNotes: Prisma.$OrderNotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1106,6 +1215,7 @@ export interface Prisma__AdminUserClient<T, Null = never, ExtArgs extends runtim
   createdCheckoutPages<T extends Prisma.AdminUser$createdCheckoutPagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$createdCheckoutPagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   cardAccessLogs<T extends Prisma.AdminUser$cardAccessLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$cardAccessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CardAccessAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkoutPageLogs<T extends Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutPageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orderNotes<T extends Prisma.AdminUser$orderNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$orderNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1603,6 +1713,30 @@ export type AdminUser$checkoutPageLogsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.CheckoutPageLogScalarFieldEnum | Prisma.CheckoutPageLogScalarFieldEnum[]
+}
+
+/**
+ * AdminUser.orderNotes
+ */
+export type AdminUser$orderNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrderNote
+   */
+  select?: Prisma.OrderNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrderNote
+   */
+  omit?: Prisma.OrderNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderNoteInclude<ExtArgs> | null
+  where?: Prisma.OrderNoteWhereInput
+  orderBy?: Prisma.OrderNoteOrderByWithRelationInput | Prisma.OrderNoteOrderByWithRelationInput[]
+  cursor?: Prisma.OrderNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderNoteScalarFieldEnum | Prisma.OrderNoteScalarFieldEnum[]
 }
 
 /**

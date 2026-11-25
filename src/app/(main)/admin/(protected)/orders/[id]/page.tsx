@@ -6,6 +6,7 @@ import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
 import { OrderTimeline } from "@/components/admin/OrderTimeline";
 import { calculateOrderPrice } from "@/lib/pricing/calculate";
 import { retryZohoSync, resendConfirmationEmail } from "./actions";
+import { OrderNotes } from "./OrderNotes";
 
 function formatCents(cents: number | null) {
   if (cents == null) return "—";
@@ -28,6 +29,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       },
       events: { orderBy: { createdAt: "asc" } },
       shippingRateLogs: { orderBy: { createdAt: "desc" } },
+      notes: { orderBy: { createdAt: "desc" }, include: { adminUser: { select: { email: true } } } },
     },
   });
 
@@ -184,6 +186,18 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <OrderStatusBadge status={order.status} />
         </p>
       </div>
+
+      <Card title="Notes">
+        <OrderNotes
+          orderId={order.id}
+          notes={order.notes.map((n) => ({
+            id: n.id,
+            content: n.content,
+            createdAt: n.createdAt.toISOString(),
+            adminUser: n.adminUser,
+          }))}
+        />
+      </Card>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card title="Customer">

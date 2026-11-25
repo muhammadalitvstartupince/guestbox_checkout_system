@@ -64,6 +64,7 @@ export const ModelName = {
   PromoCode: 'PromoCode',
   Order: 'Order',
   OrderEvent: 'OrderEvent',
+  OrderNote: 'OrderNote',
   OrderAddon: 'OrderAddon',
   CardAccessAuditLog: 'CardAccessAuditLog',
   Promotion: 'Promotion',
@@ -349,6 +350,17 @@ export const OrderEventScalarFieldEnum = {
 } as const
 
 export type OrderEventScalarFieldEnum = (typeof OrderEventScalarFieldEnum)[keyof typeof OrderEventScalarFieldEnum]
+
+
+export const OrderNoteScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  adminUserId: 'adminUserId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type OrderNoteScalarFieldEnum = (typeof OrderNoteScalarFieldEnum)[keyof typeof OrderNoteScalarFieldEnum]
 
 
 export const OrderAddonScalarFieldEnum = {
