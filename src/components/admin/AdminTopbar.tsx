@@ -6,6 +6,7 @@ import { logout } from "@/app/(main)/admin/actions";
 import { ThemeToggle } from "@/components/admin/ThemeToggle";
 
 const TITLES: { prefix: string; title: string }[] = [
+  { prefix: "/admin/invoices", title: "Invoices" },
   { prefix: "/admin/orders", title: "Orders" },
   { prefix: "/admin/checkout-pages", title: "Checkout Pages" },
   { prefix: "/admin/addons", title: "Add-ons" },

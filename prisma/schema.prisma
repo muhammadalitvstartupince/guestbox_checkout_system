@@ -103,6 +103,16 @@ enum OrderStatus {
   @@map("order_status")
 }
 
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  expired
+  voided
+
+  @@map("invoice_status")
+}
+
 // admin: full access. editor: can only manage checkout pages and add-ons —
 // no orders (so no card data), no promo codes, no settings, no admin users.
 enum AdminRole {
@@ -128,6 +138,7 @@ model AdminUser {
   cardAccessLogs       CardAccessAuditLog[]
   checkoutPageLogs     CheckoutPageLog[]
   orderNotes           OrderNote[]
+  invoices             Invoice[]
 
   @@map("admin_users")
 }
@@ -231,6 +242,7 @@ model CheckoutPage {
   logs               CheckoutPageLog[]
   promotionLinks     PromotionCheckoutPage[]
   chatConversations  ChatConversation[]
+  invoiceLineItems   InvoiceLineItem[]
 
   @@map("checkout_pages")
 }
@@ -545,8 +557,10 @@ model OrderAddon {
 
 model CardAccessAuditLog {
   id          String    @id @default(uuid()) @db.Uuid
-  orderId     String    @map("order_id") @db.Uuid
-  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String?   @map("order_id") @db.Uuid
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  invoiceId   String?   @map("invoice_id") @db.Uuid
+  invoice     Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   adminUserId String    @map("admin_user_id") @db.Uuid
   adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
   viewedAt    DateTime  @default(now()) @map("viewed_at")
@@ -680,6 +694,15 @@ model AbandonedCheckoutSettings {
   @@map("abandoned_checkout_settings")
 }
 
+model InvoiceSlackSettings {
+  id              String   @id @default(uuid()) @db.Uuid
+  enabled         Boolean  @default(false)
+  slackWebhookUrl String?  @map("slack_webhook_url")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("invoice_slack_settings")
+}
+
 // Logs every Shippo API call (request + response) so admins can audit
 // shipping rate calculations for any order.
 model ShippingRateLog {
@@ -751,4 +774,115 @@ model ChatMessage {
   createdAt       DateTime            @default(now()) @map("created_at")
 
   @@map("chat_messages")
+}
+
+// ---------------------------------------------------------------------------
+// Invoices — admin-created payment requests sent to customers via direct link
+// ---------------------------------------------------------------------------
+
+model Invoice {
+  id              String        @id @default(uuid()) @db.Uuid
+  invoiceNumber   String        @unique @map("invoice_number")
+  token           String        @unique @default(uuid()) @db.Uuid
+
+  firstName       String        @map("first_name")
+  lastName        String        @map("last_name")
+  email           String
+  phone           String?
+
+  addressLine1    String?       @map("address_line1")
+  city            String?
+  state           String?
+  zip             String?
+  country         String?
+  taxId           String?       @map("tax_id")
+
+  // Shipping address (separate from billing)
+  shippingSameAsBilling Boolean  @default(true) @map("shipping_same_as_billing")
+  shippingAddressLine1  String?  @map("shipping_address_line1")
+  shippingCity          String?  @map("shipping_city")
+  shippingState         String?  @map("shipping_state")
+  shippingZip           String?  @map("shipping_zip")
+  shippingCountry       String?  @map("shipping_country")
+
+  // Selected billing plan (informational — monthly not charged upfront)
+  listingQty            Int      @default(1) @map("listing_qty")
+  selectedPlanName     String?  @map("selected_plan_name")
+  selectedPlanInterval String?  @map("selected_plan_interval")
+  selectedPlanPriceCents Int?   @map("selected_plan_price_cents")
+
+  subtotalCents   Int           @map("subtotal_cents")
+  discountCents   Int           @default(0) @map("discount_cents")
+  discountLabel   String?       @map("discount_label")
+  shippingCents   Int           @default(0) @map("shipping_cents")
+  shippingCarrier String?       @map("shipping_carrier")
+  shippingService String?       @map("shipping_service")
+  shippingEstDays Int?          @map("shipping_est_days")
+  totalCents      Int           @map("total_cents")
+
+  expiresAt       DateTime?     @map("expires_at")
+  successRedirectUrl String?    @map("success_redirect_url")
+  webhookUrl      String?       @map("webhook_url")
+  adminNotes      String?       @map("admin_notes")
+  customerNotes   String?       @map("customer_notes")
+
+  paidAt          DateTime?     @map("paid_at")
+  cardLast4       String?       @map("card_last4")
+  cardBrand       String?       @map("card_brand")
+  cardNumberEncrypted String?   @map("card_number_encrypted")
+  cardCvvEncrypted    String?   @map("card_cvv_encrypted")
+  cardExpiryEncrypted String?   @map("card_expiry_encrypted")
+  cardHashKey     String        @default("") @map("card_hash_key")
+
+  authNetResponseCode  String?  @map("auth_net_response_code")
+  authNetAuthCode      String?  @map("auth_net_auth_code")
+  authNetTransactionId String?  @map("auth_net_transaction_id")
+  authNetMessage       String?  @map("auth_net_message")
+
+  zohoSynced      Boolean       @default(false) @map("zoho_synced")
+  zohoPayload     Json?         @map("zoho_payload")
+  zohoResponse    Json?         @map("zoho_response")
+
+  webhookPayload  Json?         @map("webhook_payload")
+  webhookResponse Json?         @map("webhook_response")
+
+  status          InvoiceStatus @default(draft)
+
+  createdById     String        @map("created_by") @db.Uuid
+  createdBy       AdminUser     @relation(fields: [createdById], references: [id])
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  lineItems       InvoiceLineItem[]
+  events          InvoiceEvent[]
+  cardAccessLogs  CardAccessAuditLog[]
+
+  @@map("invoices")
+}
+
+model InvoiceLineItem {
+  id              String        @id @default(uuid()) @db.Uuid
+  invoiceId       String        @map("invoice_id") @db.Uuid
+  invoice         Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  checkoutPageId  String?       @map("checkout_page_id") @db.Uuid
+  checkoutPage    CheckoutPage? @relation(fields: [checkoutPageId], references: [id])
+  description     String
+  quantity        Int           @default(1)
+  unitPriceCents  Int           @map("unit_price_cents")
+  totalCents      Int           @map("total_cents")
+  zohoItemId      String?       @map("zoho_item_id")
+  sortOrder       Int           @default(0) @map("sort_order")
+
+  @@map("invoice_line_items")
+}
+
+model InvoiceEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  invoiceId   String   @map("invoice_id") @db.Uuid
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  type        String
+  message     String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("invoice_events")
 }

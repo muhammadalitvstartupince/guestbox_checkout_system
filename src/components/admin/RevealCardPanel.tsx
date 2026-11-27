@@ -3,9 +3,12 @@
 import { useActionState } from "react";
 import { revealCard } from "@/app/(main)/admin/(protected)/orders/[id]/actions";
 import { initialRevealCardState } from "@/app/(main)/admin/(protected)/orders/[id]/types";
+import type { RevealCardState } from "@/app/(main)/admin/(protected)/orders/[id]/types";
 
-export function RevealCardPanel({ orderId, cardLast4, cardBrand }: { orderId: string; cardLast4: string; cardBrand: string | null }) {
-  const boundAction = revealCard.bind(null, orderId);
+type RevealAction = (id: string, prev: RevealCardState, fd: FormData) => Promise<RevealCardState>;
+
+export function RevealCardPanel({ orderId, cardLast4, cardBrand, action }: { orderId: string; cardLast4: string; cardBrand: string | null; action?: RevealAction }) {
+  const boundAction = (action ?? revealCard).bind(null, orderId);
   const [state, formAction, pending] = useActionState(boundAction, initialRevealCardState);
 
   return (

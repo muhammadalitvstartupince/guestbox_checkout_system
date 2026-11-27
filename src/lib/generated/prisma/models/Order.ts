@@ -1699,10 +1699,12 @@ export type OrderCreateNestedOneWithoutCardAccessLogsInput = {
   connect?: Prisma.OrderWhereUniqueInput
 }
 
-export type OrderUpdateOneRequiredWithoutCardAccessLogsNestedInput = {
+export type OrderUpdateOneWithoutCardAccessLogsNestedInput = {
   create?: Prisma.XOR<Prisma.OrderCreateWithoutCardAccessLogsInput, Prisma.OrderUncheckedCreateWithoutCardAccessLogsInput>
   connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCardAccessLogsInput
   upsert?: Prisma.OrderUpsertWithoutCardAccessLogsInput
+  disconnect?: Prisma.OrderWhereInput | boolean
+  delete?: Prisma.OrderWhereInput | boolean
   connect?: Prisma.OrderWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutCardAccessLogsInput, Prisma.OrderUpdateWithoutCardAccessLogsInput>, Prisma.OrderUncheckedUpdateWithoutCardAccessLogsInput>
 }
