@@ -9,6 +9,8 @@
 export interface SendOrderWebhookResult {
   success: boolean;
   error?: string;
+  responseBody?: unknown;
+  statusCode?: number;
 }
 
 export async function sendOrderWebhook(url: string, data: Record<string, unknown>): Promise<SendOrderWebhookResult> {
@@ -19,10 +21,12 @@ export async function sendOrderWebhook(url: string, data: Record<string, unknown
       body: JSON.stringify(data),
       signal: AbortSignal.timeout(10_000),
     });
+    let responseBody: unknown;
+    try { responseBody = await response.json(); } catch { try { responseBody = await response.text(); } catch { /* empty */ } }
     if (!response.ok) {
-      return { success: false, error: `Webhook responded with HTTP ${response.status}` };
+      return { success: false, error: `Webhook responded with HTTP ${response.status}`, responseBody, statusCode: response.status };
     }
-    return { success: true };
+    return { success: true, responseBody, statusCode: response.status };
   } catch (err) {
     return {
       success: false,

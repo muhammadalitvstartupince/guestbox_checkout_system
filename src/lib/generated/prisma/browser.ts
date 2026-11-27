@@ -138,6 +138,11 @@ export type LiveChatSettings = Prisma.LiveChatSettingsModel
  */
 export type AbandonedCheckoutSettings = Prisma.AbandonedCheckoutSettingsModel
 /**
+ * Model InvoiceSlackSettings
+ * 
+ */
+export type InvoiceSlackSettings = Prisma.InvoiceSlackSettingsModel
+/**
  * Model ShippingRateLog
  * 
  */
@@ -157,3 +162,18 @@ export type ChatConversation = Prisma.ChatConversationModel
  * 
  */
 export type ChatMessage = Prisma.ChatMessageModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model InvoiceLineItem
+ * 
+ */
+export type InvoiceLineItem = Prisma.InvoiceLineItemModel
+/**
+ * Model InvoiceEvent
+ * 
+ */
+export type InvoiceEvent = Prisma.InvoiceEventModel

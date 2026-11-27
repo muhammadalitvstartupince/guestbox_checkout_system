@@ -194,6 +194,7 @@ export type AdminUserWhereInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogListRelationFilter
   checkoutPageLogs?: Prisma.CheckoutPageLogListRelationFilter
   orderNotes?: Prisma.OrderNoteListRelationFilter
+  invoices?: Prisma.InvoiceListRelationFilter
 }
 
 export type AdminUserOrderByWithRelationInput = {
@@ -207,6 +208,7 @@ export type AdminUserOrderByWithRelationInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogOrderByRelationAggregateInput
   checkoutPageLogs?: Prisma.CheckoutPageLogOrderByRelationAggregateInput
   orderNotes?: Prisma.OrderNoteOrderByRelationAggregateInput
+  invoices?: Prisma.InvoiceOrderByRelationAggregateInput
 }
 
 export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
@@ -223,6 +225,7 @@ export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
   cardAccessLogs?: Prisma.CardAccessAuditLogListRelationFilter
   checkoutPageLogs?: Prisma.CheckoutPageLogListRelationFilter
   orderNotes?: Prisma.OrderNoteListRelationFilter
+  invoices?: Prisma.InvoiceListRelationFilter
 }, "id" | "email">
 
 export type AdminUserOrderByWithAggregationInput = {
@@ -260,6 +263,7 @@ export type AdminUserCreateInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserUncheckedCreateInput = {
@@ -273,6 +277,7 @@ export type AdminUserUncheckedCreateInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserUpdateInput = {
@@ -286,6 +291,7 @@ export type AdminUserUpdateInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserUncheckedUpdateInput = {
@@ -299,6 +305,7 @@ export type AdminUserUncheckedUpdateInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserCreateManyInput = {
@@ -437,6 +444,20 @@ export type AdminUserUpdateOneRequiredWithoutCardAccessLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUserUpdateToOneWithWhereWithoutCardAccessLogsInput, Prisma.AdminUserUpdateWithoutCardAccessLogsInput>, Prisma.AdminUserUncheckedUpdateWithoutCardAccessLogsInput>
 }
 
+export type AdminUserCreateNestedOneWithoutInvoicesInput = {
+  create?: Prisma.XOR<Prisma.AdminUserCreateWithoutInvoicesInput, Prisma.AdminUserUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutInvoicesInput
+  connect?: Prisma.AdminUserWhereUniqueInput
+}
+
+export type AdminUserUpdateOneRequiredWithoutInvoicesNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminUserCreateWithoutInvoicesInput, Prisma.AdminUserUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutInvoicesInput
+  upsert?: Prisma.AdminUserUpsertWithoutInvoicesInput
+  connect?: Prisma.AdminUserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUserUpdateToOneWithWhereWithoutInvoicesInput, Prisma.AdminUserUpdateWithoutInvoicesInput>, Prisma.AdminUserUncheckedUpdateWithoutInvoicesInput>
+}
+
 export type AdminUserCreateWithoutCreatedCheckoutPagesInput = {
   id?: string
   email: string
@@ -447,6 +468,7 @@ export type AdminUserCreateWithoutCreatedCheckoutPagesInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserUncheckedCreateWithoutCreatedCheckoutPagesInput = {
@@ -459,6 +481,7 @@ export type AdminUserUncheckedCreateWithoutCreatedCheckoutPagesInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserCreateOrConnectWithoutCreatedCheckoutPagesInput = {
@@ -487,6 +510,7 @@ export type AdminUserUpdateWithoutCreatedCheckoutPagesInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutCreatedCheckoutPagesInput = {
@@ -499,6 +523,7 @@ export type AdminUserUncheckedUpdateWithoutCreatedCheckoutPagesInput = {
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserCreateWithoutCheckoutPageLogsInput = {
@@ -511,6 +536,7 @@ export type AdminUserCreateWithoutCheckoutPageLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserUncheckedCreateWithoutCheckoutPageLogsInput = {
@@ -523,6 +549,7 @@ export type AdminUserUncheckedCreateWithoutCheckoutPageLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserCreateOrConnectWithoutCheckoutPageLogsInput = {
@@ -551,6 +578,7 @@ export type AdminUserUpdateWithoutCheckoutPageLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutCheckoutPageLogsInput = {
@@ -563,6 +591,7 @@ export type AdminUserUncheckedUpdateWithoutCheckoutPageLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserCreateWithoutOrderNotesInput = {
@@ -575,6 +604,7 @@ export type AdminUserCreateWithoutOrderNotesInput = {
   createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserUncheckedCreateWithoutOrderNotesInput = {
@@ -587,6 +617,7 @@ export type AdminUserUncheckedCreateWithoutOrderNotesInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserCreateOrConnectWithoutOrderNotesInput = {
@@ -615,6 +646,7 @@ export type AdminUserUpdateWithoutOrderNotesInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutOrderNotesInput = {
@@ -627,6 +659,7 @@ export type AdminUserUncheckedUpdateWithoutOrderNotesInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
   cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserCreateWithoutCardAccessLogsInput = {
@@ -639,6 +672,7 @@ export type AdminUserCreateWithoutCardAccessLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
   checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserUncheckedCreateWithoutCardAccessLogsInput = {
@@ -651,6 +685,7 @@ export type AdminUserUncheckedCreateWithoutCardAccessLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
   orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUserCreateOrConnectWithoutCardAccessLogsInput = {
@@ -679,6 +714,7 @@ export type AdminUserUpdateWithoutCardAccessLogsInput = {
   createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutCardAccessLogsInput = {
@@ -689,6 +725,75 @@ export type AdminUserUncheckedUpdateWithoutCardAccessLogsInput = {
   role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type AdminUserCreateWithoutInvoicesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name: string
+  role?: $Enums.AdminRole
+  createdAt?: Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageCreateNestedManyWithoutCreatedByInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogCreateNestedManyWithoutAdminUserInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteCreateNestedManyWithoutAdminUserInput
+}
+
+export type AdminUserUncheckedCreateWithoutInvoicesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name: string
+  role?: $Enums.AdminRole
+  createdAt?: Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageUncheckedCreateNestedManyWithoutCreatedByInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedCreateNestedManyWithoutAdminUserInput
+  orderNotes?: Prisma.OrderNoteUncheckedCreateNestedManyWithoutAdminUserInput
+}
+
+export type AdminUserCreateOrConnectWithoutInvoicesInput = {
+  where: Prisma.AdminUserWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminUserCreateWithoutInvoicesInput, Prisma.AdminUserUncheckedCreateWithoutInvoicesInput>
+}
+
+export type AdminUserUpsertWithoutInvoicesInput = {
+  update: Prisma.XOR<Prisma.AdminUserUpdateWithoutInvoicesInput, Prisma.AdminUserUncheckedUpdateWithoutInvoicesInput>
+  create: Prisma.XOR<Prisma.AdminUserCreateWithoutInvoicesInput, Prisma.AdminUserUncheckedCreateWithoutInvoicesInput>
+  where?: Prisma.AdminUserWhereInput
+}
+
+export type AdminUserUpdateToOneWithWhereWithoutInvoicesInput = {
+  where?: Prisma.AdminUserWhereInput
+  data: Prisma.XOR<Prisma.AdminUserUpdateWithoutInvoicesInput, Prisma.AdminUserUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type AdminUserUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageUpdateManyWithoutCreatedByNestedInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUpdateManyWithoutAdminUserNestedInput
+  checkoutPageLogs?: Prisma.CheckoutPageLogUpdateManyWithoutAdminUserNestedInput
+  orderNotes?: Prisma.OrderNoteUpdateManyWithoutAdminUserNestedInput
+}
+
+export type AdminUserUncheckedUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdCheckoutPages?: Prisma.CheckoutPageUncheckedUpdateManyWithoutCreatedByNestedInput
+  cardAccessLogs?: Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
   checkoutPageLogs?: Prisma.CheckoutPageLogUncheckedUpdateManyWithoutAdminUserNestedInput
   orderNotes?: Prisma.OrderNoteUncheckedUpdateManyWithoutAdminUserNestedInput
 }
@@ -703,6 +808,7 @@ export type AdminUserCountOutputType = {
   cardAccessLogs: number
   checkoutPageLogs: number
   orderNotes: number
+  invoices: number
 }
 
 export type AdminUserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -710,6 +816,7 @@ export type AdminUserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   cardAccessLogs?: boolean | AdminUserCountOutputTypeCountCardAccessLogsArgs
   checkoutPageLogs?: boolean | AdminUserCountOutputTypeCountCheckoutPageLogsArgs
   orderNotes?: boolean | AdminUserCountOutputTypeCountOrderNotesArgs
+  invoices?: boolean | AdminUserCountOutputTypeCountInvoicesArgs
 }
 
 /**
@@ -750,6 +857,13 @@ export type AdminUserCountOutputTypeCountOrderNotesArgs<ExtArgs extends runtime.
   where?: Prisma.OrderNoteWhereInput
 }
 
+/**
+ * AdminUserCountOutputType without action
+ */
+export type AdminUserCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoiceWhereInput
+}
+
 
 export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -762,6 +876,7 @@ export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   cardAccessLogs?: boolean | Prisma.AdminUser$cardAccessLogsArgs<ExtArgs>
   checkoutPageLogs?: boolean | Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs>
   orderNotes?: boolean | Prisma.AdminUser$orderNotesArgs<ExtArgs>
+  invoices?: boolean | Prisma.AdminUser$invoicesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminUserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["adminUser"]>
 
@@ -798,6 +913,7 @@ export type AdminUserInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   cardAccessLogs?: boolean | Prisma.AdminUser$cardAccessLogsArgs<ExtArgs>
   checkoutPageLogs?: boolean | Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs>
   orderNotes?: boolean | Prisma.AdminUser$orderNotesArgs<ExtArgs>
+  invoices?: boolean | Prisma.AdminUser$invoicesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminUserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AdminUserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -810,6 +926,7 @@ export type $AdminUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     cardAccessLogs: Prisma.$CardAccessAuditLogPayload<ExtArgs>[]
     checkoutPageLogs: Prisma.$CheckoutPageLogPayload<ExtArgs>[]
     orderNotes: Prisma.$OrderNotePayload<ExtArgs>[]
+    invoices: Prisma.$InvoicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1216,6 +1333,7 @@ export interface Prisma__AdminUserClient<T, Null = never, ExtArgs extends runtim
   cardAccessLogs<T extends Prisma.AdminUser$cardAccessLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$cardAccessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CardAccessAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkoutPageLogs<T extends Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$checkoutPageLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutPageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orderNotes<T extends Prisma.AdminUser$orderNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$orderNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoices<T extends Prisma.AdminUser$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1737,6 +1855,30 @@ export type AdminUser$orderNotesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.OrderNoteScalarFieldEnum | Prisma.OrderNoteScalarFieldEnum[]
+}
+
+/**
+ * AdminUser.invoices
+ */
+export type AdminUser$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invoice
+   */
+  select?: Prisma.InvoiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invoice
+   */
+  omit?: Prisma.InvoiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoiceInclude<ExtArgs> | null
+  where?: Prisma.InvoiceWhereInput
+  orderBy?: Prisma.InvoiceOrderByWithRelationInput | Prisma.InvoiceOrderByWithRelationInput[]
+  cursor?: Prisma.InvoiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
 }
 
 /**

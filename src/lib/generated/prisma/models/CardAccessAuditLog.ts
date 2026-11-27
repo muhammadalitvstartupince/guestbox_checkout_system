@@ -27,6 +27,7 @@ export type AggregateCardAccessAuditLog = {
 export type CardAccessAuditLogMinAggregateOutputType = {
   id: string | null
   orderId: string | null
+  invoiceId: string | null
   adminUserId: string | null
   viewedAt: Date | null
   ipAddress: string | null
@@ -35,6 +36,7 @@ export type CardAccessAuditLogMinAggregateOutputType = {
 export type CardAccessAuditLogMaxAggregateOutputType = {
   id: string | null
   orderId: string | null
+  invoiceId: string | null
   adminUserId: string | null
   viewedAt: Date | null
   ipAddress: string | null
@@ -43,6 +45,7 @@ export type CardAccessAuditLogMaxAggregateOutputType = {
 export type CardAccessAuditLogCountAggregateOutputType = {
   id: number
   orderId: number
+  invoiceId: number
   adminUserId: number
   viewedAt: number
   ipAddress: number
@@ -53,6 +56,7 @@ export type CardAccessAuditLogCountAggregateOutputType = {
 export type CardAccessAuditLogMinAggregateInputType = {
   id?: true
   orderId?: true
+  invoiceId?: true
   adminUserId?: true
   viewedAt?: true
   ipAddress?: true
@@ -61,6 +65,7 @@ export type CardAccessAuditLogMinAggregateInputType = {
 export type CardAccessAuditLogMaxAggregateInputType = {
   id?: true
   orderId?: true
+  invoiceId?: true
   adminUserId?: true
   viewedAt?: true
   ipAddress?: true
@@ -69,6 +74,7 @@ export type CardAccessAuditLogMaxAggregateInputType = {
 export type CardAccessAuditLogCountAggregateInputType = {
   id?: true
   orderId?: true
+  invoiceId?: true
   adminUserId?: true
   viewedAt?: true
   ipAddress?: true
@@ -149,7 +155,8 @@ export type CardAccessAuditLogGroupByArgs<ExtArgs extends runtime.Types.Extensio
 
 export type CardAccessAuditLogGroupByOutputType = {
   id: string
-  orderId: string
+  orderId: string | null
+  invoiceId: string | null
   adminUserId: string
   viewedAt: Date
   ipAddress: string | null
@@ -178,21 +185,25 @@ export type CardAccessAuditLogWhereInput = {
   OR?: Prisma.CardAccessAuditLogWhereInput[]
   NOT?: Prisma.CardAccessAuditLogWhereInput | Prisma.CardAccessAuditLogWhereInput[]
   id?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
-  orderId?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
+  orderId?: Prisma.UuidNullableFilter<"CardAccessAuditLog"> | string | null
+  invoiceId?: Prisma.UuidNullableFilter<"CardAccessAuditLog"> | string | null
   adminUserId?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
   viewedAt?: Prisma.DateTimeFilter<"CardAccessAuditLog"> | Date | string
   ipAddress?: Prisma.StringNullableFilter<"CardAccessAuditLog"> | string | null
-  order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
+  order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
+  invoice?: Prisma.XOR<Prisma.InvoiceNullableScalarRelationFilter, Prisma.InvoiceWhereInput> | null
   adminUser?: Prisma.XOR<Prisma.AdminUserScalarRelationFilter, Prisma.AdminUserWhereInput>
 }
 
 export type CardAccessAuditLogOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  orderId?: Prisma.SortOrder
+  orderId?: Prisma.SortOrderInput | Prisma.SortOrder
+  invoiceId?: Prisma.SortOrderInput | Prisma.SortOrder
   adminUserId?: Prisma.SortOrder
   viewedAt?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
+  invoice?: Prisma.InvoiceOrderByWithRelationInput
   adminUser?: Prisma.AdminUserOrderByWithRelationInput
 }
 
@@ -201,17 +212,20 @@ export type CardAccessAuditLogWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CardAccessAuditLogWhereInput | Prisma.CardAccessAuditLogWhereInput[]
   OR?: Prisma.CardAccessAuditLogWhereInput[]
   NOT?: Prisma.CardAccessAuditLogWhereInput | Prisma.CardAccessAuditLogWhereInput[]
-  orderId?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
+  orderId?: Prisma.UuidNullableFilter<"CardAccessAuditLog"> | string | null
+  invoiceId?: Prisma.UuidNullableFilter<"CardAccessAuditLog"> | string | null
   adminUserId?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
   viewedAt?: Prisma.DateTimeFilter<"CardAccessAuditLog"> | Date | string
   ipAddress?: Prisma.StringNullableFilter<"CardAccessAuditLog"> | string | null
-  order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
+  order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
+  invoice?: Prisma.XOR<Prisma.InvoiceNullableScalarRelationFilter, Prisma.InvoiceWhereInput> | null
   adminUser?: Prisma.XOR<Prisma.AdminUserScalarRelationFilter, Prisma.AdminUserWhereInput>
 }, "id">
 
 export type CardAccessAuditLogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  orderId?: Prisma.SortOrder
+  orderId?: Prisma.SortOrderInput | Prisma.SortOrder
+  invoiceId?: Prisma.SortOrderInput | Prisma.SortOrder
   adminUserId?: Prisma.SortOrder
   viewedAt?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -225,7 +239,8 @@ export type CardAccessAuditLogScalarWhereWithAggregatesInput = {
   OR?: Prisma.CardAccessAuditLogScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CardAccessAuditLogScalarWhereWithAggregatesInput | Prisma.CardAccessAuditLogScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"CardAccessAuditLog"> | string
-  orderId?: Prisma.UuidWithAggregatesFilter<"CardAccessAuditLog"> | string
+  orderId?: Prisma.UuidNullableWithAggregatesFilter<"CardAccessAuditLog"> | string | null
+  invoiceId?: Prisma.UuidNullableWithAggregatesFilter<"CardAccessAuditLog"> | string | null
   adminUserId?: Prisma.UuidWithAggregatesFilter<"CardAccessAuditLog"> | string
   viewedAt?: Prisma.DateTimeWithAggregatesFilter<"CardAccessAuditLog"> | Date | string
   ipAddress?: Prisma.StringNullableWithAggregatesFilter<"CardAccessAuditLog"> | string | null
@@ -235,13 +250,15 @@ export type CardAccessAuditLogCreateInput = {
   id?: string
   viewedAt?: Date | string
   ipAddress?: string | null
-  order: Prisma.OrderCreateNestedOneWithoutCardAccessLogsInput
+  order?: Prisma.OrderCreateNestedOneWithoutCardAccessLogsInput
+  invoice?: Prisma.InvoiceCreateNestedOneWithoutCardAccessLogsInput
   adminUser: Prisma.AdminUserCreateNestedOneWithoutCardAccessLogsInput
 }
 
 export type CardAccessAuditLogUncheckedCreateInput = {
   id?: string
-  orderId: string
+  orderId?: string | null
+  invoiceId?: string | null
   adminUserId: string
   viewedAt?: Date | string
   ipAddress?: string | null
@@ -251,13 +268,15 @@ export type CardAccessAuditLogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.OrderUpdateOneRequiredWithoutCardAccessLogsNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCardAccessLogsNestedInput
+  invoice?: Prisma.InvoiceUpdateOneWithoutCardAccessLogsNestedInput
   adminUser?: Prisma.AdminUserUpdateOneRequiredWithoutCardAccessLogsNestedInput
 }
 
 export type CardAccessAuditLogUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminUserId?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -265,7 +284,8 @@ export type CardAccessAuditLogUncheckedUpdateInput = {
 
 export type CardAccessAuditLogCreateManyInput = {
   id?: string
-  orderId: string
+  orderId?: string | null
+  invoiceId?: string | null
   adminUserId: string
   viewedAt?: Date | string
   ipAddress?: string | null
@@ -279,7 +299,8 @@ export type CardAccessAuditLogUpdateManyMutationInput = {
 
 export type CardAccessAuditLogUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminUserId?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -298,6 +319,7 @@ export type CardAccessAuditLogOrderByRelationAggregateInput = {
 export type CardAccessAuditLogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  invoiceId?: Prisma.SortOrder
   adminUserId?: Prisma.SortOrder
   viewedAt?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
@@ -306,6 +328,7 @@ export type CardAccessAuditLogCountOrderByAggregateInput = {
 export type CardAccessAuditLogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  invoiceId?: Prisma.SortOrder
   adminUserId?: Prisma.SortOrder
   viewedAt?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
@@ -314,6 +337,7 @@ export type CardAccessAuditLogMaxOrderByAggregateInput = {
 export type CardAccessAuditLogMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  invoiceId?: Prisma.SortOrder
   adminUserId?: Prisma.SortOrder
   viewedAt?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
@@ -403,16 +427,60 @@ export type CardAccessAuditLogUncheckedUpdateManyWithoutOrderNestedInput = {
   deleteMany?: Prisma.CardAccessAuditLogScalarWhereInput | Prisma.CardAccessAuditLogScalarWhereInput[]
 }
 
+export type CardAccessAuditLogCreateNestedManyWithoutInvoiceInput = {
+  create?: Prisma.XOR<Prisma.CardAccessAuditLogCreateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput> | Prisma.CardAccessAuditLogCreateWithoutInvoiceInput[] | Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput[]
+  connectOrCreate?: Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput | Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput[]
+  createMany?: Prisma.CardAccessAuditLogCreateManyInvoiceInputEnvelope
+  connect?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+}
+
+export type CardAccessAuditLogUncheckedCreateNestedManyWithoutInvoiceInput = {
+  create?: Prisma.XOR<Prisma.CardAccessAuditLogCreateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput> | Prisma.CardAccessAuditLogCreateWithoutInvoiceInput[] | Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput[]
+  connectOrCreate?: Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput | Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput[]
+  createMany?: Prisma.CardAccessAuditLogCreateManyInvoiceInputEnvelope
+  connect?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+}
+
+export type CardAccessAuditLogUpdateManyWithoutInvoiceNestedInput = {
+  create?: Prisma.XOR<Prisma.CardAccessAuditLogCreateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput> | Prisma.CardAccessAuditLogCreateWithoutInvoiceInput[] | Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput[]
+  connectOrCreate?: Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput | Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput[]
+  upsert?: Prisma.CardAccessAuditLogUpsertWithWhereUniqueWithoutInvoiceInput | Prisma.CardAccessAuditLogUpsertWithWhereUniqueWithoutInvoiceInput[]
+  createMany?: Prisma.CardAccessAuditLogCreateManyInvoiceInputEnvelope
+  set?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  disconnect?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  delete?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  connect?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  update?: Prisma.CardAccessAuditLogUpdateWithWhereUniqueWithoutInvoiceInput | Prisma.CardAccessAuditLogUpdateWithWhereUniqueWithoutInvoiceInput[]
+  updateMany?: Prisma.CardAccessAuditLogUpdateManyWithWhereWithoutInvoiceInput | Prisma.CardAccessAuditLogUpdateManyWithWhereWithoutInvoiceInput[]
+  deleteMany?: Prisma.CardAccessAuditLogScalarWhereInput | Prisma.CardAccessAuditLogScalarWhereInput[]
+}
+
+export type CardAccessAuditLogUncheckedUpdateManyWithoutInvoiceNestedInput = {
+  create?: Prisma.XOR<Prisma.CardAccessAuditLogCreateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput> | Prisma.CardAccessAuditLogCreateWithoutInvoiceInput[] | Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput[]
+  connectOrCreate?: Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput | Prisma.CardAccessAuditLogCreateOrConnectWithoutInvoiceInput[]
+  upsert?: Prisma.CardAccessAuditLogUpsertWithWhereUniqueWithoutInvoiceInput | Prisma.CardAccessAuditLogUpsertWithWhereUniqueWithoutInvoiceInput[]
+  createMany?: Prisma.CardAccessAuditLogCreateManyInvoiceInputEnvelope
+  set?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  disconnect?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  delete?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  connect?: Prisma.CardAccessAuditLogWhereUniqueInput | Prisma.CardAccessAuditLogWhereUniqueInput[]
+  update?: Prisma.CardAccessAuditLogUpdateWithWhereUniqueWithoutInvoiceInput | Prisma.CardAccessAuditLogUpdateWithWhereUniqueWithoutInvoiceInput[]
+  updateMany?: Prisma.CardAccessAuditLogUpdateManyWithWhereWithoutInvoiceInput | Prisma.CardAccessAuditLogUpdateManyWithWhereWithoutInvoiceInput[]
+  deleteMany?: Prisma.CardAccessAuditLogScalarWhereInput | Prisma.CardAccessAuditLogScalarWhereInput[]
+}
+
 export type CardAccessAuditLogCreateWithoutAdminUserInput = {
   id?: string
   viewedAt?: Date | string
   ipAddress?: string | null
-  order: Prisma.OrderCreateNestedOneWithoutCardAccessLogsInput
+  order?: Prisma.OrderCreateNestedOneWithoutCardAccessLogsInput
+  invoice?: Prisma.InvoiceCreateNestedOneWithoutCardAccessLogsInput
 }
 
 export type CardAccessAuditLogUncheckedCreateWithoutAdminUserInput = {
   id?: string
-  orderId: string
+  orderId?: string | null
+  invoiceId?: string | null
   viewedAt?: Date | string
   ipAddress?: string | null
 }
@@ -448,7 +516,8 @@ export type CardAccessAuditLogScalarWhereInput = {
   OR?: Prisma.CardAccessAuditLogScalarWhereInput[]
   NOT?: Prisma.CardAccessAuditLogScalarWhereInput | Prisma.CardAccessAuditLogScalarWhereInput[]
   id?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
-  orderId?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
+  orderId?: Prisma.UuidNullableFilter<"CardAccessAuditLog"> | string | null
+  invoiceId?: Prisma.UuidNullableFilter<"CardAccessAuditLog"> | string | null
   adminUserId?: Prisma.UuidFilter<"CardAccessAuditLog"> | string
   viewedAt?: Prisma.DateTimeFilter<"CardAccessAuditLog"> | Date | string
   ipAddress?: Prisma.StringNullableFilter<"CardAccessAuditLog"> | string | null
@@ -458,11 +527,13 @@ export type CardAccessAuditLogCreateWithoutOrderInput = {
   id?: string
   viewedAt?: Date | string
   ipAddress?: string | null
+  invoice?: Prisma.InvoiceCreateNestedOneWithoutCardAccessLogsInput
   adminUser: Prisma.AdminUserCreateNestedOneWithoutCardAccessLogsInput
 }
 
 export type CardAccessAuditLogUncheckedCreateWithoutOrderInput = {
   id?: string
+  invoiceId?: string | null
   adminUserId: string
   viewedAt?: Date | string
   ipAddress?: string | null
@@ -494,9 +565,52 @@ export type CardAccessAuditLogUpdateManyWithWhereWithoutOrderInput = {
   data: Prisma.XOR<Prisma.CardAccessAuditLogUpdateManyMutationInput, Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutOrderInput>
 }
 
+export type CardAccessAuditLogCreateWithoutInvoiceInput = {
+  id?: string
+  viewedAt?: Date | string
+  ipAddress?: string | null
+  order?: Prisma.OrderCreateNestedOneWithoutCardAccessLogsInput
+  adminUser: Prisma.AdminUserCreateNestedOneWithoutCardAccessLogsInput
+}
+
+export type CardAccessAuditLogUncheckedCreateWithoutInvoiceInput = {
+  id?: string
+  orderId?: string | null
+  adminUserId: string
+  viewedAt?: Date | string
+  ipAddress?: string | null
+}
+
+export type CardAccessAuditLogCreateOrConnectWithoutInvoiceInput = {
+  where: Prisma.CardAccessAuditLogWhereUniqueInput
+  create: Prisma.XOR<Prisma.CardAccessAuditLogCreateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput>
+}
+
+export type CardAccessAuditLogCreateManyInvoiceInputEnvelope = {
+  data: Prisma.CardAccessAuditLogCreateManyInvoiceInput | Prisma.CardAccessAuditLogCreateManyInvoiceInput[]
+  skipDuplicates?: boolean
+}
+
+export type CardAccessAuditLogUpsertWithWhereUniqueWithoutInvoiceInput = {
+  where: Prisma.CardAccessAuditLogWhereUniqueInput
+  update: Prisma.XOR<Prisma.CardAccessAuditLogUpdateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedUpdateWithoutInvoiceInput>
+  create: Prisma.XOR<Prisma.CardAccessAuditLogCreateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedCreateWithoutInvoiceInput>
+}
+
+export type CardAccessAuditLogUpdateWithWhereUniqueWithoutInvoiceInput = {
+  where: Prisma.CardAccessAuditLogWhereUniqueInput
+  data: Prisma.XOR<Prisma.CardAccessAuditLogUpdateWithoutInvoiceInput, Prisma.CardAccessAuditLogUncheckedUpdateWithoutInvoiceInput>
+}
+
+export type CardAccessAuditLogUpdateManyWithWhereWithoutInvoiceInput = {
+  where: Prisma.CardAccessAuditLogScalarWhereInput
+  data: Prisma.XOR<Prisma.CardAccessAuditLogUpdateManyMutationInput, Prisma.CardAccessAuditLogUncheckedUpdateManyWithoutInvoiceInput>
+}
+
 export type CardAccessAuditLogCreateManyAdminUserInput = {
   id?: string
-  orderId: string
+  orderId?: string | null
+  invoiceId?: string | null
   viewedAt?: Date | string
   ipAddress?: string | null
 }
@@ -505,25 +619,29 @@ export type CardAccessAuditLogUpdateWithoutAdminUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.OrderUpdateOneRequiredWithoutCardAccessLogsNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCardAccessLogsNestedInput
+  invoice?: Prisma.InvoiceUpdateOneWithoutCardAccessLogsNestedInput
 }
 
 export type CardAccessAuditLogUncheckedUpdateWithoutAdminUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CardAccessAuditLogUncheckedUpdateManyWithoutAdminUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CardAccessAuditLogCreateManyOrderInput = {
   id?: string
+  invoiceId?: string | null
   adminUserId: string
   viewedAt?: Date | string
   ipAddress?: string | null
@@ -533,11 +651,13 @@ export type CardAccessAuditLogUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoice?: Prisma.InvoiceUpdateOneWithoutCardAccessLogsNestedInput
   adminUser?: Prisma.AdminUserUpdateOneRequiredWithoutCardAccessLogsNestedInput
 }
 
 export type CardAccessAuditLogUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  invoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminUserId?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -545,6 +665,39 @@ export type CardAccessAuditLogUncheckedUpdateWithoutOrderInput = {
 
 export type CardAccessAuditLogUncheckedUpdateManyWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  invoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type CardAccessAuditLogCreateManyInvoiceInput = {
+  id?: string
+  orderId?: string | null
+  adminUserId: string
+  viewedAt?: Date | string
+  ipAddress?: string | null
+}
+
+export type CardAccessAuditLogUpdateWithoutInvoiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.OrderUpdateOneWithoutCardAccessLogsNestedInput
+  adminUser?: Prisma.AdminUserUpdateOneRequiredWithoutCardAccessLogsNestedInput
+}
+
+export type CardAccessAuditLogUncheckedUpdateWithoutInvoiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type CardAccessAuditLogUncheckedUpdateManyWithoutInvoiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminUserId?: Prisma.StringFieldUpdateOperationsInput | string
   viewedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -555,64 +708,76 @@ export type CardAccessAuditLogUncheckedUpdateManyWithoutOrderInput = {
 export type CardAccessAuditLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  invoiceId?: boolean
   adminUserId?: boolean
   viewedAt?: boolean
   ipAddress?: boolean
-  order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  order?: boolean | Prisma.CardAccessAuditLog$orderArgs<ExtArgs>
+  invoice?: boolean | Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>
   adminUser?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cardAccessAuditLog"]>
 
 export type CardAccessAuditLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  invoiceId?: boolean
   adminUserId?: boolean
   viewedAt?: boolean
   ipAddress?: boolean
-  order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  order?: boolean | Prisma.CardAccessAuditLog$orderArgs<ExtArgs>
+  invoice?: boolean | Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>
   adminUser?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cardAccessAuditLog"]>
 
 export type CardAccessAuditLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  invoiceId?: boolean
   adminUserId?: boolean
   viewedAt?: boolean
   ipAddress?: boolean
-  order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  order?: boolean | Prisma.CardAccessAuditLog$orderArgs<ExtArgs>
+  invoice?: boolean | Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>
   adminUser?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cardAccessAuditLog"]>
 
 export type CardAccessAuditLogSelectScalar = {
   id?: boolean
   orderId?: boolean
+  invoiceId?: boolean
   adminUserId?: boolean
   viewedAt?: boolean
   ipAddress?: boolean
 }
 
-export type CardAccessAuditLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "adminUserId" | "viewedAt" | "ipAddress", ExtArgs["result"]["cardAccessAuditLog"]>
+export type CardAccessAuditLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "invoiceId" | "adminUserId" | "viewedAt" | "ipAddress", ExtArgs["result"]["cardAccessAuditLog"]>
 export type CardAccessAuditLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  order?: boolean | Prisma.CardAccessAuditLog$orderArgs<ExtArgs>
+  invoice?: boolean | Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>
   adminUser?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }
 export type CardAccessAuditLogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  order?: boolean | Prisma.CardAccessAuditLog$orderArgs<ExtArgs>
+  invoice?: boolean | Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>
   adminUser?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }
 export type CardAccessAuditLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  order?: boolean | Prisma.CardAccessAuditLog$orderArgs<ExtArgs>
+  invoice?: boolean | Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>
   adminUser?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }
 
 export type $CardAccessAuditLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CardAccessAuditLog"
   objects: {
-    order: Prisma.$OrderPayload<ExtArgs>
+    order: Prisma.$OrderPayload<ExtArgs> | null
+    invoice: Prisma.$InvoicePayload<ExtArgs> | null
     adminUser: Prisma.$AdminUserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    orderId: string
+    orderId: string | null
+    invoiceId: string | null
     adminUserId: string
     viewedAt: Date
     ipAddress: string | null
@@ -1010,7 +1175,8 @@ readonly fields: CardAccessAuditLogFieldRefs;
  */
 export interface Prisma__CardAccessAuditLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  order<T extends Prisma.CardAccessAuditLog$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CardAccessAuditLog$orderArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  invoice<T extends Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CardAccessAuditLog$invoiceArgs<ExtArgs>>): Prisma.Prisma__InvoiceClient<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   adminUser<T extends Prisma.AdminUserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUserDefaultArgs<ExtArgs>>): Prisma.Prisma__AdminUserClient<runtime.Types.Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1043,6 +1209,7 @@ export interface Prisma__CardAccessAuditLogClient<T, Null = never, ExtArgs exten
 export interface CardAccessAuditLogFieldRefs {
   readonly id: Prisma.FieldRef<"CardAccessAuditLog", 'String'>
   readonly orderId: Prisma.FieldRef<"CardAccessAuditLog", 'String'>
+  readonly invoiceId: Prisma.FieldRef<"CardAccessAuditLog", 'String'>
   readonly adminUserId: Prisma.FieldRef<"CardAccessAuditLog", 'String'>
   readonly viewedAt: Prisma.FieldRef<"CardAccessAuditLog", 'DateTime'>
   readonly ipAddress: Prisma.FieldRef<"CardAccessAuditLog", 'String'>
@@ -1444,6 +1611,44 @@ export type CardAccessAuditLogDeleteManyArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many CardAccessAuditLogs to delete.
    */
   limit?: number
+}
+
+/**
+ * CardAccessAuditLog.order
+ */
+export type CardAccessAuditLog$orderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+}
+
+/**
+ * CardAccessAuditLog.invoice
+ */
+export type CardAccessAuditLog$invoiceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invoice
+   */
+  select?: Prisma.InvoiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invoice
+   */
+  omit?: Prisma.InvoiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoiceInclude<ExtArgs> | null
+  where?: Prisma.InvoiceWhereInput
 }
 
 /**

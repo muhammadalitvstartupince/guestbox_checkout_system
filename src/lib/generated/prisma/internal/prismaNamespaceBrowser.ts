@@ -75,10 +75,14 @@ export const ModelName = {
   ShippingWeightEntry: 'ShippingWeightEntry',
   LiveChatSettings: 'LiveChatSettings',
   AbandonedCheckoutSettings: 'AbandonedCheckoutSettings',
+  InvoiceSlackSettings: 'InvoiceSlackSettings',
   ShippingRateLog: 'ShippingRateLog',
   ChatbotSettings: 'ChatbotSettings',
   ChatConversation: 'ChatConversation',
-  ChatMessage: 'ChatMessage'
+  ChatMessage: 'ChatMessage',
+  Invoice: 'Invoice',
+  InvoiceLineItem: 'InvoiceLineItem',
+  InvoiceEvent: 'InvoiceEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -376,6 +380,7 @@ export type OrderAddonScalarFieldEnum = (typeof OrderAddonScalarFieldEnum)[keyof
 export const CardAccessAuditLogScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
+  invoiceId: 'invoiceId',
   adminUserId: 'adminUserId',
   viewedAt: 'viewedAt',
   ipAddress: 'ipAddress'
@@ -491,6 +496,16 @@ export const AbandonedCheckoutSettingsScalarFieldEnum = {
 export type AbandonedCheckoutSettingsScalarFieldEnum = (typeof AbandonedCheckoutSettingsScalarFieldEnum)[keyof typeof AbandonedCheckoutSettingsScalarFieldEnum]
 
 
+export const InvoiceSlackSettingsScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  slackWebhookUrl: 'slackWebhookUrl',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvoiceSlackSettingsScalarFieldEnum = (typeof InvoiceSlackSettingsScalarFieldEnum)[keyof typeof InvoiceSlackSettingsScalarFieldEnum]
+
+
 export const ShippingRateLogScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
@@ -550,6 +565,94 @@ export const ChatMessageScalarFieldEnum = {
 } as const
 
 export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  token: 'token',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  addressLine1: 'addressLine1',
+  city: 'city',
+  state: 'state',
+  zip: 'zip',
+  country: 'country',
+  taxId: 'taxId',
+  shippingSameAsBilling: 'shippingSameAsBilling',
+  shippingAddressLine1: 'shippingAddressLine1',
+  shippingCity: 'shippingCity',
+  shippingState: 'shippingState',
+  shippingZip: 'shippingZip',
+  shippingCountry: 'shippingCountry',
+  listingQty: 'listingQty',
+  selectedPlanName: 'selectedPlanName',
+  selectedPlanInterval: 'selectedPlanInterval',
+  selectedPlanPriceCents: 'selectedPlanPriceCents',
+  subtotalCents: 'subtotalCents',
+  discountCents: 'discountCents',
+  discountLabel: 'discountLabel',
+  shippingCents: 'shippingCents',
+  shippingCarrier: 'shippingCarrier',
+  shippingService: 'shippingService',
+  shippingEstDays: 'shippingEstDays',
+  totalCents: 'totalCents',
+  expiresAt: 'expiresAt',
+  successRedirectUrl: 'successRedirectUrl',
+  webhookUrl: 'webhookUrl',
+  adminNotes: 'adminNotes',
+  customerNotes: 'customerNotes',
+  paidAt: 'paidAt',
+  cardLast4: 'cardLast4',
+  cardBrand: 'cardBrand',
+  cardNumberEncrypted: 'cardNumberEncrypted',
+  cardCvvEncrypted: 'cardCvvEncrypted',
+  cardExpiryEncrypted: 'cardExpiryEncrypted',
+  cardHashKey: 'cardHashKey',
+  authNetResponseCode: 'authNetResponseCode',
+  authNetAuthCode: 'authNetAuthCode',
+  authNetTransactionId: 'authNetTransactionId',
+  authNetMessage: 'authNetMessage',
+  zohoSynced: 'zohoSynced',
+  zohoPayload: 'zohoPayload',
+  zohoResponse: 'zohoResponse',
+  webhookPayload: 'webhookPayload',
+  webhookResponse: 'webhookResponse',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const InvoiceLineItemScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  checkoutPageId: 'checkoutPageId',
+  description: 'description',
+  quantity: 'quantity',
+  unitPriceCents: 'unitPriceCents',
+  totalCents: 'totalCents',
+  zohoItemId: 'zohoItemId',
+  sortOrder: 'sortOrder'
+} as const
+
+export type InvoiceLineItemScalarFieldEnum = (typeof InvoiceLineItemScalarFieldEnum)[keyof typeof InvoiceLineItemScalarFieldEnum]
+
+
+export const InvoiceEventScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  type: 'type',
+  message: 'message',
+  createdAt: 'createdAt'
+} as const
+
+export type InvoiceEventScalarFieldEnum = (typeof InvoiceEventScalarFieldEnum)[keyof typeof InvoiceEventScalarFieldEnum]
 
 
 export const SortOrder = {
